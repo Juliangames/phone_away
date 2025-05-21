@@ -1,5 +1,5 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:phone_away/services/timer_service.dart';
 import 'package:phone_away/widgets/motivational_sayings.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 import '../widgets/custom_action_button.dart';
@@ -13,39 +13,12 @@ class TimerPage extends StatefulWidget {
 }
 
 class _TimerPageState extends State<TimerPage> {
-  bool isRunning = false;
+  final TimerService _timerService = TimerService();
   int selectedSeconds = 1500; // default 25 min
-  int remainingSeconds = 1500;
-  Timer? timer;
-
-  void startTimer() {
-    setState(() {
-      isRunning = true;
-    });
-
-    timer = Timer.periodic(const Duration(seconds: 1), (t) {
-      if (remainingSeconds > 0) {
-        setState(() {
-          remainingSeconds--;
-        });
-      } else {
-        stopTimer();
-      }
-    });
-  }
-
-  void stopTimer() {
-    timer?.cancel();
-    setState(() {
-      isRunning = false;
-      remainingSeconds = selectedSeconds;
-    });
-  }
 
   void onTimeChanged(double value) {
     setState(() {
       selectedSeconds = value.toInt();
-      remainingSeconds = selectedSeconds;
     });
   }
 
@@ -57,37 +30,30 @@ class _TimerPageState extends State<TimerPage> {
 
   @override
   Widget build(BuildContext context) {
-    final title = isRunning ? 'Stay Focused' : 'Start Focusing';
+    const double topMargin = 16.0;
+    const double sliderTopMargin = topMargin * 6;
+    const double bottomMargin = topMargin;
 
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 80, // Increase height
-        title: Padding(
-          padding: const EdgeInsets.only(top: 16.0), // Top margin inside AppBar
-          child: Text(title),
-        ),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text("Timer"), centerTitle: true),
       body: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16.0,
-        ), // Optional horizontal padding
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: LayoutBuilder(
           builder: (context, constraints) {
-            const double topMargin = 16.0;
-            const double sliderTopMargin = topMargin * 6;
-            const double bottomMargin = topMargin;
-
             return Column(
               children: [
-                const SizedBox(height: sliderTopMargin), // Spacer below AppBar
-                // Circular Slider or Timer
+                const SizedBox(height: sliderTopMargin),
                 Center(
                   child: SizedBox(
                     height: 340,
                     width: 340,
-                    child:
-                        isRunning
+                    child: StreamBuilder<int>(
+                      stream: _timerService.timeStream,
+                      builder: (context, snapshot) {
+                        final remaining = snapshot.data ?? selectedSeconds;
+                        final isRunning = _timerService.isRunning;
+
+                        return isRunning
                             ? Stack(
                               alignment: Alignment.center,
                               children: [
@@ -95,9 +61,7 @@ class _TimerPageState extends State<TimerPage> {
                                   width: 340,
                                   height: 340,
                                   child: CircularProgressIndicator(
-                                    value:
-                                        1 -
-                                        (remainingSeconds / selectedSeconds),
+                                    value: 1 - (remaining / selectedSeconds),
                                     strokeWidth: 8,
                                     color: AppColors.primaryColor,
                                     backgroundColor:
@@ -106,7 +70,7 @@ class _TimerPageState extends State<TimerPage> {
                                   ),
                                 ),
                                 Text(
-                                  formatTime(remainingSeconds),
+                                  formatTime(remaining),
                                   style: const TextStyle(fontSize: 32),
                                 ),
                               ],
@@ -145,41 +109,59 @@ class _TimerPageState extends State<TimerPage> {
                                   modifier: (_) => '',
                                 ),
                               ),
-                            ),
+                            );
+                      },
+                    ),
                   ),
                 ),
+
+                const SizedBox(height: 32),
+
                 const Spacer(),
-                const SizedBox(
-                  height: 32,
-                ), // Space between timer and quote/text
-                // Motivational Saying or Time Text
-                Center(
-                  child:
-                      isRunning
-                          ? const MotivationalSaying(
-                            text: 'Stay focused and keep going! 🔥',
-                          )
-                          : Text(
-                            formatTime(selectedSeconds),
-                            style: const TextStyle(fontSize: 42),
-                          ),
+                // Centered Motivational Saying or Time
+                StreamBuilder<int>(
+                  stream: _timerService.timeStream,
+                  builder: (context, snapshot) {
+                    final isRunning = _timerService.isRunning;
+                    final remaining = snapshot.data ?? selectedSeconds;
+
+                    return Center(
+                      child:
+                          isRunning
+                              ? const MotivationalSaying(
+                                text: 'Stay focused and keep going!',
+                              )
+                              : Text(
+                                formatTime(selectedSeconds),
+                                style: const TextStyle(fontSize: 42),
+                              ),
+                    );
+                  },
                 ),
 
-                const Spacer(), // Push button to bottom
-                // Bottom Button
+                const Spacer(),
+
+                // Action Button
                 Padding(
                   padding: const EdgeInsets.only(bottom: bottomMargin),
-                  child: CustomActionButton(
-                    onPressed: () {
-                      if (isRunning) {
-                        stopTimer();
-                      } else {
-                        startTimer();
-                      }
+                  child: StreamBuilder<int>(
+                    stream: _timerService.timeStream,
+                    builder: (context, snapshot) {
+                      final isRunning = _timerService.isRunning;
+
+                      return CustomActionButton(
+                        onPressed: () {
+                          if (isRunning) {
+                            _timerService.stop();
+                          } else {
+                            _timerService.start(selectedSeconds);
+                          }
+                        },
+                        text: isRunning ? 'Stop' : 'Start',
+                        icon: isRunning ? Icons.stop : Icons.play_arrow,
+                        isError: isRunning,
+                      );
                     },
-                    text: isRunning ? 'Stop' : 'Start',
-                    icon: isRunning ? Icons.stop : Icons.play_arrow,
-                    isError: isRunning,
                   ),
                 ),
               ],
