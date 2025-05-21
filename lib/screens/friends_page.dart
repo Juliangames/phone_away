@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/theme.dart';
 
 class FriendsPage extends StatelessWidget {
   const FriendsPage({super.key});
@@ -148,9 +149,8 @@ class FriendsPage extends StatelessWidget {
                       const SizedBox(height: 20),
                       ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(
-                            0xFF25D366,
-                          ), // WhatsApp green
+                          backgroundColor:
+                              AppColors.primaryContainerColor, // WhatsApp green
                           foregroundColor: Colors.white,
                           minimumSize: const Size(double.infinity, 50),
                           shape: RoundedRectangleBorder(
