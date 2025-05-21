@@ -43,8 +43,8 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
-/linux/flutter
+linux/
 /.vscode
 pubspec.lock
-/macos/Flutter
-/windows/flutter
+macos/
+windows/
