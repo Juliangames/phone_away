@@ -6,6 +6,7 @@ class CustomActionButton extends StatelessWidget {
   final String text;
   final IconData? icon;
   final bool isFilled;
+  final bool? isError;
 
   const CustomActionButton({
     super.key,
@@ -13,12 +14,18 @@ class CustomActionButton extends StatelessWidget {
     required this.text,
     this.icon,
     this.isFilled = true,
+    this.isError,
   });
 
   @override
   Widget build(BuildContext context) {
     final buttonStyle = FilledButton.styleFrom(
-      backgroundColor: AppColors.primaryColor,
+      backgroundColor:
+          isError == true
+              ? AppColors.errorColor
+              : isFilled
+              ? AppColors.primaryColor
+              : AppColors.surfaceColor,
       foregroundColor: AppColors.onPrimaryColor,
       minimumSize: const Size(154, 54),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
