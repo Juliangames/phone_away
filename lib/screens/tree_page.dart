@@ -5,6 +5,13 @@ class TreePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(child: Text('Tree Page'));
+    return Center(
+      child: Image.asset(
+        'assets/images/Baum5.png',
+        width: 450,
+        height: 450,
+        fit: BoxFit.contain,
+      ),
+    );
   }
 }
