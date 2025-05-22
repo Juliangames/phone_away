@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:phone_away/theme/theme.dart';
 import 'screens/timer_page.dart';
 import 'screens/tree_page.dart';
 import 'screens/friends_page.dart';
@@ -16,8 +17,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'My Flutter App',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primaryColor),
         useMaterial3: true,
+        scaffoldBackgroundColor: AppColors.surfaceColor,
       ),
       home: const MainNavigation(),
     );
