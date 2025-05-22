@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'firebase_options.dart';
+
 import 'package:phone_away/theme/theme.dart';
 import 'screens/timer_page.dart';
 import 'screens/tree_page.dart';
 import 'screens/friends_page.dart';
 import 'screens/settings_page.dart';
+import 'screens/auth_page.dart'; // Make sure you created this as per earlier
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
 
@@ -21,7 +28,31 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         scaffoldBackgroundColor: AppColors.surfaceColor,
       ),
-      home: const MainNavigation(),
+      home: const AuthWrapper(), // 🔁 Auth-aware entry point
+    );
+  }
+}
+
+class AuthWrapper extends StatelessWidget {
+  const AuthWrapper({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        if (snapshot.hasData) {
+          return const MainNavigation(); //  Authenticated
+        }
+
+        return const AuthPage(); //  Not logged in
+      },
     );
   }
 }

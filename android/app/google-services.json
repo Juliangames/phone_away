@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "507426267379",
+    "project_id": "phoneaway-50a5b",
+    "storage_bucket": "phoneaway-50a5b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:507426267379:android:d7b235229d82ccfbb21786",
+        "android_client_info": {
+          "package_name": "com.example.phone_away"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_-wnismIgatRgk4PU8xhk4cvfwZYGZEA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
