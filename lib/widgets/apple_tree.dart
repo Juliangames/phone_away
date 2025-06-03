@@ -31,7 +31,7 @@ class _TreePainter extends CustomPainter {
   _TreePainter(this.apples);
 
   final List<Apple> apples;
-  static const _appleRadius = 10.0;
+  static const _appleRadius = 10.0; // nur für Fontgröße
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -44,50 +44,52 @@ class _TreePainter extends CustomPainter {
     _drawApples(canvas, crownCenter, crownRadius);
   }
 
-  void _drawTrunk(Canvas canvas, Offset center, Size size) {
-    final width = size.width * .12;
-    final height = size.height * .45;
-    final rect = Rect.fromCenter(
-      center: center.translate(0, height * .3),
-      width: width,
-      height: height,
+  void _drawTrunk(Canvas canvas, Offset c, Size s) {
+    final w = s.width * .12;
+    final h = s.height * .45;
+    canvas.drawRect(
+      Rect.fromCenter(center: c.translate(0, h * .3), width: w, height: h),
+      Paint()..color = const Color(0xFF8B5A2B),
     );
-    canvas.drawRect(rect, Paint()..color = const Color(0xFF8B5A2B));
   }
 
-  void _drawFoliage(Canvas canvas, Offset center, double baseRadius) {
+  void _drawFoliage(Canvas canvas, Offset c, double r) {
     final rng = math.Random(apples.length);
     for (var i = 0; i < 7; i++) {
-      final radius = baseRadius * (.45 + rng.nextDouble() * .35);
-      final angle = rng.nextDouble() * 2 * math.pi;
-      final offset =
-          center +
-          Offset(math.cos(angle), math.sin(angle)) * (baseRadius - radius * .4);
-      final color =
+      final leafR = r * (.45 + rng.nextDouble() * .35);
+      final a = rng.nextDouble() * 2 * math.pi;
+      final o = c + Offset(math.cos(a), math.sin(a)) * (r - leafR * .4);
+      final col =
           HSLColor.fromAHSL(
             1,
             80 + rng.nextDouble() * 20,
             .5 + rng.nextDouble() * .3,
             .35 + rng.nextDouble() * .25,
           ).toColor();
-      canvas.drawCircle(offset, radius, Paint()..color = color);
+      canvas.drawCircle(o, leafR, Paint()..color = col);
     }
   }
 
-  void _drawApples(Canvas canvas, Offset center, double baseRadius) {
-    final fresh = Paint()..color = Colors.red;
-    final rotten = Paint()..color = const Color(0xFF8E6B38);
+  void _drawApples(Canvas canvas, Offset c, double r) {
+    const freshEmoji = '🍎';
+    const rottenEmoji = '🍏';
 
     for (var i = 0; i < apples.length; i++) {
       final rand = math.Random(i * 9973);
-      final distance = rand.nextDouble() * baseRadius * 1.2;
-      final angle = rand.nextDouble() * 2 * math.pi;
-      final pos = center + Offset(math.cos(angle), math.sin(angle)) * distance;
-      canvas.drawCircle(pos, _appleRadius, apples[i].isRotten ? rotten : fresh);
+      final d = rand.nextDouble() * r * 1.2;
+      final a = rand.nextDouble() * 2 * math.pi;
+      final pos = c + Offset(math.cos(a), math.sin(a)) * d;
+      final tp = TextPainter(
+        text: TextSpan(
+          text: apples[i].isRotten ? rottenEmoji : freshEmoji,
+          style: TextStyle(fontSize: _appleRadius * 2.4),
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout();
+      tp.paint(canvas, pos - Offset(tp.width / 2, tp.height / 2));
     }
   }
 
   @override
-  bool shouldRepaint(covariant _TreePainter oldDelegate) =>
-      oldDelegate.apples != apples;
+  bool shouldRepaint(covariant _TreePainter old) => old.apples != apples;
 }
