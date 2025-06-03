@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../theme/theme.dart';
+import 'package:share_plus/share_plus.dart';
 
 class FriendsPage extends StatelessWidget {
   const FriendsPage({super.key});
@@ -122,52 +122,7 @@ class FriendsPage extends StatelessWidget {
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: const Color(0xFF004D40),
         onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-            ),
-            backgroundColor: Colors.white,
-            builder:
-                (context) => Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Text(
-                        'Invite a friend',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      const Text(
-                        'Share your invite link via WhatsApp.',
-                        style: TextStyle(fontSize: 14),
-                      ),
-                      const SizedBox(height: 20),
-                      ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              AppColors.primaryContainerColor, // WhatsApp green
-                          foregroundColor: Colors.white,
-                          minimumSize: const Size(double.infinity, 50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        icon: const Icon(Icons.send),
-                        label: const Text('Invite via WhatsApp'),
-                        onPressed: () {
-                          // TODO: Implement WhatsApp sharing
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-          );
+          SharePlus.instance.share(ShareParams(text: 'todo'));
         },
         icon: const Icon(Icons.add, color: Colors.white),
         label: const Text('Invite', style: TextStyle(color: Colors.white)),
