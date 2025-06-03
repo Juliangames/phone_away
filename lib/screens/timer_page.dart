@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:phone_away/services/timer_service.dart';
 import 'package:phone_away/widgets/motivational_sayings.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
-import '../widgets/custom_action_button.dart';
+
 import '../theme/theme.dart';
+import '../widgets/custom_action_button.dart';
 
 class TimerPage extends StatefulWidget {
   const TimerPage({super.key});
@@ -30,121 +31,115 @@ class _TimerPageState extends State<TimerPage> {
 
   @override
   Widget build(BuildContext context) {
-    const double topMargin = 16.0;
-    const double sliderTopMargin = topMargin * 6;
-    const double bottomMargin = topMargin;
-
     return Scaffold(
       appBar: AppBar(title: const Text("Timer"), centerTitle: true),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return Column(
-              children: [
-                const SizedBox(height: sliderTopMargin),
-                Center(
-                  child: SizedBox(
-                    height: 340,
-                    width: 340,
-                    child: StreamBuilder<int>(
-                      stream: _timerService.timeStream,
-                      builder: (context, snapshot) {
-                        final remaining = snapshot.data ?? selectedSeconds;
-                        final isRunning = _timerService.isRunning;
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Spacer(),
+                  Center(
+                    child: SizedBox(
+                      height: 340,
+                      width: 340,
+                      child: StreamBuilder<int>(
+                        stream: _timerService.timeStream,
+                        builder: (context, snapshot) {
+                          final remaining = snapshot.data ?? selectedSeconds;
+                          final isRunning = _timerService.isRunning;
 
-                        return isRunning
-                            ? Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                SizedBox(
-                                  width: 340,
-                                  height: 340,
-                                  child: CircularProgressIndicator(
-                                    value: 1 - (remaining / selectedSeconds),
-                                    strokeWidth: 8,
-                                    color: AppColors.primaryColor,
-                                    backgroundColor:
-                                        AppColors.secondaryContainerColor,
-                                    strokeCap: StrokeCap.round,
-                                  ),
-                                ),
-                                Text(
-                                  formatTime(remaining),
-                                  style: const TextStyle(fontSize: 32),
-                                ),
-                              ],
-                            )
-                            : SleekCircularSlider(
-                              min: 0,
-                              max: 10000,
-                              initialValue: selectedSeconds.toDouble(),
-                              onChange: onTimeChanged,
-                              innerWidget: (value) {
-                                return const Center(
-                                  child: Text(
-                                    "Image later",
-                                    style: TextStyle(
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.bold,
+                          return isRunning
+                              ? Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  SizedBox(
+                                    width: 340,
+                                    height: 340,
+                                    child: CircularProgressIndicator(
+                                      value: 1 - (remaining / selectedSeconds),
+                                      strokeWidth: 8,
+                                      color: AppColors.primaryColor,
+                                      backgroundColor:
+                                          AppColors.secondaryContainerColor,
+                                      strokeCap: StrokeCap.round,
                                     ),
                                   ),
-                                );
-                              },
-                              appearance: CircularSliderAppearance(
-                                customWidths: CustomSliderWidths(
-                                  trackWidth: 8,
-                                  progressBarWidth: 8,
-                                  handlerSize: 8,
+                                  Text(
+                                    formatTime(remaining),
+                                    style: const TextStyle(fontSize: 32),
+                                  ),
+                                ],
+                              )
+                              : SleekCircularSlider(
+                                min: 0,
+                                max: 10000,
+                                initialValue: selectedSeconds.toDouble(),
+                                onChange: onTimeChanged,
+                                innerWidget: (value) {
+                                  return const Center(
+                                    child: Text(
+                                      "Image later",
+                                      style: TextStyle(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                appearance: CircularSliderAppearance(
+                                  customWidths: CustomSliderWidths(
+                                    trackWidth: 8,
+                                    progressBarWidth: 8,
+                                    handlerSize: 8,
+                                  ),
+                                  size: 340,
+                                  startAngle: 270,
+                                  angleRange: 360,
+                                  customColors: CustomSliderColors(
+                                    progressBarColor: AppColors.primaryColor,
+                                    trackColor:
+                                        AppColors.secondaryContainerColor,
+                                    dotColor: AppColors.primaryColor,
+                                  ),
+                                  infoProperties: InfoProperties(
+                                    modifier: (_) => '',
+                                  ),
                                 ),
-                                size: 340,
-                                startAngle: 270,
-                                angleRange: 360,
-                                customColors: CustomSliderColors(
-                                  progressBarColor: AppColors.primaryColor,
-                                  trackColor: AppColors.secondaryContainerColor,
-                                  dotColor: AppColors.primaryColor,
-                                ),
-                                infoProperties: InfoProperties(
-                                  modifier: (_) => '',
-                                ),
-                              ),
-                            );
-                      },
+                              );
+                        },
+                      ),
                     ),
                   ),
-                ),
 
-                const SizedBox(height: 32),
+                  const Spacer(),
 
-                const Spacer(),
-                // Centered Motivational Saying or Time
-                StreamBuilder<int>(
-                  stream: _timerService.timeStream,
-                  builder: (context, snapshot) {
-                    final isRunning = _timerService.isRunning;
-                    final remaining = snapshot.data ?? selectedSeconds;
+                  // Centered Motivational Saying or Time
+                  StreamBuilder<int>(
+                    stream: _timerService.timeStream,
+                    builder: (context, snapshot) {
+                      final isRunning = _timerService.isRunning;
+                      final remaining = snapshot.data ?? selectedSeconds;
 
-                    return Center(
-                      child:
-                          isRunning
-                              ? const MotivationalSaying(
-                                text: 'Stay focused and keep going!',
-                              )
-                              : Text(
-                                formatTime(selectedSeconds),
-                                style: const TextStyle(fontSize: 42),
-                              ),
-                    );
-                  },
-                ),
+                      return Center(
+                        child:
+                            isRunning
+                                ? const MotivationalSaying(
+                                  text: 'Stay focused and keep going!',
+                                )
+                                : Text(
+                                  formatTime(selectedSeconds),
+                                  style: const TextStyle(fontSize: 42),
+                                ),
+                      );
+                    },
+                  ),
 
-                const Spacer(),
-
-                // Action Button
-                Padding(
-                  padding: const EdgeInsets.only(bottom: bottomMargin),
-                  child: StreamBuilder<int>(
+                  // Action Button
+                  StreamBuilder<int>(
                     stream: _timerService.timeStream,
                     builder: (context, snapshot) {
                       final isRunning = _timerService.isRunning;
@@ -163,10 +158,10 @@ class _TimerPageState extends State<TimerPage> {
                       );
                     },
                   ),
-                ),
-              ],
-            );
-          },
+                ],
+              );
+            },
+          ),
         ),
       ),
     );
