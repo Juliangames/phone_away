@@ -41,6 +41,8 @@ dependencies:
   firebase_auth: ^5.5.4
   flutter_hooks: ^0.21.2
 
+  share_plus: ^11.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
