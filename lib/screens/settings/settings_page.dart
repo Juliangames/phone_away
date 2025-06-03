@@ -1,7 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart'; // Für Bildauswahl
-import 'dart:io';
-import '../theme/theme.dart';
+
+import '../../theme/theme.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});

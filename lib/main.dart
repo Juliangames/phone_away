@@ -1,14 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'firebase_options.dart';
-
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 import 'package:phone_away/theme/theme.dart';
-import 'screens/timer_page.dart';
-import 'screens/tree_page.dart';
-import 'screens/friends_page.dart';
-import 'screens/settings_page.dart';
-import 'screens/auth_page.dart'; // Make sure you created this as per earlier
+
+import 'firebase_options.dart';
+import 'screens/auth/auth_page.dart'; // Make sure you created this as per earlier
+import 'screens/friends/friends_page.dart';
+import 'screens/settings/settings_page.dart';
+import 'screens/timer/timer_page.dart';
+import 'screens/tree/tree_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
