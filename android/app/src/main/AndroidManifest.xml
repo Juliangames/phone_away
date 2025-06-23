@@ -42,4 +42,12 @@
             <data android:mimeType="text/plain"/>
         </intent>
     </queries>
+    <intent-filter android:autoVerify="true">
+        <action android:name="android.intent.action.VIEW"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
+        <data
+            android:host="phoneaway.page.link"
+            android:scheme="https" />
+    </intent-filter>
 </manifest>

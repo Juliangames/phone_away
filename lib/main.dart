@@ -67,12 +67,16 @@ class MainNavigation extends StatefulWidget {
 class _MainNavigationState extends State<MainNavigation> {
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = const [
-    TimerPage(),
-    TreePage(),
-    FriendsPage(),
-    SettingsPage(),
-  ];
+  // ✅ Dynamisch generierte Seiten mit userId
+  List<Widget> get _pages {
+    final userId = FirebaseAuth.instance.currentUser?.uid ?? 'unknown_user';
+    return [
+      const TimerPage(),
+      const TreePage(),
+      FriendsPage(userId: userId), // 👈 Hier bekommt FriendsPage die userId
+      const SettingsPage(),
+    ];
+  }
 
   void _onItemTapped(int index) {
     setState(() {
