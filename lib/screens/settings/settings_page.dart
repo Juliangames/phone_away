@@ -1,9 +1,12 @@
 import 'dart:io';
-
+import 'package:flutter/foundation.dart'; // für kIsWeb
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart'; // Für Bildauswahl
+import 'package:image_picker/image_picker.dart';
 
 import '../../theme/theme.dart';
+import '../../core/services/db_service.dart';
+import '../../core/services/auth_service.dart';
+import '../../core/services/storage_service.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -13,25 +16,86 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  String userName = "Urs";
-  bool notificationsEnabled = true;
-  XFile? _avatarImage;
+  final AuthService _authService = AuthService();
+  final DBService _dbService = DBService();
+  final StorageService _storageService = StorageService();
 
   final ImagePicker _picker = ImagePicker();
   final TextEditingController _nameController = TextEditingController();
 
+  String? _userId;
+  String _username = '';
+  String _avatarUrl = '';
+  bool _notifications = true;
+
+  XFile? _newAvatarFile;
+  bool _isLoading = true;
+
   @override
   void initState() {
     super.initState();
-    _nameController.text = userName;
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    final user = _authService.currentUser;
+    if (user == null) {
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
+
+    final userId = user.uid;
+
+    // Lade Daten aus DB
+    final snapshot = await _dbService.getUserData(userId);
+    final data = snapshot.value as Map?;
+
+    // Lade Avatar direkt aus Firebase Storage
+    String? avatarUrlFromStorage;
+    try {
+      avatarUrlFromStorage = await _storageService.getAvatarUrl(userId);
+      print('Avatar URL from storage: $avatarUrlFromStorage');
+    } catch (e) {
+      avatarUrlFromStorage = null; // kein Avatar gefunden
+    }
+
+    setState(() {
+      _userId = userId;
+      _username = data?['username'] ?? '';
+      _avatarUrl = avatarUrlFromStorage ?? (data?['avatar'] ?? '');
+      _notifications = data?['notifications'] ?? true;
+      _nameController.text = _username;
+      _isLoading = false;
+    });
+  }
+
+  Future<void> _updateUsername(String newName) async {
+    if (_userId != null) {
+      await _dbService.updateUsername(_userId!, newName);
+    }
+  }
+
+  Future<void> _updateNotifications(bool value) async {
+    if (_userId != null) {
+      await _dbService.updateNotifications(_userId!, value);
+    }
   }
 
   Future<void> _pickImage() async {
-    final pickedImage = await _picker.pickImage(source: ImageSource.gallery);
-    if (pickedImage != null) {
+    print('Picking image...');
+    final picked = await _picker.pickImage(source: ImageSource.gallery);
+    if (picked != null && _userId != null) {
       setState(() {
-        _avatarImage = pickedImage;
+        _newAvatarFile = picked;
       });
+      print('Image picked: ${picked.path}');
+      final downloadUrl = await _storageService.uploadAvatar(_userId!, picked);
+      setState(() {
+        _avatarUrl = downloadUrl;
+      });
+      await _dbService.updateAvatar(_userId!, downloadUrl);
     }
   }
 
@@ -43,6 +107,20 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
+    ImageProvider? avatarImage;
+    if (_newAvatarFile != null) {
+      avatarImage =
+          kIsWeb
+              ? (_avatarUrl.isNotEmpty ? NetworkImage(_avatarUrl) : null)
+              : FileImage(File(_newAvatarFile!.path));
+    } else {
+      avatarImage = (_avatarUrl.isNotEmpty) ? NetworkImage(_avatarUrl) : null;
+    }
+
     return Scaffold(
       backgroundColor: const Color(0xFFF2F7F3),
       appBar: AppBar(
@@ -87,15 +165,9 @@ class _SettingsPageState extends State<SettingsPage> {
                     CircleAvatar(
                       radius: 32,
                       backgroundColor: AppColors.primaryContainerColor,
-                      backgroundImage:
-                          _avatarImage != null
-                              ? Image.file(
-                                File(_avatarImage!.path),
-                                fit: BoxFit.cover,
-                              ).image
-                              : null,
+                      backgroundImage: avatarImage,
                       child:
-                          _avatarImage == null
+                          avatarImage == null
                               ? const Icon(
                                 Icons.person,
                                 color: Colors.white,
@@ -108,7 +180,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
             const SizedBox(height: 20),
-            // Name Section
+            // Username Section
             Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -126,7 +198,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   SizedBox(
-                    width: 150, // feste Breite für Textfeld, anpassbar
+                    width: 150,
                     child: TextField(
                       controller: _nameController,
                       textAlign: TextAlign.right,
@@ -136,10 +208,9 @@ class _SettingsPageState extends State<SettingsPage> {
                         contentPadding: EdgeInsets.symmetric(vertical: 8),
                       ),
                       onChanged: (value) {
-                        setState(() {
-                          userName = value;
-                        });
+                        setState(() => _username = value);
                       },
+                      onSubmitted: _updateUsername,
                     ),
                   ),
                 ],
@@ -164,12 +235,11 @@ class _SettingsPageState extends State<SettingsPage> {
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Switch(
-                    value: notificationsEnabled,
+                    value: _notifications,
                     activeColor: AppColors.primaryColor,
                     onChanged: (value) {
-                      setState(() {
-                        notificationsEnabled = value;
-                      });
+                      setState(() => _notifications = value);
+                      _updateNotifications(value);
                     },
                   ),
                 ],

@@ -48,6 +48,8 @@ class DefaultFirebaseOptions {
     appId: '1:507426267379:web:a80982e2dd1dceb6b21786',
     messagingSenderId: '507426267379',
     projectId: 'phoneaway-50a5b',
+    databaseURL:
+        'https://phoneaway-50a5b-default-rtdb.europe-west1.firebasedatabase.app/',
     authDomain: 'phoneaway-50a5b.firebaseapp.com',
     storageBucket: 'phoneaway-50a5b.firebasestorage.app',
   );
@@ -57,6 +59,8 @@ class DefaultFirebaseOptions {
     appId: '1:507426267379:android:d7b235229d82ccfbb21786',
     messagingSenderId: '507426267379',
     projectId: 'phoneaway-50a5b',
+    databaseURL:
+        'https://phoneaway-50a5b-default-rtdb.europe-west1.firebasedatabase.app/',
     storageBucket: 'phoneaway-50a5b.firebasestorage.app',
   );
 
@@ -65,6 +69,8 @@ class DefaultFirebaseOptions {
     appId: '1:507426267379:ios:29e605810556fdebb21786',
     messagingSenderId: '507426267379',
     projectId: 'phoneaway-50a5b',
+    databaseURL:
+        'https://phoneaway-50a5b-default-rtdb.europe-west1.firebasedatabase.app/',
     storageBucket: 'phoneaway-50a5b.firebasestorage.app',
     iosBundleId: 'com.example.phoneAway',
   );
@@ -74,6 +80,8 @@ class DefaultFirebaseOptions {
     appId: '1:507426267379:web:1d64e8c13259c49bb21786',
     messagingSenderId: '507426267379',
     projectId: 'phoneaway-50a5b',
+    databaseURL:
+        'https://phoneaway-50a5b-default-rtdb.europe-west1.firebasedatabase.app/',
     authDomain: 'phoneaway-50a5b.firebaseapp.com',
     storageBucket: 'phoneaway-50a5b.firebasestorage.app',
   );

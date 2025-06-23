@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:phone_away/theme/theme.dart';
 
 import '../../core/services/auth_service.dart';
+import '../../core/services/db_service.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
@@ -13,6 +14,7 @@ class AuthPage extends StatefulWidget {
 
 class _AuthPageState extends State<AuthPage> {
   final AuthService _authService = AuthService();
+  final DBService _dbService = DBService();
   final _formKey = GlobalKey<FormState>();
   bool _isLogin = true; // toggle between login/register
   bool _loading = false;
@@ -37,10 +39,15 @@ class _AuthPageState extends State<AuthPage> {
           password: _password.trim(),
         );
       } else {
-        await _authService.register(
+        final userCredential = await _authService.register(
           email: _email.trim(),
           password: _password.trim(),
         );
+        if (userCredential != null) {
+          await _dbService.createDefaultUser(userCredential.uid);
+        } else {
+          throw Exception("Registrierung fehlgeschlagen: user ist null");
+        }
       }
       // On success, Firebase automatically keeps user logged in
       // You can navigate away or rebuild based on auth state

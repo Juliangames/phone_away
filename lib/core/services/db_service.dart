@@ -24,6 +24,18 @@ class DBService {
     });
   }
 
+  /// Legt einen neuen Nutzer mit Standardwerten an
+  Future<void> createDefaultUser(String userId) async {
+    print('Creating default user with ID: $userId');
+    await _usersRef.child(userId).set({
+      'username': 'Neuer Nutzer',
+      'avatar': '', // Leerer String oder Default-URL, falls vorhanden
+      'apples': 0,
+      'rotten_apples': 0,
+      'notifications': true,
+    });
+  }
+
   /// Holt alle Daten eines Users
   Future<DataSnapshot> getUserData(String userId) async {
     return await _usersRef.child(userId).get();
