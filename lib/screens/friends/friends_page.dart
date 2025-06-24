@@ -130,25 +130,25 @@ class _FriendsPageState extends State<FriendsPage> {
         final data = snapshot.value as Map<dynamic, dynamic>;
         developer.log('Raw friends data: $data', name: 'FriendsPage');
 
-        final loadedFriends =
-            data.entries.map((entry) {
-              final friendId = entry.key;
-              final friendData =
-                  entry.value is Map
-                      ? entry.value as Map<dynamic, dynamic>
-                      : {};
+        // Get all friend IDs
+        final friendIds = data.keys.cast<String>().toList();
 
-              developer.log(
-                'Processing friend: $friendId, data: $friendData',
-                name: 'FriendsPage',
-              );
-
-              return {
-                'id': friendId,
-                'name': friendData['name'] ?? 'Unknown',
-                'level': friendData['level'] ?? 0,
-              };
-            }).toList();
+        // Fetch user data for each friend in parallel
+        final loadedFriends = await Future.wait(
+          friendIds.map((friendId) async {
+            final userSnapshot = await dbService.getUserData(friendId);
+            final userData = userSnapshot.value as Map<dynamic, dynamic>? ?? {};
+            developer.log(
+              'Fetched user data for $friendId: $userData',
+              name: 'FriendsPage',
+            );
+            return {
+              'id': friendId,
+              'name': userData['username'] ?? 'Unknown',
+              'level': userData['level'] ?? 0,
+            };
+          }),
+        );
 
         // Sort by level (descending)
         loadedFriends.sort(
