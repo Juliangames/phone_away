@@ -13,7 +13,9 @@ class TreeModel extends ChangeNotifier {
   Future<void> loadApples() async {
     // Lade normale Äpfel
     final applesSnapshot = await _dbService.getApples(userId);
+    print('Loading apples for user: $userId');
     if (applesSnapshot.exists) {
+      print('Apples loaded: ${applesSnapshot.value}');
       apples = applesSnapshot.value as int? ?? 0;
     }
 

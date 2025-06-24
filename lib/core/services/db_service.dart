@@ -71,6 +71,24 @@ class DBService {
     await _usersRef.child(userId).update({'rotten_apples': newRottenApples});
   }
 
+  /// Fügt einem User Äpfel hinzu
+  Future<void> addApple(String userId, int count) async {
+    final applesSnapshot = await getApples(userId);
+    int currentApples =
+        applesSnapshot.exists ? (applesSnapshot.value as int?) ?? 0 : 0;
+    await updateApples(userId, currentApples + count);
+  }
+
+  /// Fügt einem User faule Äpfel hinzu
+  Future<void> addRottenApple(String userId, int count) async {
+    final rottenApplesSnapshot = await getRottenApples(userId);
+    int currentRottenApples =
+        rottenApplesSnapshot.exists
+            ? (rottenApplesSnapshot.value as int?) ?? 0
+            : 0;
+    await updateRottenApples(userId, currentRottenApples + count);
+  }
+
   /// Ruft faule Äpfel-Daten eines Users ab
   Future<DataSnapshot> getRottenApples(String userId) async {
     return await _usersRef.child(userId).child('rotten_apples').get();

@@ -1,9 +1,11 @@
 import 'dart:async';
 
+import 'package:phone_away/core/services/db_service.dart';
+
 class TimerService {
-  static final TimerService _instance = TimerService._internal();
-  factory TimerService() => _instance;
-  TimerService._internal();
+  final DBService dbService;
+  final String userId;
+  TimerService({required this.userId, required this.dbService});
 
   int _remainingSeconds = 0;
   int get remainingSeconds => _remainingSeconds;
@@ -45,6 +47,15 @@ class TimerService {
   }
 
   void stop() {
+    // Prüfe ob Ziel erreicht wurde
+    if (_remainingSeconds <= 0) {
+      print('Timer completed successfully.');
+      dbService.addApple(userId, 1);
+    } else {
+      print('Timer stopped before reaching zero.');
+      dbService.addRottenApple(userId, 1);
+    }
+
     _timer?.cancel();
     _timer = null;
     _isRunning = false;

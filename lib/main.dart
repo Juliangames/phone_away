@@ -92,9 +92,9 @@ class _MainNavigationState extends State<MainNavigation> {
   List<Widget> get _pages {
     final userId = FirebaseAuth.instance.currentUser?.uid ?? 'unknown_user';
     return [
-      const TimerPage(),
+      TimerPage(userId: userId),
       TreePage(model: TreeModel(userId: userId)),
-      FriendsPage(userId: userId), // 👈 Hier bekommt FriendsPage die userId
+      FriendsPage(userId: userId),
       const SettingsPage(),
     ];
   }

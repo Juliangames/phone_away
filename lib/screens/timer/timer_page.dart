@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:phone_away/core/services/db_service.dart';
 import 'package:phone_away/widgets/motivational_sayings.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
@@ -7,15 +8,25 @@ import '../../theme/theme.dart';
 import '../../widgets/custom_action_button.dart';
 
 class TimerPage extends StatefulWidget {
-  const TimerPage({super.key});
+  final String userId;
+  const TimerPage({super.key, required this.userId});
 
   @override
   State<TimerPage> createState() => _TimerPageState();
 }
 
 class _TimerPageState extends State<TimerPage> {
-  final TimerService _timerService = TimerService();
+  late final TimerService _timerService;
   int selectedSeconds = 1500; // default 25 min
+
+  @override
+  void initState() {
+    super.initState(); // Wichtig: immer super.initState() zuerst aufrufen
+
+    // 2. Initialisiere die Variable hier.
+    // Jetzt ist `widget.userId` ohne Probleme verfügbar!
+    _timerService = TimerService(userId: widget.userId, dbService: DBService());
+  }
 
   void onTimeChanged(double value) {
     setState(() {
