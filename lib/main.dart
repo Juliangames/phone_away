@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:phone_away/screens/tree/tree_model.dart';
 import 'package:phone_away/theme/theme.dart';
 
 import 'firebase_options.dart';
@@ -72,7 +73,7 @@ class _MainNavigationState extends State<MainNavigation> {
     final userId = FirebaseAuth.instance.currentUser?.uid ?? 'unknown_user';
     return [
       const TimerPage(),
-      const TreePage(),
+      TreePage(model: TreeModel(userId: userId)),
       FriendsPage(userId: userId), // 👈 Hier bekommt FriendsPage die userId
       const SettingsPage(),
     ];

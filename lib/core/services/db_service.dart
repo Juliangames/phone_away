@@ -61,9 +61,19 @@ class DBService {
     await _usersRef.child(userId).update({'apples': newApples});
   }
 
+  /// Ruft Äpfel-Daten eines Users ab
+  Future<DataSnapshot> getApples(String userId) async {
+    return await _usersRef.child(userId).child('apples').get();
+  }
+
   /// Aktualisiert die Anzahl an faulen Äpfeln
   Future<void> updateRottenApples(String userId, int newRottenApples) async {
     await _usersRef.child(userId).update({'rotten_apples': newRottenApples});
+  }
+
+  /// Ruft faule Äpfel-Daten eines Users ab
+  Future<DataSnapshot> getRottenApples(String userId) async {
+    return await _usersRef.child(userId).child('rotten_apples').get();
   }
 
   /// Fügt eine Freundschaft hinzu (bidirektional)
