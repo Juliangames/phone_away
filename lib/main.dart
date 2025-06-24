@@ -3,6 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:phone_away/screens/tree/tree_model.dart';
 import 'package:phone_away/theme/theme.dart';
+import 'package:flutter/foundation.dart'
+    show defaultTargetPlatform, TargetPlatform, kIsWeb;
 
 import 'firebase_options.dart';
 import 'screens/auth/auth_page.dart'; // Make sure you created this as per earlier
@@ -11,12 +13,27 @@ import 'screens/settings/settings_page.dart';
 import 'screens/timer/timer_page.dart';
 import 'screens/tree/tree_page.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    name: "phone_away",
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+
+  if (kIsWeb) {
+    // Web braucht keine benannte App
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } else if (defaultTargetPlatform == TargetPlatform.android) {
+    // Android braucht einen Namen (Workaround für bestimmte Plugins)
+    await Firebase.initializeApp(
+      name: 'phone_away',
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } else {
+    // iOS, macOS, Windows etc. – ohne Namen
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
+
   runApp(const MyApp());
 }
 
