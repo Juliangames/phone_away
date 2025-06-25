@@ -26,7 +26,7 @@ class StorageService {
 
   /// Holt die URL eines existierenden Avatars – wirft Fehler, wenn nicht vorhanden
   Future<String> getAvatarUrl(String userId) async {
-    final ref = _storage.ref().child('avatars').child('$userId.jpeg');
+    final ref = _storage.ref().child('avatars').child('$userId.jpg');
     final url = await ref.getDownloadURL();
     return url;
   }

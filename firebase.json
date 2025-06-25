@@ -1,1 +1,24 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"phoneaway-50a5b","appId":"1:507426267379:android:d7b235229d82ccfbb21786","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"phoneaway-50a5b","configurations":{"android":"1:507426267379:android:d7b235229d82ccfbb21786","ios":"1:507426267379:ios:29e605810556fdebb21786","macos":"1:507426267379:ios:763db28d661907d5b21786","web":"1:507426267379:web:a80982e2dd1dceb6b21786"}}}}}}
+{
+    "flutter": {
+        "platforms": {
+            "android": {
+                "default": {
+                    "projectId": "phoneaway-50a5b",
+                    "appId": "1:507426267379:android:d7b235229d82ccfbb21786",
+                    "fileOutput": "android/app/google-services.json"
+                }
+            },
+            "dart": {
+                "lib/firebase_options.dart": {
+                    "projectId": "phoneaway-50a5b",
+                    "configurations": {
+                        "android": "1:507426267379:android:d7b235229d82ccfbb21786",
+                        "ios": "1:507426267379:ios:29e605810556fdebb21786",
+                        "macos": "1:507426267379:ios:763db28d661907d5b21786",
+                        "web": "1:507426267379:web:a80982e2dd1dceb6b21786"
+                    }
+                }
+            }
+        }
+    }
+}
