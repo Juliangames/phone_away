@@ -40,9 +40,9 @@ class _AppleTreeWidgetState extends State<AppleTreeWidget> {
   Future<void> _loadImages() async {
     // Lade alle Bilder parallel
     final results = await Future.wait([
-      _loadImage('/images/tree.png'),
-      _loadImage('/images/apple.png'),
-      _loadImage('/images/rotten_apple.png'),
+      _loadImage('assets/images/tree.png'),
+      _loadImage('assets/images/apple.png'),
+      _loadImage('assets/images/rotten_apple.png'),
     ]);
 
     // Wenn das Widget noch im Baum ist, aktualisiere den State
