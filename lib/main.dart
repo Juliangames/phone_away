@@ -1,38 +1,51 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:phone_away/screens/tree/tree_model.dart';
 import 'package:phone_away/theme/theme.dart';
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, TargetPlatform, kIsWeb;
 
 import 'firebase_options.dart';
-import 'screens/auth/auth_page.dart'; // Make sure you created this as per earlier
+import 'screens/auth/auth_page.dart';
 import 'screens/friends/friends_page.dart';
 import 'screens/settings/settings_page.dart';
 import 'screens/timer/timer_page.dart';
 import 'screens/tree/tree_page.dart';
 
+// 🔔 Create the global instance
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // ✅ Firebase initialization
   if (kIsWeb) {
-    // Web braucht keine benannte App
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
   } else if (defaultTargetPlatform == TargetPlatform.android) {
-    // Android braucht einen Namen (Workaround für bestimmte Plugins)
     await Firebase.initializeApp(
       name: 'phone_away',
       options: DefaultFirebaseOptions.currentPlatform,
     );
   } else {
-    // iOS, macOS, Windows etc. – ohne Namen
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
   }
+
+  // ✅ Notification initialization
+  const AndroidInitializationSettings androidSettings =
+      AndroidInitializationSettings('@mipmap/ic_launcher');
+
+  const InitializationSettings initSettings = InitializationSettings(
+    android: androidSettings,
+  );
+
+  await flutterLocalNotificationsPlugin.initialize(initSettings);
 
   runApp(const MyApp());
 }
@@ -50,7 +63,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         scaffoldBackgroundColor: AppColors.surfaceColor,
       ),
-      home: const AuthWrapper(), // 🔁 Auth-aware entry point
+      home: const AuthWrapper(),
     );
   }
 }
@@ -70,10 +83,10 @@ class AuthWrapper extends StatelessWidget {
         }
 
         if (snapshot.hasData) {
-          return const MainNavigation(); //  Authenticated
+          return const MainNavigation();
         }
 
-        return const AuthPage(); //  Not logged in
+        return const AuthPage();
       },
     );
   }
@@ -89,7 +102,6 @@ class MainNavigation extends StatefulWidget {
 class _MainNavigationState extends State<MainNavigation> {
   int _selectedIndex = 0;
 
-  // ✅ Dynamisch generierte Seiten mit userId
   List<Widget> get _pages {
     final userId = FirebaseAuth.instance.currentUser?.uid ?? 'unknown_user';
     return [

@@ -21,10 +21,7 @@ class _TimerPageState extends State<TimerPage> {
 
   @override
   void initState() {
-    super.initState(); // Wichtig: immer super.initState() zuerst aufrufen
-
-    // 2. Initialisiere die Variable hier.
-    // Jetzt ist `widget.userId` ohne Probleme verfügbar!
+    super.initState();
     _timerService = TimerService(userId: widget.userId, dbService: DBService());
   }
 
@@ -63,11 +60,11 @@ class _TimerPageState extends State<TimerPage> {
                           final remaining = snapshot.data ?? selectedSeconds;
                           final isRunning = _timerService.isRunning;
 
-                          return isRunning
-                              ? Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  SizedBox(
+                          return Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              isRunning
+                                  ? SizedBox(
                                     width: 340,
                                     height: 340,
                                     child: CircularProgressIndicator(
@@ -78,73 +75,62 @@ class _TimerPageState extends State<TimerPage> {
                                           AppColors.secondaryContainerColor,
                                       strokeCap: StrokeCap.round,
                                     ),
-                                  ),
-                                  Text(
-                                    formatTime(remaining),
-                                    style: const TextStyle(fontSize: 32),
-                                  ),
-                                ],
-                              )
-                              : SleekCircularSlider(
-                                min: 0,
-                                max: 10000,
-                                initialValue: selectedSeconds.toDouble(),
-                                onChange: onTimeChanged,
-                                innerWidget: (value) {
-                                  return const Center(
-                                    child: Text(
-                                      "Image later",
-                                      style: TextStyle(
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.bold,
+                                  )
+                                  : SleekCircularSlider(
+                                    min: 0,
+                                    max: 3000,
+                                    initialValue: selectedSeconds.toDouble(),
+                                    onChange: onTimeChanged,
+                                    innerWidget: (_) => const SizedBox.shrink(),
+                                    appearance: CircularSliderAppearance(
+                                      customWidths: CustomSliderWidths(
+                                        trackWidth: 8,
+                                        progressBarWidth: 8,
+                                        handlerSize: 8,
+                                      ),
+                                      size: 340,
+                                      startAngle: 270,
+                                      angleRange: 360,
+                                      customColors: CustomSliderColors(
+                                        progressBarColor:
+                                            AppColors.primaryColor,
+                                        trackColor:
+                                            AppColors.secondaryContainerColor,
+                                        dotColor: AppColors.primaryColor,
+                                      ),
+                                      infoProperties: InfoProperties(
+                                        modifier: (_) => '',
                                       ),
                                     ),
-                                  );
-                                },
-                                appearance: CircularSliderAppearance(
-                                  customWidths: CustomSliderWidths(
-                                    trackWidth: 8,
-                                    progressBarWidth: 8,
-                                    handlerSize: 8,
                                   ),
-                                  size: 340,
-                                  startAngle: 270,
-                                  angleRange: 360,
-                                  customColors: CustomSliderColors(
-                                    progressBarColor: AppColors.primaryColor,
-                                    trackColor:
-                                        AppColors.secondaryContainerColor,
-                                    dotColor: AppColors.primaryColor,
-                                  ),
-                                  infoProperties: InfoProperties(
-                                    modifier: (_) => '',
-                                  ),
+                              Text(
+                                formatTime(
+                                  isRunning ? remaining : selectedSeconds,
                                 ),
-                              );
+                                style: const TextStyle(fontSize: 32),
+                              ),
+                            ],
+                          );
                         },
                       ),
                     ),
                   ),
-
                   const Spacer(),
 
+                  // Centered Motivational Saying or Time
                   // Centered Motivational Saying or Time
                   StreamBuilder<int>(
                     stream: _timerService.timeStream,
                     builder: (context, snapshot) {
                       final isRunning = _timerService.isRunning;
-                      final remaining = snapshot.data ?? selectedSeconds;
+                      final saying =
+                          isRunning
+                              ? 'Stay focused and keep going!'
+                              : 'Set a goal and earn apples!';
 
-                      return Center(
-                        child:
-                            isRunning
-                                ? const MotivationalSaying(
-                                  text: 'Stay focused and keep going!',
-                                )
-                                : Text(
-                                  formatTime(selectedSeconds),
-                                  style: const TextStyle(fontSize: 42),
-                                ),
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 16.0),
+                        child: Center(child: MotivationalSaying(text: saying)),
                       );
                     },
                   ),

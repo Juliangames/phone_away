@@ -1,10 +1,15 @@
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:phone_away/core/services/db_service.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class TimerService {
   final DBService dbService;
   final String userId;
+
+  final FlutterLocalNotificationsPlugin _notifications =
+      FlutterLocalNotificationsPlugin();
 
   Timer? _timer;
   DateTime? _startTime;
@@ -26,6 +31,12 @@ class TimerService {
   }
 
   Future<void> _initializeTimer() async {
+    await _requestNotificationPermission();
+    await _notifications.initialize(
+      const InitializationSettings(
+        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+      ),
+    );
     await resumeIfPossible();
   }
 
@@ -46,6 +57,7 @@ class TimerService {
     await prefs.setInt('timerDuration', _durationSeconds);
 
     _startTicker();
+    await _showConcentrationNotification();
     _timeStreamController.add(_calculateRemaining());
   }
 
@@ -66,6 +78,7 @@ class TimerService {
       _startTime = parsedStart;
       _durationSeconds = duration;
       _startTicker();
+      await _showConcentrationNotification();
       _timeStreamController.add(_calculateRemaining());
     } else {
       await dbService.addApple(userId, 1);
@@ -88,6 +101,7 @@ class TimerService {
     _durationSeconds = 0;
     _timeStreamController.add(0);
     await _clearPrefs();
+    await _cancelConcentrationNotification();
   }
 
   int _calculateRemaining() {
@@ -118,5 +132,43 @@ class TimerService {
     _timer?.cancel();
     _timeStreamController.close();
     _instance = null;
+  }
+
+  Future<void> _showConcentrationNotification() async {
+    try {
+      print('🧠 Attempting to show notification');
+      const androidDetails = AndroidNotificationDetails(
+        'concentration_channel',
+        'Concentration Phase',
+        channelDescription: 'Notifies when concentration mode is active',
+        importance: Importance.max,
+        priority: Priority.high,
+        ongoing: true,
+        autoCancel: false,
+      );
+
+      const notificationDetails = NotificationDetails(android: androidDetails);
+
+      print('🚀 Showing notification');
+      await _notifications.show(
+        0,
+        'Concentration Phase Running!',
+        'Turn off your phone to earn apples!',
+        notificationDetails,
+      );
+    } catch (e) {
+      print('❌ Notification error: $e');
+    }
+  }
+
+  Future<void> _cancelConcentrationNotification() async {
+    await _notifications.cancel(0);
+  }
+
+  Future<void> _requestNotificationPermission() async {
+    final status = await Permission.notification.status;
+    if (status.isDenied || status.isPermanentlyDenied) {
+      await Permission.notification.request();
+    }
   }
 }
