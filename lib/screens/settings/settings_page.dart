@@ -7,6 +7,7 @@ import '../../theme/theme.dart';
 import '../../core/services/db_service.dart';
 import '../../core/services/auth_service.dart';
 import '../../core/services/storage_service.dart';
+import 'dart:developer' as developer;
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -56,7 +57,7 @@ class _SettingsPageState extends State<SettingsPage> {
     String? avatarUrlFromStorage;
     try {
       avatarUrlFromStorage = await _storageService.getAvatarUrl(userId);
-      print('Avatar URL from storage: $avatarUrlFromStorage');
+      developer.log('Avatar URL from storage: $avatarUrlFromStorage');
     } catch (e) {
       avatarUrlFromStorage = null; // kein Avatar gefunden
     }
@@ -84,13 +85,13 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Future<void> _pickImage() async {
-    print('Picking image...');
+    developer.log('Picking image...');
     final picked = await _picker.pickImage(source: ImageSource.gallery);
     if (picked != null && _userId != null) {
       setState(() {
         _newAvatarFile = picked;
       });
-      print('Image picked: ${picked.path}');
+      developer.log('Image picked: ${picked.path}');
       final downloadUrl = await _storageService.uploadAvatar(_userId!, picked);
       setState(() {
         _avatarUrl = downloadUrl;
