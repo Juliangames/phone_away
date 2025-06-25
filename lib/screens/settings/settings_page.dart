@@ -32,6 +32,8 @@ class _SettingsPageState extends State<SettingsPage> {
   XFile? _newAvatarFile;
   bool _isLoading = true;
 
+  int _easterEggCounter = 0;
+
   @override
   void initState() {
     super.initState();
@@ -195,39 +197,63 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             const SizedBox(height: 20),
             // Username Section
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              padding: const EdgeInsets.symmetric(
-                vertical: 10.0,
-                horizontal: 12.0,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Username',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(
-                    width: 150,
-                    child: TextField(
-                      controller: _nameController,
-                      textAlign: TextAlign.right,
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        isDense: true,
-                        contentPadding: EdgeInsets.symmetric(vertical: 8),
-                      ),
-                      onChanged: (value) {
-                        setState(() => _username = value);
-                      },
-                      onSubmitted: _updateUsername,
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  _easterEggCounter++;
+                  if (_easterEggCounter >= 7) {
+                    _easterEggCounter = 0;
+                    showDialog(
+                      context: context,
+                      builder:
+                          (_) => AlertDialog(
+                            title: const Text("🧙‍♂️ Seepold has appeared!"),
+                            content: Image.asset("assets/images/seepold.png"),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: const Text("Hide"),
+                              ),
+                            ],
+                          ),
+                    );
+                  }
+                });
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 10.0,
+                  horizontal: 12.0,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Username',
+                      style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                  ),
-                ],
+                    SizedBox(
+                      width: 150,
+                      child: TextField(
+                        controller: _nameController,
+                        textAlign: TextAlign.right,
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          isDense: true,
+                          contentPadding: EdgeInsets.symmetric(vertical: 8),
+                        ),
+                        onChanged: (value) {
+                          setState(() => _username = value);
+                        },
+                        onSubmitted: _updateUsername,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 20),
