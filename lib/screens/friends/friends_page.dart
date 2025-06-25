@@ -187,30 +187,24 @@ class _FriendsPageState extends State<FriendsPage> {
         loadedFriends.addAll(friendsData);
 
         // Sort by apples (descending)
-        loadedFriends.sort(
-          (a, b) => (b['apples'] as int).compareTo(a['apples'] as int),
-        );
-
-        // Add ranks
-        for (int i = 0; i < loadedFriends.length; i++) {
-          loadedFriends[i]['rank'] = i + 1;
-        }
-
-        developer.log(
-          'Loaded ${loadedFriends.length} friends',
-          name: 'FriendsPage',
-        );
-        setState(() {
-          friends = loadedFriends;
-          isLoading = false;
-        });
-      } else {
-        developer.log('No friends data found in snapshot', name: 'FriendsPage');
-        setState(() {
-          friends = loadedFriends;
-          isLoading = false;
-        });
       }
+      loadedFriends.sort(
+        (a, b) => (b['apples'] as int).compareTo(a['apples'] as int),
+      );
+
+      // Add ranks
+      for (int i = 0; i < loadedFriends.length; i++) {
+        loadedFriends[i]['rank'] = i + 1;
+      }
+
+      developer.log(
+        'Loaded ${loadedFriends.length} friends',
+        name: 'FriendsPage',
+      );
+      setState(() {
+        friends = loadedFriends;
+        isLoading = false;
+      });
     } catch (e) {
       developer.log('Error in _loadFriends: $e', name: 'FriendsPage', error: e);
       setState(() {
