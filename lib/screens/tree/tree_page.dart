@@ -33,7 +33,6 @@ class _TreePageState extends State<TreePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Dein Apfelbaum')),
       body: Center(
         child: AppleTreeWidget(
           apples: widget.model.apples,
