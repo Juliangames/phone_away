@@ -22,7 +22,7 @@ class _MotivationalSayingState extends State<MotivationalSaying> {
   }
 
   Future<void> _loadAppleImage() async {
-    final data = await rootBundle.load('images/apple.png');
+    final data = await rootBundle.load('assets/images/apple.png');
     final codec = await ui.instantiateImageCodec(data.buffer.asUint8List());
     final frame = await codec.getNextFrame();
 
