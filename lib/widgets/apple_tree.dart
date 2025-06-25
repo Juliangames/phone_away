@@ -138,7 +138,7 @@ class _TreePainter extends CustomPainter {
 
   void _drawApples(Canvas canvas, Rect bounds) {
     final paint = Paint();
-    final appleSize = Size.square(bounds.width * 0.12); // Größe der Äpfel
+    final appleSize = Size.square(bounds.width * 0.2); // Größe der Äpfel
 
     // Gute Äpfel zeichnen
     for (var i = 0; i < apples; i++) {

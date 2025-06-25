@@ -3,6 +3,9 @@ import 'package:firebase_database/firebase_database.dart';
 class DBService {
   final FirebaseDatabase _db = FirebaseDatabase.instance;
 
+  // Konstante für die maximale Anzahl an Äpfeln/faulen Äpfeln
+  static const int maxApples = 20;
+
   DatabaseReference get _usersRef => _db.ref().child('users');
   DatabaseReference get _friendsRef => _db.ref().child('friends');
 
@@ -72,21 +75,37 @@ class DBService {
   }
 
   /// Fügt einem User Äpfel hinzu
+  /// Maximal 20 Äpfel. Überschreitet der Wert 20, wird ein fauler Apfel abgezogen.
   Future<void> addApple(String userId, int count) async {
     final applesSnapshot = await getApples(userId);
     int currentApples =
         applesSnapshot.exists ? (applesSnapshot.value as int?) ?? 0 : 0;
-    await updateApples(userId, currentApples + count);
+    int newApples = currentApples + count;
+
+    if (newApples > maxApples) {
+      // Verwendung der Konstanten
+      await addRottenApple(userId, -1);
+      newApples = maxApples; // Verwendung der Konstanten
+    }
+    await updateApples(userId, newApples);
   }
 
   /// Fügt einem User faule Äpfel hinzu
+  /// Maximal 20 faule Äpfel. Überschreitet der Wert 20, wird ein guter Apfel abgezogen.
   Future<void> addRottenApple(String userId, int count) async {
     final rottenApplesSnapshot = await getRottenApples(userId);
     int currentRottenApples =
         rottenApplesSnapshot.exists
             ? (rottenApplesSnapshot.value as int?) ?? 0
             : 0;
-    await updateRottenApples(userId, currentRottenApples + count);
+    int newRottenApples = currentRottenApples + count;
+
+    if (newRottenApples > maxApples) {
+      // Verwendung der Konstanten
+      await addApple(userId, -1);
+      newRottenApples = maxApples; // Verwendung der Konstanten
+    }
+    await updateRottenApples(userId, newRottenApples);
   }
 
   /// Ruft faule Äpfel-Daten eines Users ab
