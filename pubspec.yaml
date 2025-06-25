@@ -50,6 +50,7 @@ dependencies:
   http: ^1.4.0
   flutter_launcher_icons: ^0.14.4
   shared_preferences: ^2.5.3
+  cached_network_image: ^3.2.3
 
 dev_dependencies:
   flutter_test:

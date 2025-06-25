@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:app_links/app_links.dart';
-import 'dart:developer' as developer; // Added for logging
+import 'dart:developer' as developer;
+import 'package:cached_network_image/cached_network_image.dart'; // Add this import
 
 import '../../core/services/db_service.dart';
+import '../../core/services/storage_service.dart'; // Add this import
 import '../../theme/theme.dart';
 import '../../core/helpers/invite_helper.dart';
 
@@ -18,13 +20,15 @@ class FriendsPage extends StatefulWidget {
 
 class _FriendsPageState extends State<FriendsPage> {
   List<Map<String, dynamic>> friends = [];
+  Map<String, dynamic>? currentUserData;
   bool isLoading = true;
-
+  late final StorageService _storageService; // Add storage service
   late final AppLinks _appLinks;
 
   @override
   void initState() {
     super.initState();
+    _storageService = StorageService(); // Initialize storage service
     developer.log('FriendsPage initState called', name: 'FriendsPage');
     _loadFriends();
     _initDeepLinkListener();
@@ -121,10 +125,34 @@ class _FriendsPageState extends State<FriendsPage> {
       developer.log('Fetching friends from DBService', name: 'FriendsPage');
       final snapshot = await dbService.getFriends(widget.userId);
 
+      // Get current user data
+      final userSnapshot = await dbService.getUserData(widget.userId);
+      currentUserData =
+          (userSnapshot.value as Map<dynamic, dynamic>?)
+              ?.cast<String, dynamic>() ??
+          {};
+
       developer.log(
         'DB snapshot exists: ${snapshot.exists}',
         name: 'FriendsPage',
       );
+
+      List<Map<String, dynamic>> loadedFriends = [];
+
+      // Add current user to the list
+      final currentApples = (currentUserData?['apples'] ?? 0) as int;
+      final currentRottenApples =
+          (currentUserData?['rotten_apples'] ?? 0) as int;
+      final currentUserAvatarUrl = await _getAvatarUrl(widget.userId);
+
+      loadedFriends.add({
+        'id': widget.userId,
+        'name': currentUserData?['username'] ?? 'You',
+        'apples': currentApples - currentRottenApples,
+        'isCurrentUser': true,
+        'avatarUrl': currentUserAvatarUrl,
+      });
+
       if (snapshot.exists) {
         developer.log('Processing friends data', name: 'FriendsPage');
         final data = snapshot.value as Map<dynamic, dynamic>;
@@ -134,7 +162,7 @@ class _FriendsPageState extends State<FriendsPage> {
         final friendIds = data.keys.cast<String>().toList();
 
         // Fetch user data for each friend in parallel
-        final loadedFriends = await Future.wait(
+        final friendsData = await Future.wait(
           friendIds.map((friendId) async {
             final userSnapshot = await dbService.getUserData(friendId);
             final userData = userSnapshot.value as Map<dynamic, dynamic>? ?? {};
@@ -142,17 +170,25 @@ class _FriendsPageState extends State<FriendsPage> {
               'Fetched user data for $friendId: $userData',
               name: 'FriendsPage',
             );
+            final apples = (userData['apples'] ?? 0) as int;
+            final rottenApples = (userData['rotten_apples'] ?? 0) as int;
+            final avatarUrl = await _getAvatarUrl(friendId);
+
             return {
               'id': friendId,
               'name': userData['username'] ?? 'Unknown',
-              'level': userData['level'] ?? 0,
+              'apples': apples - rottenApples,
+              'isCurrentUser': false,
+              'avatarUrl': avatarUrl,
             };
           }),
         );
 
-        // Sort by level (descending)
+        loadedFriends.addAll(friendsData);
+
+        // Sort by apples (descending)
         loadedFriends.sort(
-          (a, b) => (b['level'] as int).compareTo(a['level'] as int),
+          (a, b) => (b['apples'] as int).compareTo(a['apples'] as int),
         );
 
         // Add ranks
@@ -171,7 +207,7 @@ class _FriendsPageState extends State<FriendsPage> {
       } else {
         developer.log('No friends data found in snapshot', name: 'FriendsPage');
         setState(() {
-          friends = [];
+          friends = loadedFriends;
           isLoading = false;
         });
       }
@@ -180,6 +216,18 @@ class _FriendsPageState extends State<FriendsPage> {
       setState(() {
         isLoading = false;
       });
+    }
+  }
+
+  Future<String> _getAvatarUrl(String userId) async {
+    try {
+      return await _storageService.getAvatarUrl(userId);
+    } catch (e) {
+      developer.log(
+        'Error getting avatar for $userId: $e',
+        name: 'FriendsPage',
+      );
+      return '';
     }
   }
 
@@ -229,7 +277,7 @@ class _FriendsPageState extends State<FriendsPage> {
                         ),
                         Expanded(
                           child: Text(
-                            'Level',
+                            'Apples',
                             textAlign: TextAlign.right,
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
@@ -246,7 +294,7 @@ class _FriendsPageState extends State<FriendsPage> {
                               itemBuilder: (context, index) {
                                 final friend = friends[index];
                                 final isCurrentUser =
-                                    friend['id'] == widget.userId;
+                                    friend['isCurrentUser'] == true;
 
                                 return Container(
                                   margin: const EdgeInsets.symmetric(
@@ -256,7 +304,7 @@ class _FriendsPageState extends State<FriendsPage> {
                                   decoration: BoxDecoration(
                                     color:
                                         isCurrentUser
-                                            ? const Color(0xFFD0F2E7)
+                                            ? AppColors.primaryContainerColor
                                             : Colors.white,
                                     borderRadius: BorderRadius.circular(12),
                                   ),
@@ -279,16 +327,29 @@ class _FriendsPageState extends State<FriendsPage> {
                                           flex: 2,
                                           child: Row(
                                             children: [
-                                              const CircleAvatar(
+                                              CircleAvatar(
                                                 radius: 16,
-                                                backgroundColor: Color(
+                                                backgroundColor: const Color(
                                                   0xFF60C7A6,
                                                 ),
-                                                child: Icon(
-                                                  Icons.person,
-                                                  color: Colors.white,
-                                                  size: 18,
-                                                ),
+                                                backgroundImage:
+                                                    friend['avatarUrl']
+                                                                ?.isNotEmpty ==
+                                                            true
+                                                        ? CachedNetworkImageProvider(
+                                                          friend['avatarUrl'],
+                                                        )
+                                                        : null,
+                                                child:
+                                                    friend['avatarUrl']
+                                                                ?.isEmpty ==
+                                                            true
+                                                        ? const Icon(
+                                                          Icons.person,
+                                                          color: Colors.white,
+                                                          size: 18,
+                                                        )
+                                                        : null,
                                               ),
                                               const SizedBox(width: 8),
                                               Text(friend['name']),
@@ -297,7 +358,7 @@ class _FriendsPageState extends State<FriendsPage> {
                                         ),
                                         Expanded(
                                           child: Text(
-                                            friend['level'].toString(),
+                                            friend['apples'].toString(),
                                             textAlign: TextAlign.right,
                                           ),
                                         ),
