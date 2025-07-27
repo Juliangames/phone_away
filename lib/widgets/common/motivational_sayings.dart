@@ -1,7 +1,6 @@
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../theme/theme.dart';
 
 class MotivationalSaying extends StatefulWidget {
   final String text;
@@ -41,7 +40,7 @@ class _MotivationalSayingState extends State<MotivationalSaying> {
       fontWeight: FontWeight.w400,
       height: 1.43,
       letterSpacing: 0.25,
-      color: AppColors.onSurfaceVariantColor,
+      color: Theme.of(context).colorScheme.onSurfaceVariant,
     );
 
     return Container(
@@ -49,7 +48,7 @@ class _MotivationalSayingState extends State<MotivationalSaying> {
       height: 40,
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: ShapeDecoration(
-        color: AppColors.surfaceContainerHighestColor,
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(45)),
       ),
       child: Row(

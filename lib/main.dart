@@ -3,7 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:phone_away/screens/tree/tree_model.dart';
-import 'package:phone_away/theme/theme.dart';
+import 'package:phone_away/theme/theme_manager.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, TargetPlatform, kIsWeb;
 
@@ -55,15 +56,26 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'My Flutter App',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primaryColor),
-        useMaterial3: true,
-        scaffoldBackgroundColor: AppColors.surfaceColor,
+    return ChangeNotifierProvider(
+      create: (_) => ThemeManager(),
+      child: Consumer<ThemeManager>(
+        builder: (context, themeManager, child) {
+          // Update system brightness if theme option is system
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            final brightness = MediaQuery.platformBrightnessOf(context);
+            themeManager.updateSystemBrightness(brightness == Brightness.dark);
+          });
+
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'PhoneAway',
+            theme: themeManager.lightTheme,
+            darkTheme: themeManager.darkTheme,
+            themeMode: themeManager.themeMode,
+            home: const AuthWrapper(),
+          );
+        },
       ),
-      home: const AuthWrapper(),
     );
   }
 }
@@ -125,6 +137,14 @@ class _MainNavigationState extends State<MainNavigation> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: Theme.of(context).bottomNavigationBarTheme.backgroundColor ?? 
+                        Theme.of(context).scaffoldBackgroundColor,
+        selectedItemColor: Theme.of(context).colorScheme.primary,
+        unselectedItemColor: Theme.of(context).colorScheme.onSurfaceVariant,
+        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
+        unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.normal),
+        elevation: 8,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.timer), label: 'Timer'),
           BottomNavigationBarItem(icon: Icon(Icons.park), label: 'Tree'),
@@ -134,7 +154,6 @@ class _MainNavigationState extends State<MainNavigation> {
             label: 'Settings',
           ),
         ],
-        type: BottomNavigationBarType.fixed,
       ),
     );
   }

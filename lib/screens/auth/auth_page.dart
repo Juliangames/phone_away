@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:phone_away/theme/theme.dart';
+import 'package:phone_away/theme/app_constants.dart';
 import 'auth_constants.dart';
 
 import '../../core/services/auth_service.dart';
@@ -70,7 +70,7 @@ class _AuthPageState extends State<AuthPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.surfaceColor,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: Stack(
         children: [
           // Background decorative circles
@@ -79,7 +79,7 @@ class _AuthPageState extends State<AuthPage> {
             left: AuthConstants.circle1Left,
             child: _buildCircle(
               AuthConstants.circle1Size,
-              AppColors.primaryColor.withOpacity(AuthConstants.circle1Opacity),
+              Theme.of(context).colorScheme.primary.withOpacity(AuthConstants.circle1Opacity),
             ),
           ),
           Positioned(
@@ -87,7 +87,7 @@ class _AuthPageState extends State<AuthPage> {
             right: AuthConstants.circle2Right,
             child: _buildCircle(
               AuthConstants.circle2Size,
-              AppColors.primaryContainerColor.withOpacity(
+              Theme.of(context).colorScheme.primaryContainer.withOpacity(
                 AuthConstants.circle2Opacity,
               ),
             ),
@@ -97,7 +97,7 @@ class _AuthPageState extends State<AuthPage> {
             left: AuthConstants.circle3Left,
             child: _buildCircle(
               AuthConstants.circle3Size,
-              AppColors.primaryColor.withOpacity(AuthConstants.circle3Opacity),
+              Theme.of(context).colorScheme.primary.withOpacity(AuthConstants.circle3Opacity),
             ),
           ),
           Positioned(
@@ -105,7 +105,7 @@ class _AuthPageState extends State<AuthPage> {
             left: AuthConstants.circle4Left,
             child: _buildCircle(
               AuthConstants.circle4Size,
-              AppColors.secondaryContainerColor.withOpacity(
+              Theme.of(context).colorScheme.secondaryContainer.withOpacity(
                 AuthConstants.circle4Opacity,
               ),
             ),
@@ -115,7 +115,7 @@ class _AuthPageState extends State<AuthPage> {
             right: AuthConstants.circle5Right,
             child: _buildCircle(
               AuthConstants.circle5Size,
-              AppColors.primaryColor.withOpacity(AuthConstants.circle5Opacity),
+              Theme.of(context).colorScheme.primary.withOpacity(AuthConstants.circle5Opacity),
             ),
           ),
           Positioned(
@@ -125,7 +125,7 @@ class _AuthPageState extends State<AuthPage> {
                 AuthConstants.circle6CenterOffset,
             child: _buildCircle(
               AuthConstants.circle6Size,
-              AppColors.primaryColor.withOpacity(AuthConstants.circle6Opacity),
+              Theme.of(context).colorScheme.primary.withOpacity(AuthConstants.circle6Opacity),
             ),
           ),
 
@@ -138,10 +138,10 @@ class _AuthPageState extends State<AuthPage> {
                 child: Center(
                   child: Text(
                     AuthConstants.appTitle,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: AppTypography.titleFontSize,
                       fontWeight: AppTypography.titleFontWeight,
-                      color: AppColors.primaryColor,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -165,11 +165,11 @@ class _AuthPageState extends State<AuthPage> {
                           key: const ValueKey(AppStrings.emailFieldKey),
                           decoration: InputDecoration(
                             labelText: AuthConstants.emailLabel,
-                            labelStyle: const TextStyle(
-                              color: AppColors.onSurfaceVariantColor,
+                            labelStyle: TextStyle(
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
                             ),
                             filled: true,
-                            fillColor: AppColors.primaryContainerColor,
+                            fillColor: Theme.of(context).colorScheme.primaryContainer,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(
                                 AppDimensions.borderRadius,
@@ -192,11 +192,11 @@ class _AuthPageState extends State<AuthPage> {
                           key: const ValueKey(AppStrings.passwordFieldKey),
                           decoration: InputDecoration(
                             labelText: AuthConstants.passwordLabel,
-                            labelStyle: const TextStyle(
-                              color: AppColors.onSurfaceVariantColor,
+                            labelStyle: TextStyle(
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
                             ),
                             filled: true,
-                            fillColor: AppColors.primaryContainerColor,
+                            fillColor: Theme.of(context).colorScheme.primaryContainer,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(
                                 AppDimensions.borderRadius,
@@ -218,7 +218,7 @@ class _AuthPageState extends State<AuthPage> {
                         if (_error != null)
                           Text(
                             _error!,
-                            style: const TextStyle(color: AppColors.errorColor),
+                            style: TextStyle(color: Theme.of(context).colorScheme.error),
                             textAlign: TextAlign.center,
                           ),
                         if (_loading)
@@ -227,8 +227,8 @@ class _AuthPageState extends State<AuthPage> {
                           ElevatedButton(
                             onPressed: _submit,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.primaryColor,
-                              foregroundColor: AppColors.onPrimaryColor,
+                              backgroundColor: Theme.of(context).colorScheme.primary,
+                              foregroundColor: Theme.of(context).colorScheme.onPrimary,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(
                                   AppDimensions.borderRadius,
@@ -254,9 +254,9 @@ class _AuthPageState extends State<AuthPage> {
                             _isLogin
                                 ? AuthConstants.noAccountText
                                 : AuthConstants.haveAccountText,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: AppTypography.bodyFontSize,
-                              color: AppColors.primaryColor,
+                              color: Theme.of(context).colorScheme.primary,
                             ),
                           ),
                         ),

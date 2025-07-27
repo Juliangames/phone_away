@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../theme/theme.dart';
+import '../../theme/app_constants.dart';
 import '../../core/services/network_service.dart';
 import 'empty_state_constants.dart';
 
@@ -30,7 +30,7 @@ class EmptyStateWidget extends StatelessWidget {
       subtitle: EmptyStateConstants.noFriendsSubtitle,
       actionLabel: EmptyStateConstants.inviteFriendsAction,
       onAction: onInvite,
-      iconColor: AppColors.onSurfaceVariantColor,
+      // iconColor wird im build method dynamisch gesetzt
     );
   }
 
@@ -44,7 +44,7 @@ class EmptyStateWidget extends StatelessWidget {
       subtitle: errorMessage ?? EmptyStateConstants.noInternetSubtitle,
       actionLabel: EmptyStateConstants.retryAction,
       onAction: onRetry,
-      iconColor: AppColors.errorColor,
+      // iconColor wird für Fehler im build method gesetzt
       isError: true,
     );
   }
@@ -56,7 +56,7 @@ class EmptyStateWidget extends StatelessWidget {
       subtitle: EmptyStateConstants.timeoutSubtitle,
       actionLabel: EmptyStateConstants.retryAction,
       onAction: onRetry,
-      iconColor: AppColors.errorColor,
+      iconColor: null, // Will use theme-aware color in build method
       isError: true,
     );
   }
@@ -68,7 +68,7 @@ class EmptyStateWidget extends StatelessWidget {
       subtitle: EmptyStateConstants.connectionSubtitle,
       actionLabel: EmptyStateConstants.retryAction,
       onAction: onRetry,
-      iconColor: AppColors.errorColor,
+      iconColor: null, // Will use theme-aware color in build method
       isError: true,
     );
   }
@@ -78,7 +78,7 @@ class EmptyStateWidget extends StatelessWidget {
       icon: Icons.park_outlined,
       title: EmptyStateConstants.emptyTreeTitle,
       subtitle: EmptyStateConstants.emptyTreeSubtitle,
-      iconColor: AppColors.primaryColor,
+      iconColor: null, // Will use theme-aware color in build method
     );
   }
 
@@ -122,7 +122,7 @@ class EmptyStateWidget extends StatelessWidget {
           errorMessage ?? 'An unexpected error occurred. Please try again.',
       actionLabel: 'Try Again',
       onAction: onRetry,
-      iconColor: AppColors.errorColor,
+      iconColor: null, // Will use theme-aware color in build method
       isError: true,
     );
   }
@@ -141,7 +141,9 @@ class EmptyStateWidget extends StatelessWidget {
               size: 80,
               color:
                   iconColor?.withOpacity(0.7) ??
-                  AppColors.onSurfaceVariantColor.withOpacity(0.5),
+                  (isError 
+                    ? Theme.of(context).colorScheme.error.withOpacity(0.7)
+                    : Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.5)),
             ),
             const SizedBox(height: AppDimensions.mediumSpacing),
             Text(
@@ -151,8 +153,8 @@ class EmptyStateWidget extends StatelessWidget {
                 fontWeight: FontWeight.w600,
                 color:
                     isError
-                        ? AppColors.errorColor
-                        : AppColors.onSurfaceVariantColor,
+                        ? Theme.of(context).colorScheme.error
+                        : Theme.of(context).colorScheme.onSurface,
               ),
               textAlign: TextAlign.center,
             ),
@@ -161,14 +163,14 @@ class EmptyStateWidget extends StatelessWidget {
               subtitle,
               style: TextStyle(
                 fontSize: 14,
-                color: AppColors.onSurfaceVariantColor.withOpacity(0.7),
+                color: Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.7),
                 height: 1.4,
               ),
               textAlign: TextAlign.center,
             ),
             if (actionLabel != null && onAction != null) ...[
               const SizedBox(height: AppDimensions.largeSpacing),
-              _buildActionButton(),
+              _buildActionButton(context),
             ],
           ],
         ),
@@ -176,12 +178,12 @@ class EmptyStateWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildActionButton() {
+  Widget _buildActionButton(BuildContext context) {
     if (isError) {
       return OutlinedButton(
         onPressed: onAction,
         style: OutlinedButton.styleFrom(
-          side: const BorderSide(color: AppColors.primaryColor),
+          side: BorderSide(color: Theme.of(context).colorScheme.primary),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppDimensions.borderRadius),
           ),
@@ -192,8 +194,8 @@ class EmptyStateWidget extends StatelessWidget {
         ),
         child: Text(
           actionLabel!,
-          style: const TextStyle(
-            color: AppColors.primaryColor,
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.primary,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -203,8 +205,8 @@ class EmptyStateWidget extends StatelessWidget {
     return ElevatedButton(
       onPressed: onAction,
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.primaryColor,
-        foregroundColor: AppColors.onPrimaryColor,
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Theme.of(context).colorScheme.onPrimary,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppDimensions.borderRadius),
         ),

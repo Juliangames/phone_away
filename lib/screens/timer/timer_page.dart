@@ -4,7 +4,7 @@ import 'package:phone_away/widgets/common/motivational_sayings.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
 import '../../core/services/timer_service.dart';
-import '../../theme/theme.dart';
+import '../../theme/app_constants.dart';
 import '../../widgets/buttons/custom_action_button.dart';
 import 'timer_constants.dart';
 
@@ -82,9 +82,9 @@ class _TimerPageState extends State<TimerPage> {
                                     child: CircularProgressIndicator(
                                       value: 1 - (remaining / selectedSeconds),
                                       strokeWidth: AppDimensions.strokeWidth,
-                                      color: AppColors.primaryColor,
+                                      color: Theme.of(context).colorScheme.primary,
                                       backgroundColor:
-                                          AppColors.secondaryContainerColor,
+                                          Theme.of(context).colorScheme.secondaryContainer,
                                       strokeCap: StrokeCap.round,
                                     ),
                                   )
@@ -106,10 +106,10 @@ class _TimerPageState extends State<TimerPage> {
                                       angleRange: AppValues.angleRange,
                                       customColors: CustomSliderColors(
                                         progressBarColor:
-                                            AppColors.primaryColor,
+                                            Theme.of(context).colorScheme.primary,
                                         trackColor:
-                                            AppColors.secondaryContainerColor,
-                                        dotColor: AppColors.primaryColor,
+                                            Theme.of(context).colorScheme.secondaryContainer,
+                                        dotColor: Theme.of(context).colorScheme.primary,
                                       ),
                                       infoProperties: InfoProperties(
                                         modifier: (_) => '',

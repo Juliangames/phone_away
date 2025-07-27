@@ -63,6 +63,7 @@ PhoneAway addresses these issues by providing structured, gamified interventions
 - **🔔 Smart Notifications**: Notifications during concentration phases
 - **⚙️ User Profiles**: Customizable profiles with avatar upload
 - **🎯 Gamification**: Reward system with apples and rotten apples for early termination
+- **🌙 Dark Mode**: Full dark mode support with Light, Dark, and System theme options
 - **📱 Offline Support**: Full timer functionality works without internet connection
 - **🔄 Auto-Sync**: Automatic synchronization when connection is restored
 - **⚠️ Error Handling**: Comprehensive timeout and connection error management
@@ -189,7 +190,8 @@ class SyncManager {
 
 - **Framework**: Flutter 3.7.2+
 - **Backend**: Firebase (Authentication, Realtime Database, Storage)
-- **State Management**: Flutter Hooks + Local State
+- **State Management**: Provider for theme management + Flutter Hooks + Local State
+- **Theme System**: Material 3 ColorScheme with comprehensive dark mode support
 - **Notifications**: Flutter Local Notifications
 - **UI Components**: Sleek Circular Slider, Custom Widgets
 - **Offline Storage**: SharedPreferences + Local Caching
@@ -284,10 +286,12 @@ class SyncManager {
 - **Key Features**:
   - Profile editing with avatar upload capability
   - Username customization
+  - **Theme Selection**: Choose between Light, Dark, and System theme modes
+  - **Automatic System Sync**: Dark mode automatically follows system appearance settings
   - Notification preferences toggle
   - Account management (logout functionality)
   - Hidden easter egg triggers
-- **User Flow**: Users personalize their experience and manage account preferences
+- **User Flow**: Users personalize their experience, choose preferred appearance mode, and manage account preferences
 
 ## 🏛️ Application Architecture
 
@@ -389,6 +393,7 @@ dependencies:
   firebase_database: ^11.3.6
   firebase_storage: ^12.4.7
   flutter_local_notifications: ^17.2.1+2
+  provider: ^6.0.5  # Theme state management
   sleek_circular_slider: ^2.0.1
   share_plus: ^11.0.0
   image_picker: ^0.8.7+4
@@ -401,7 +406,11 @@ dependencies:
 
 - **Modern UI**: Clean and intuitive user interface
 - **Responsive Design**: Works on different screen sizes
-- **Custom Theming**: Consistent color scheme and design system
+- **Material 3 Design System**: Latest Material Design principles with dynamic theming
+- **Comprehensive Dark Mode**: Full dark mode support that follows system settings
+- **Theme Options**: Light, Dark, and System automatic themes with persistent preferences
+- **Custom ColorScheme**: Theme-aware components using Material 3 color system
+- **Consistent Navigation**: Enhanced bottom navigation with better tab highlighting
 - **Animations**: Smooth transitions and appealing visualizations
 
 ## 🔐 Security & Privacy

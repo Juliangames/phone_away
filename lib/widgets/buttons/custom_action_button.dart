@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../theme/theme.dart';
 
 class CustomActionButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -22,11 +21,13 @@ class CustomActionButton extends StatelessWidget {
     final buttonStyle = FilledButton.styleFrom(
       backgroundColor:
           isError == true
-              ? AppColors.errorColor
+              ? Theme.of(context).colorScheme.error
               : isFilled
-              ? AppColors.primaryColor
-              : AppColors.surfaceColor,
-      foregroundColor: AppColors.onPrimaryColor,
+              ? Theme.of(context).colorScheme.primary
+              : Theme.of(context).colorScheme.surface,
+      foregroundColor: isError == true 
+              ? Theme.of(context).colorScheme.onError
+              : Theme.of(context).colorScheme.onPrimary,
       minimumSize: const Size(154, 54),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
       padding: const EdgeInsets.symmetric(horizontal: 24),

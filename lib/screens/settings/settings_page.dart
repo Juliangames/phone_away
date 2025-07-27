@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart'; // für kIsWeb
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 import '../../theme/theme.dart';
 import '../../core/services/db_service.dart';
@@ -208,10 +209,10 @@ class _SettingsPageState extends State<SettingsPage> {
     }
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         toolbarHeight: AppDimensions.appBarHeight,
-        backgroundColor: AppColors.backgroundColor,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         centerTitle: true,
         elevation: 0,
         title: const Padding(
@@ -234,7 +235,7 @@ class _SettingsPageState extends State<SettingsPage> {
               onTap: _pickImage,
               child: Container(
                 decoration: BoxDecoration(
-                  color: AppColors.whiteColor,
+                  color: Theme.of(context).cardColor,
                   borderRadius: BorderRadius.circular(
                     AppDimensions.borderRadius,
                   ),
@@ -255,13 +256,13 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     CircleAvatar(
                       radius: AppDimensions.largeAvatarRadius,
-                      backgroundColor: AppColors.primaryContainerColor,
+                      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
                       backgroundImage: avatarImage,
                       child:
                           avatarImage == null
-                              ? const Icon(
+                              ? Icon(
                                 Icons.person,
-                                color: AppColors.whiteColor,
+                                color: Theme.of(context).colorScheme.onPrimaryContainer,
                                 size: AppDimensions.largeIconSize,
                               )
                               : null,
@@ -299,7 +300,7 @@ class _SettingsPageState extends State<SettingsPage> {
               },
               child: Container(
                 decoration: BoxDecoration(
-                  color: AppColors.whiteColor,
+                  color: Theme.of(context).cardColor,
                   borderRadius: BorderRadius.circular(
                     AppDimensions.borderRadius,
                   ),
@@ -341,7 +342,7 @@ class _SettingsPageState extends State<SettingsPage> {
             // Notifications Section
             Container(
               decoration: BoxDecoration(
-                color: AppColors.whiteColor,
+                color: Theme.of(context).cardColor,
                 borderRadius: BorderRadius.circular(AppDimensions.borderRadius),
               ),
               padding: const EdgeInsets.symmetric(
@@ -357,10 +358,58 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                   Switch(
                     value: _notifications,
-                    activeColor: AppColors.primaryColor,
+                    activeColor: Theme.of(context).colorScheme.primary,
                     onChanged: (value) {
                       setState(() => _notifications = value);
                       _updateNotifications(value);
+                    },
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppDimensions.sectionSpacing),
+            // Appearance Section
+            Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).cardColor,
+                borderRadius: BorderRadius.circular(AppDimensions.borderRadius),
+              ),
+              padding: const EdgeInsets.symmetric(
+                vertical: AppDimensions.containerPaddingVertical,
+                horizontal: AppDimensions.containerPaddingHorizontal,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    SettingsConstants.appearanceText,
+                    style: TextStyle(fontWeight: AppTypography.boldWeight),
+                  ),
+                  Consumer<ThemeManager>(
+                    builder: (context, themeManager, child) {
+                      return DropdownButton<ThemeOption>(
+                        value: themeManager.themeOption,
+                        underline: const SizedBox(),
+                        items: const [
+                          DropdownMenuItem(
+                            value: ThemeOption.light,
+                            child: Text(SettingsConstants.lightThemeText),
+                          ),
+                          DropdownMenuItem(
+                            value: ThemeOption.dark,
+                            child: Text(SettingsConstants.darkThemeText),
+                          ),
+                          DropdownMenuItem(
+                            value: ThemeOption.system,
+                            child: Text(SettingsConstants.systemThemeText),
+                          ),
+                        ],
+                        onChanged: (ThemeOption? newValue) {
+                          if (newValue != null) {
+                            themeManager.setThemeOption(newValue);
+                          }
+                        },
+                      );
                     },
                   ),
                 ],
@@ -393,10 +442,10 @@ class _SettingsPageState extends State<SettingsPage> {
                                 Navigator.pop(context);
                                 _logout();
                               },
-                              child: const Text(
+                              child: Text(
                                 SettingsConstants.logoutText,
                                 style: TextStyle(
-                                  color: AppColors.logoutTextColor,
+                                  color: Theme.of(context).colorScheme.error,
                                 ),
                               ),
                             ),
@@ -405,8 +454,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.logoutButtonColor,
-                  foregroundColor: AppColors.whiteColor,
+                  backgroundColor: Theme.of(context).colorScheme.error,
+                  foregroundColor: Theme.of(context).colorScheme.onError,
                   padding: const EdgeInsets.symmetric(
                     vertical: AppDimensions.buttonVerticalPadding,
                   ),

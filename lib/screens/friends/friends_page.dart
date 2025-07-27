@@ -7,7 +7,7 @@ import 'package:cached_network_image/cached_network_image.dart'; // Add this imp
 import '../../core/services/db_service.dart';
 import '../../core/services/storage_service.dart'; // Add this import
 import '../../core/services/network_service.dart';
-import '../../theme/theme.dart';
+import '../../theme/app_constants.dart';
 import '../../core/helpers/invite_helper.dart';
 import '../../widgets/empty_state/empty_state_widget.dart';
 import 'friends_constants.dart';
@@ -302,10 +302,10 @@ class _FriendsPageState extends State<FriendsPage> {
       name: FriendsConstants.loggerName,
     );
     return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         toolbarHeight: AppDimensions.appBarHeight,
-        backgroundColor: AppColors.backgroundColor,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         centerTitle: true,
         elevation: 0,
         title: const Padding(
@@ -371,8 +371,8 @@ class _FriendsPageState extends State<FriendsPage> {
                                   decoration: BoxDecoration(
                                     color:
                                         isCurrentUser
-                                            ? AppColors.primaryContainerColor
-                                            : AppColors.whiteColor,
+                                            ? Theme.of(context).colorScheme.primaryContainer
+                                            : Theme.of(context).cardColor,
                                     borderRadius: BorderRadius.circular(
                                       AppDimensions.borderRadius,
                                     ),
@@ -405,8 +405,7 @@ class _FriendsPageState extends State<FriendsPage> {
                                                     AppDimensions
                                                         .circleAvatarRadius,
                                                 backgroundColor:
-                                                    AppColors
-                                                        .defaultAvatarColor,
+                                                    Theme.of(context).colorScheme.primary,
                                                 backgroundImage:
                                                     friend[AppStrings
                                                                     .avatarUrlKey]
@@ -425,8 +424,7 @@ class _FriendsPageState extends State<FriendsPage> {
                                                         ? const Icon(
                                                           Icons.person,
                                                           color:
-                                                              AppColors
-                                                                  .whiteColor,
+                                                              Colors.white,
                                                           size:
                                                               AppDimensions
                                                                   .iconSize,
@@ -498,16 +496,16 @@ class _FriendsPageState extends State<FriendsPage> {
               );
             }
           },
-          icon: const Icon(Icons.add, color: AppColors.whiteColor),
-          label: const Text(
+          icon: Icon(Icons.add, color: Theme.of(context).colorScheme.onPrimary),
+          label: Text(
             FriendsConstants.inviteButtonLabel,
-            style: TextStyle(color: AppColors.whiteColor),
+            style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
           ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppDimensions.fabBorderRadius),
           ),
-          backgroundColor: AppColors.fabBackgroundColor,
-          foregroundColor: AppColors.whiteColor,
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          foregroundColor: Theme.of(context).colorScheme.onPrimary,
         ),
       ),
     );
