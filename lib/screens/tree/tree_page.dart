@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:phone_away/screens/tree/tree_model.dart';
 
 import '../../widgets/apple_tree.dart';
+import 'tree_constants.dart';
 
 class TreePage extends StatefulWidget {
   final TreeModel model;
@@ -37,7 +38,7 @@ class _TreePageState extends State<TreePage> {
         child: AppleTreeWidget(
           apples: widget.model.apples,
           rottenApples: widget.model.rottenApples,
-          baseSize: 450,
+          baseSize: TreeConstants.baseTreeSize,
         ),
       ),
     );

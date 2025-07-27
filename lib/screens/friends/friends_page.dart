@@ -8,6 +8,7 @@ import '../../core/services/db_service.dart';
 import '../../core/services/storage_service.dart'; // Add this import
 import '../../theme/theme.dart';
 import '../../core/helpers/invite_helper.dart';
+import 'friends_constants.dart';
 
 class FriendsPage extends StatefulWidget {
   final String userId;
@@ -29,83 +30,96 @@ class _FriendsPageState extends State<FriendsPage> {
   void initState() {
     super.initState();
     _storageService = StorageService(); // Initialize storage service
-    developer.log('FriendsPage initState called', name: 'FriendsPage');
+    developer.log(
+      FriendsConstants.initStateLog,
+      name: FriendsConstants.loggerName,
+    );
     _loadFriends();
     _initDeepLinkListener();
   }
 
   void _initDeepLinkListener() async {
-    developer.log('Initializing deep link listener', name: 'FriendsPage');
+    developer.log(
+      FriendsConstants.deepLinkInitLog,
+      name: FriendsConstants.loggerName,
+    );
     try {
       _appLinks = AppLinks();
 
       final initialUri = await _appLinks.getInitialLink();
       developer.log(
-        'Initial URI: ${initialUri?.toString() ?? 'null'}',
-        name: 'FriendsPage',
+        '${FriendsConstants.initialUriLog}${initialUri?.toString() ?? AppStrings.nullValue}',
+        name: FriendsConstants.loggerName,
       );
       if (initialUri != null) {
         _handleDeepLink(initialUri);
       }
 
       _appLinks.uriLinkStream.listen((uri) {
-        developer.log('Received deep link: $uri', name: 'FriendsPage');
+        developer.log(
+          '${FriendsConstants.deepLinkReceivedLog}$uri',
+          name: FriendsConstants.loggerName,
+        );
         _handleDeepLink(uri);
       });
     } catch (e) {
       developer.log(
-        'Error in _initDeepLinkListener: $e',
-        name: 'FriendsPage',
+        '${FriendsConstants.deepLinkErrorLog}$e',
+        name: FriendsConstants.loggerName,
         error: e,
       );
     }
   }
 
   void _handleDeepLink(Uri uri) async {
-    developer.log('Handling deep link: $uri', name: 'FriendsPage');
+    developer.log(
+      '${FriendsConstants.deepLinkHandleLog}$uri',
+      name: FriendsConstants.loggerName,
+    );
     try {
-      if (uri.path == '/friends' && uri.queryParameters.containsKey('from')) {
-        final inviterId = uri.queryParameters['from'];
+      if (uri.path == FriendsConstants.friendsPath &&
+          uri.queryParameters.containsKey(FriendsConstants.fromParameter)) {
+        final inviterId = uri.queryParameters[FriendsConstants.fromParameter];
         final currentUserId = widget.userId;
 
         developer.log(
-          'Inviter ID: $inviterId, Current User ID: $currentUserId',
-          name: 'FriendsPage',
+          '${FriendsConstants.inviterIdLog}$inviterId${FriendsConstants.currentUserIdLog}$currentUserId',
+          name: FriendsConstants.loggerName,
         );
 
         if (inviterId == null || inviterId == currentUserId) {
           developer.log(
-            'Invalid inviter ID or same as current user',
-            name: 'FriendsPage',
+            FriendsConstants.invalidInviterLog,
+            name: FriendsConstants.loggerName,
           );
           return;
         }
 
         final dbService = DBService();
         developer.log(
-          'Adding friend: $inviterId to user: $currentUserId',
-          name: 'FriendsPage',
+          '${FriendsConstants.addingFriendLog}$inviterId${FriendsConstants.toUserLog}$currentUserId',
+          name: FriendsConstants.loggerName,
         );
         await dbService.addFriend(currentUserId, inviterId);
 
         if (!mounted) {
           developer.log(
-            'Widget not mounted, skipping UI update',
-            name: 'FriendsPage',
+            FriendsConstants.widgetNotMountedLog,
+            name: FriendsConstants.loggerName,
           );
           return;
         }
 
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('You are now friends!')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text(FriendsConstants.friendAddedMessage)),
+        );
 
         _loadFriends();
       }
     } catch (e) {
       developer.log(
-        'Error in _handleDeepLink: $e',
-        name: 'FriendsPage',
+        '${FriendsConstants.deepLinkHandleErrorLog}$e',
+        name: FriendsConstants.loggerName,
         error: e,
       );
     }
@@ -113,8 +127,8 @@ class _FriendsPageState extends State<FriendsPage> {
 
   Future<void> _loadFriends() async {
     developer.log(
-      'Loading friends for user: ${widget.userId}',
-      name: 'FriendsPage',
+      '${FriendsConstants.loadingFriendsLog}${widget.userId}',
+      name: FriendsConstants.loggerName,
     );
     setState(() {
       isLoading = true;
@@ -122,7 +136,10 @@ class _FriendsPageState extends State<FriendsPage> {
 
     try {
       final dbService = DBService();
-      developer.log('Fetching friends from DBService', name: 'FriendsPage');
+      developer.log(
+        FriendsConstants.fetchingFriendsLog,
+        name: FriendsConstants.loggerName,
+      );
       final snapshot = await dbService.getFriends(widget.userId);
 
       // Get current user data
@@ -133,30 +150,42 @@ class _FriendsPageState extends State<FriendsPage> {
           {};
 
       developer.log(
-        'DB snapshot exists: ${snapshot.exists}',
-        name: 'FriendsPage',
+        '${FriendsConstants.dbSnapshotLog}${snapshot.exists}',
+        name: FriendsConstants.loggerName,
       );
 
       List<Map<String, dynamic>> loadedFriends = [];
 
       // Add current user to the list
-      final currentApples = (currentUserData?['apples'] ?? 0) as int;
+      final currentApples =
+          (currentUserData?[AppStrings.applesKey] ?? AppValues.defaultApples)
+              as int;
       final currentRottenApples =
-          (currentUserData?['rotten_apples'] ?? 0) as int;
+          (currentUserData?[AppStrings.rottenApplesKey] ??
+                  AppValues.defaultRottenApples)
+              as int;
       final currentUserAvatarUrl = await _getAvatarUrl(widget.userId);
 
       loadedFriends.add({
-        'id': widget.userId,
-        'name': currentUserData?['username'] ?? 'You',
-        'apples': currentApples - currentRottenApples,
-        'isCurrentUser': true,
-        'avatarUrl': currentUserAvatarUrl,
+        AppStrings.idKey: widget.userId,
+        AppStrings.nameKey:
+            currentUserData?[AppStrings.usernameKey] ??
+            FriendsConstants.currentUserDisplayName,
+        AppStrings.applesKey: currentApples - currentRottenApples,
+        AppStrings.isCurrentUserKey: true,
+        AppStrings.avatarUrlKey: currentUserAvatarUrl,
       });
 
       if (snapshot.exists) {
-        developer.log('Processing friends data', name: 'FriendsPage');
+        developer.log(
+          FriendsConstants.processingFriendsLog,
+          name: FriendsConstants.loggerName,
+        );
         final data = snapshot.value as Map<dynamic, dynamic>;
-        developer.log('Raw friends data: $data', name: 'FriendsPage');
+        developer.log(
+          '${FriendsConstants.rawFriendsDataLog}$data',
+          name: FriendsConstants.loggerName,
+        );
 
         // Get all friend IDs
         final friendIds = data.keys.cast<String>().toList();
@@ -167,19 +196,25 @@ class _FriendsPageState extends State<FriendsPage> {
             final userSnapshot = await dbService.getUserData(friendId);
             final userData = userSnapshot.value as Map<dynamic, dynamic>? ?? {};
             developer.log(
-              'Fetched user data for $friendId: $userData',
-              name: 'FriendsPage',
+              '${FriendsConstants.fetchedUserDataLog}$friendId: $userData',
+              name: FriendsConstants.loggerName,
             );
-            final apples = (userData['apples'] ?? 0) as int;
-            final rottenApples = (userData['rotten_apples'] ?? 0) as int;
+            final apples =
+                (userData[AppStrings.applesKey] ?? AppValues.defaultApples)
+                    as int;
+            final rottenApples =
+                (userData[AppStrings.rottenApplesKey] ??
+                        AppValues.defaultRottenApples)
+                    as int;
             final avatarUrl = await _getAvatarUrl(friendId);
 
             return {
-              'id': friendId,
-              'name': userData['username'] ?? 'Unknown',
-              'apples': apples - rottenApples,
-              'isCurrentUser': false,
-              'avatarUrl': avatarUrl,
+              AppStrings.idKey: friendId,
+              AppStrings.nameKey:
+                  userData[AppStrings.usernameKey] ?? AppValues.defaultUsername,
+              AppStrings.applesKey: apples - rottenApples,
+              AppStrings.isCurrentUserKey: false,
+              AppStrings.avatarUrlKey: avatarUrl,
             };
           }),
         );
@@ -189,24 +224,30 @@ class _FriendsPageState extends State<FriendsPage> {
         // Sort by apples (descending)
       }
       loadedFriends.sort(
-        (a, b) => (b['apples'] as int).compareTo(a['apples'] as int),
+        (a, b) => (b[AppStrings.applesKey] as int).compareTo(
+          a[AppStrings.applesKey] as int,
+        ),
       );
 
       // Add ranks
       for (int i = 0; i < loadedFriends.length; i++) {
-        loadedFriends[i]['rank'] = i + 1;
+        loadedFriends[i][AppStrings.rankKey] = i + AppValues.rankOffset;
       }
 
       developer.log(
-        'Loaded ${loadedFriends.length} friends',
-        name: 'FriendsPage',
+        '${FriendsConstants.loadedFriendsLog}${loadedFriends.length}${FriendsConstants.friendsCountLog}',
+        name: FriendsConstants.loggerName,
       );
       setState(() {
         friends = loadedFriends;
         isLoading = false;
       });
     } catch (e) {
-      developer.log('Error in _loadFriends: $e', name: 'FriendsPage', error: e);
+      developer.log(
+        '${FriendsConstants.loadFriendsErrorLog}$e',
+        name: FriendsConstants.loggerName,
+        error: e,
+      );
       setState(() {
         isLoading = false;
       });
@@ -218,8 +259,8 @@ class _FriendsPageState extends State<FriendsPage> {
       return await _storageService.getAvatarUrl(userId);
     } catch (e) {
       developer.log(
-        'Error getting avatar for $userId: $e',
-        name: 'FriendsPage',
+        '${FriendsConstants.avatarErrorLog}$userId: $e',
+        name: FriendsConstants.loggerName,
       );
       return '';
     }
@@ -228,19 +269,19 @@ class _FriendsPageState extends State<FriendsPage> {
   @override
   Widget build(BuildContext context) {
     developer.log(
-      'Building FriendsPage with ${friends.length} friends, isLoading: $isLoading',
-      name: 'FriendsPage',
+      '${FriendsConstants.buildingLog}${friends.length}${FriendsConstants.isLoadingLog}$isLoading',
+      name: FriendsConstants.loggerName,
     );
     return Scaffold(
-      backgroundColor: const Color(0xFFF2F7F3),
+      backgroundColor: AppColors.backgroundColor,
       appBar: AppBar(
-        toolbarHeight: 80,
-        backgroundColor: const Color(0xFFF2F7F3),
+        toolbarHeight: AppDimensions.appBarHeight,
+        backgroundColor: AppColors.backgroundColor,
         centerTitle: true,
         elevation: 0,
         title: const Padding(
-          padding: EdgeInsets.only(top: 16.0),
-          child: Text("Friends"),
+          padding: EdgeInsets.only(top: AppDimensions.appBarTopPadding),
+          child: Text(FriendsConstants.pageTitle),
         ),
       ),
       body:
@@ -250,28 +291,28 @@ class _FriendsPageState extends State<FriendsPage> {
                 children: [
                   const Padding(
                     padding: EdgeInsets.symmetric(
-                      horizontal: 20.0,
-                      vertical: 10,
+                      horizontal: AppDimensions.horizontalPadding,
+                      vertical: AppDimensions.verticalPadding,
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Expanded(
                           child: Text(
-                            'Rank',
+                            FriendsConstants.rankHeader,
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
                         Expanded(
                           flex: 2,
                           child: Text(
-                            'User',
+                            FriendsConstants.userHeader,
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
                         Expanded(
                           child: Text(
-                            'Apples',
+                            FriendsConstants.applesHeader,
                             textAlign: TextAlign.right,
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
@@ -282,36 +323,45 @@ class _FriendsPageState extends State<FriendsPage> {
                   Expanded(
                     child:
                         friends.isEmpty
-                            ? const Center(child: Text('No friends found'))
+                            ? const Center(
+                              child: Text(FriendsConstants.noFriendsMessage),
+                            )
                             : ListView.builder(
                               itemCount: friends.length,
                               itemBuilder: (context, index) {
                                 final friend = friends[index];
                                 final isCurrentUser =
-                                    friend['isCurrentUser'] == true;
+                                    friend[AppStrings.isCurrentUserKey] == true;
 
                                 return Container(
                                   margin: const EdgeInsets.symmetric(
-                                    horizontal: 20,
-                                    vertical: 6,
+                                    horizontal: AppDimensions.horizontalPadding,
+                                    vertical:
+                                        AppDimensions.containerMarginVertical,
                                   ),
                                   decoration: BoxDecoration(
                                     color:
                                         isCurrentUser
                                             ? AppColors.primaryContainerColor
-                                            : Colors.white,
-                                    borderRadius: BorderRadius.circular(12),
+                                            : AppColors.whiteColor,
+                                    borderRadius: BorderRadius.circular(
+                                      AppDimensions.borderRadius,
+                                    ),
                                   ),
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
-                                      vertical: 10,
-                                      horizontal: 12,
+                                      vertical:
+                                          AppDimensions
+                                              .containerPaddingVertical,
+                                      horizontal:
+                                          AppDimensions
+                                              .containerPaddingHorizontal,
                                     ),
                                     child: Row(
                                       children: [
                                         Expanded(
                                           child: Text(
-                                            '${friend['rank']}.',
+                                            '${friend[AppStrings.rankKey]}.',
                                             style: const TextStyle(
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -322,37 +372,51 @@ class _FriendsPageState extends State<FriendsPage> {
                                           child: Row(
                                             children: [
                                               CircleAvatar(
-                                                radius: 16,
-                                                backgroundColor: const Color(
-                                                  0xFF60C7A6,
-                                                ),
+                                                radius:
+                                                    AppDimensions
+                                                        .circleAvatarRadius,
+                                                backgroundColor:
+                                                    AppColors
+                                                        .defaultAvatarColor,
                                                 backgroundImage:
-                                                    friend['avatarUrl']
+                                                    friend[AppStrings
+                                                                    .avatarUrlKey]
                                                                 ?.isNotEmpty ==
                                                             true
                                                         ? CachedNetworkImageProvider(
-                                                          friend['avatarUrl'],
+                                                          friend[AppStrings
+                                                              .avatarUrlKey],
                                                         )
                                                         : null,
                                                 child:
-                                                    friend['avatarUrl']
+                                                    friend[AppStrings
+                                                                    .avatarUrlKey]
                                                                 ?.isEmpty ==
                                                             true
                                                         ? const Icon(
                                                           Icons.person,
-                                                          color: Colors.white,
-                                                          size: 18,
+                                                          color:
+                                                              AppColors
+                                                                  .whiteColor,
+                                                          size:
+                                                              AppDimensions
+                                                                  .iconSize,
                                                         )
                                                         : null,
                                               ),
-                                              const SizedBox(width: 8),
-                                              Text(friend['name']),
+                                              const SizedBox(
+                                                width:
+                                                    FriendsConstants
+                                                        .spacingBetweenAvatarAndText,
+                                              ),
+                                              Text(friend[AppStrings.nameKey]),
                                             ],
                                           ),
                                         ),
                                         Expanded(
                                           child: Text(
-                                            friend['apples'].toString(),
+                                            friend[AppStrings.applesKey]
+                                                .toString(),
                                             textAlign: TextAlign.right,
                                           ),
                                         ),
@@ -366,50 +430,55 @@ class _FriendsPageState extends State<FriendsPage> {
                 ],
               ),
       floatingActionButton: SizedBox(
-        width: 154,
-        height: 54,
+        width: AppDimensions.fabWidth,
+        height: AppDimensions.fabHeight,
         child: FloatingActionButton.extended(
           onPressed: () async {
-            developer.log('Invite button pressed', name: 'FriendsPage');
+            developer.log(
+              FriendsConstants.inviteButtonLog,
+              name: FriendsConstants.loggerName,
+            );
             try {
               final shortLink = await InviteHelper.createDynamicInviteLink(
                 widget.userId,
               );
               if (shortLink != null) {
                 developer.log(
-                  'Created invite link: $shortLink',
-                  name: 'FriendsPage',
+                  '${FriendsConstants.createdInviteLinkLog}$shortLink',
+                  name: FriendsConstants.loggerName,
                 );
-                final shareText =
-                    'Hey! Join me in the app and add me as a friend: $shortLink';
+                final shareText = '${FriendsConstants.inviteText}$shortLink';
                 final params = ShareParams(text: shareText);
                 await SharePlus.instance.share(params);
               } else {
                 developer.log(
-                  'Failed to create invite link',
-                  name: 'FriendsPage',
+                  FriendsConstants.failedInviteLinkLog,
+                  name: FriendsConstants.loggerName,
                 );
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text('Fehler beim Erstellen des Links'),
+                    content: Text(FriendsConstants.linkCreationError),
                   ),
                 );
               }
             } catch (e) {
               developer.log(
-                'Error in invite button: $e',
-                name: 'FriendsPage',
+                '${FriendsConstants.inviteButtonErrorLog}$e',
+                name: FriendsConstants.loggerName,
                 error: e,
               );
             }
           },
-          icon: const Icon(Icons.add, color: Colors.white),
-          label: const Text('Invite', style: TextStyle(color: Colors.white)),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(100),
+          icon: const Icon(Icons.add, color: AppColors.whiteColor),
+          label: const Text(
+            FriendsConstants.inviteButtonLabel,
+            style: TextStyle(color: AppColors.whiteColor),
           ),
-          backgroundColor: Colors.teal,
-          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppDimensions.fabBorderRadius),
+          ),
+          backgroundColor: AppColors.fabBackgroundColor,
+          foregroundColor: AppColors.whiteColor,
         ),
       ),
     );

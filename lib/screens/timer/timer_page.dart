@@ -6,6 +6,7 @@ import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 import '../../core/services/timer_service.dart';
 import '../../theme/theme.dart';
 import '../../widgets/custom_action_button.dart';
+import 'timer_constants.dart';
 
 class TimerPage extends StatefulWidget {
   final String userId;
@@ -17,7 +18,7 @@ class TimerPage extends StatefulWidget {
 
 class _TimerPageState extends State<TimerPage> {
   late final TimerService _timerService;
-  int selectedSeconds = 1500; // default 25 min
+  int selectedSeconds = AppValues.defaultTimerSeconds; // default 25 min
 
   @override
   void initState() {
@@ -32,18 +33,29 @@ class _TimerPageState extends State<TimerPage> {
   }
 
   String formatTime(int seconds) {
-    final min = (seconds ~/ 60).toString().padLeft(2, '0');
-    final sec = (seconds % 60).toString().padLeft(2, '0');
-    return '$min:$sec';
+    final min = (seconds ~/ AppValues.secondsPerMinute).toString().padLeft(
+      AppValues.padLength,
+      AppStrings.padCharacter,
+    );
+    final sec = (seconds % AppValues.secondsPerMinute).toString().padLeft(
+      AppValues.padLength,
+      AppStrings.padCharacter,
+    );
+    return '$min${AppStrings.timeSeparator}$sec';
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Timer"), centerTitle: true),
+      appBar: AppBar(
+        title: const Text(TimerConstants.pageTitle),
+        centerTitle: true,
+      ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppDimensions.mediumSpacing,
+          ),
           child: LayoutBuilder(
             builder: (context, constraints) {
               return Column(
@@ -52,8 +64,8 @@ class _TimerPageState extends State<TimerPage> {
                   const Spacer(),
                   Center(
                     child: SizedBox(
-                      height: 340,
-                      width: 340,
+                      height: AppDimensions.sliderSize,
+                      width: AppDimensions.sliderSize,
                       child: StreamBuilder<int>(
                         stream: _timerService.timeStream,
                         builder: (context, snapshot) {
@@ -65,11 +77,11 @@ class _TimerPageState extends State<TimerPage> {
                             children: [
                               isRunning
                                   ? SizedBox(
-                                    width: 340,
-                                    height: 340,
+                                    width: AppDimensions.sliderSize,
+                                    height: AppDimensions.sliderSize,
                                     child: CircularProgressIndicator(
                                       value: 1 - (remaining / selectedSeconds),
-                                      strokeWidth: 8,
+                                      strokeWidth: AppDimensions.strokeWidth,
                                       color: AppColors.primaryColor,
                                       backgroundColor:
                                           AppColors.secondaryContainerColor,
@@ -77,20 +89,21 @@ class _TimerPageState extends State<TimerPage> {
                                     ),
                                   )
                                   : SleekCircularSlider(
-                                    min: 0,
-                                    max: 3000,
+                                    min: AppValues.minSliderValue,
+                                    max: AppValues.maxSliderValue,
                                     initialValue: selectedSeconds.toDouble(),
                                     onChange: onTimeChanged,
                                     innerWidget: (_) => const SizedBox.shrink(),
                                     appearance: CircularSliderAppearance(
                                       customWidths: CustomSliderWidths(
-                                        trackWidth: 8,
-                                        progressBarWidth: 8,
-                                        handlerSize: 8,
+                                        trackWidth: AppDimensions.strokeWidth,
+                                        progressBarWidth:
+                                            AppDimensions.strokeWidth,
+                                        handlerSize: AppDimensions.strokeWidth,
                                       ),
-                                      size: 340,
-                                      startAngle: 270,
-                                      angleRange: 360,
+                                      size: AppDimensions.sliderSize,
+                                      startAngle: AppValues.startAngle,
+                                      angleRange: AppValues.angleRange,
                                       customColors: CustomSliderColors(
                                         progressBarColor:
                                             AppColors.primaryColor,
@@ -107,7 +120,9 @@ class _TimerPageState extends State<TimerPage> {
                                 formatTime(
                                   isRunning ? remaining : selectedSeconds,
                                 ),
-                                style: const TextStyle(fontSize: 32),
+                                style: const TextStyle(
+                                  fontSize: AppTypography.timerFontSize,
+                                ),
                               ),
                             ],
                           );
@@ -125,11 +140,13 @@ class _TimerPageState extends State<TimerPage> {
                       final isRunning = _timerService.isRunning;
                       final saying =
                           isRunning
-                              ? 'Stay focused and keep going!'
-                              : 'Set a goal and earn apples!';
+                              ? TimerConstants.focusedMotivationalText
+                              : TimerConstants.defaultMotivationalText;
 
                       return Padding(
-                        padding: const EdgeInsets.only(bottom: 16.0),
+                        padding: const EdgeInsets.only(
+                          bottom: TimerConstants.bottomPadding,
+                        ),
                         child: Center(child: MotivationalSaying(text: saying)),
                       );
                     },
@@ -149,7 +166,10 @@ class _TimerPageState extends State<TimerPage> {
                             _timerService.start(selectedSeconds);
                           }
                         },
-                        text: isRunning ? 'Stop' : 'Start',
+                        text:
+                            isRunning
+                                ? TimerConstants.stopButtonText
+                                : TimerConstants.startButtonText,
                         icon: isRunning ? Icons.stop : Icons.play_arrow,
                         isError: isRunning,
                       );

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:phone_away/theme/theme.dart';
+import 'auth_constants.dart';
 
 import '../../core/services/auth_service.dart';
 import '../../core/services/db_service.dart';
@@ -46,7 +47,7 @@ class _AuthPageState extends State<AuthPage> {
         if (userCredential != null) {
           await _dbService.createDefaultUser(userCredential.uid);
         } else {
-          throw Exception("Registrierung fehlgeschlagen: user ist null");
+          throw Exception(AuthConstants.registrationFailureMessage);
         }
       }
       // On success, Firebase automatically keeps user logged in
@@ -57,7 +58,7 @@ class _AuthPageState extends State<AuthPage> {
       });
     } catch (e) {
       setState(() {
-        _error = "An unknown error occurred.";
+        _error = AppStrings.unknownErrorMessage;
       });
     }
 
@@ -74,40 +75,58 @@ class _AuthPageState extends State<AuthPage> {
         children: [
           // Background decorative circles
           Positioned(
-            top: -60,
-            left: -40,
-            child: _buildCircle(120, AppColors.primaryColor.withOpacity(0.8)),
-          ),
-          Positioned(
-            top: -40,
-            right: -50,
+            top: AuthConstants.circle1Top,
+            left: AuthConstants.circle1Left,
             child: _buildCircle(
-              250,
-              AppColors.primaryContainerColor.withOpacity(1),
+              AuthConstants.circle1Size,
+              AppColors.primaryColor.withOpacity(AuthConstants.circle1Opacity),
             ),
           ),
           Positioned(
-            top: -200,
-            left: 75,
-            child: _buildCircle(340, AppColors.primaryColor.withOpacity(0.8)),
-          ),
-          Positioned(
-            top: 100,
-            left: -70,
+            top: AuthConstants.circle2Top,
+            right: AuthConstants.circle2Right,
             child: _buildCircle(
-              90,
-              AppColors.secondaryContainerColor.withOpacity(0.35),
+              AuthConstants.circle2Size,
+              AppColors.primaryContainerColor.withOpacity(
+                AuthConstants.circle2Opacity,
+              ),
             ),
           ),
           Positioned(
-            top: 160,
-            right: -60,
-            child: _buildCircle(70, AppColors.primaryColor.withOpacity(0.25)),
+            top: AuthConstants.circle3Top,
+            left: AuthConstants.circle3Left,
+            child: _buildCircle(
+              AuthConstants.circle3Size,
+              AppColors.primaryColor.withOpacity(AuthConstants.circle3Opacity),
+            ),
           ),
           Positioned(
-            top: 60,
-            left: MediaQuery.of(context).size.width / 2 - 150,
-            child: _buildCircle(100, AppColors.primaryColor.withOpacity(0.25)),
+            top: AuthConstants.circle4Top,
+            left: AuthConstants.circle4Left,
+            child: _buildCircle(
+              AuthConstants.circle4Size,
+              AppColors.secondaryContainerColor.withOpacity(
+                AuthConstants.circle4Opacity,
+              ),
+            ),
+          ),
+          Positioned(
+            top: AuthConstants.circle5Top,
+            right: AuthConstants.circle5Right,
+            child: _buildCircle(
+              AuthConstants.circle5Size,
+              AppColors.primaryColor.withOpacity(AuthConstants.circle5Opacity),
+            ),
+          ),
+          Positioned(
+            top: AuthConstants.circle6Top,
+            left:
+                MediaQuery.of(context).size.width / 2 -
+                AuthConstants.circle6CenterOffset,
+            child: _buildCircle(
+              AuthConstants.circle6Size,
+              AppColors.primaryColor.withOpacity(AuthConstants.circle6Opacity),
+            ),
           ),
 
           // Main content
@@ -115,13 +134,13 @@ class _AuthPageState extends State<AuthPage> {
             children: [
               // Big centered title
               Expanded(
-                flex: 2,
+                flex: AppValues.titleFlexValue,
                 child: Center(
                   child: Text(
-                    'PhoneAway',
+                    AuthConstants.appTitle,
                     style: const TextStyle(
-                      fontSize: 64,
-                      fontWeight: FontWeight.w800,
+                      fontSize: AppTypography.titleFontSize,
+                      fontWeight: AppTypography.titleFontWeight,
                       color: AppColors.primaryColor,
                     ),
                     textAlign: TextAlign.center,
@@ -131,9 +150,11 @@ class _AuthPageState extends State<AuthPage> {
 
               // Form fields
               Expanded(
-                flex: 3,
+                flex: AppValues.formFlexValue,
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppDimensions.largeSpacing,
+                  ),
                   child: Form(
                     key: _formKey,
                     child: Column(
@@ -141,16 +162,18 @@ class _AuthPageState extends State<AuthPage> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         TextFormField(
-                          key: const ValueKey('email'),
+                          key: const ValueKey(AppStrings.emailFieldKey),
                           decoration: InputDecoration(
-                            labelText: 'Email',
+                            labelText: AuthConstants.emailLabel,
                             labelStyle: const TextStyle(
                               color: AppColors.onSurfaceVariantColor,
                             ),
                             filled: true,
                             fillColor: AppColors.primaryContainerColor,
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(
+                                AppDimensions.borderRadius,
+                              ),
                             ),
                           ),
                           keyboardType: TextInputType.emailAddress,
@@ -158,36 +181,40 @@ class _AuthPageState extends State<AuthPage> {
                           textCapitalization: TextCapitalization.none,
                           validator: (value) {
                             if (value == null || !value.contains('@')) {
-                              return 'Enter a valid email';
+                              return AuthConstants.emailValidationError;
                             }
                             return null;
                           },
                           onSaved: (value) => _email = value ?? '',
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppDimensions.textFieldSpacing),
                         TextFormField(
-                          key: const ValueKey('password'),
+                          key: const ValueKey(AppStrings.passwordFieldKey),
                           decoration: InputDecoration(
-                            labelText: 'Password',
+                            labelText: AuthConstants.passwordLabel,
                             labelStyle: const TextStyle(
                               color: AppColors.onSurfaceVariantColor,
                             ),
                             filled: true,
                             fillColor: AppColors.primaryContainerColor,
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(
+                                AppDimensions.borderRadius,
+                              ),
                             ),
                           ),
                           obscureText: true,
                           validator: (value) {
-                            if (value == null || value.length < 6) {
-                              return 'Password must be at least 6 characters';
+                            if (value == null ||
+                                value.length <
+                                    AppValues.minimumPasswordLength) {
+                              return AuthConstants.passwordValidationError;
                             }
                             return null;
                           },
                           onSaved: (value) => _password = value ?? '',
                         ),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: AppDimensions.largeSpacing),
                         if (_error != null)
                           Text(
                             _error!,
@@ -203,24 +230,32 @@ class _AuthPageState extends State<AuthPage> {
                               backgroundColor: AppColors.primaryColor,
                               foregroundColor: AppColors.onPrimaryColor,
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(
+                                  AppDimensions.borderRadius,
+                                ),
                               ),
-                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              padding: const EdgeInsets.symmetric(
+                                vertical: AppDimensions.buttonVerticalPadding,
+                              ),
                             ),
                             child: Text(
-                              _isLogin ? 'Login' : 'Register',
-                              style: const TextStyle(fontSize: 16),
+                              _isLogin
+                                  ? AuthConstants.loginButtonText
+                                  : AuthConstants.registerButtonText,
+                              style: const TextStyle(
+                                fontSize: AppTypography.buttonFontSize,
+                              ),
                             ),
                           ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: AppDimensions.smallSpacing),
                         TextButton(
                           onPressed: () => setState(() => _isLogin = !_isLogin),
                           child: Text(
                             _isLogin
-                                ? 'Don’t have an account? Register'
-                                : 'Already have an account? Login',
+                                ? AuthConstants.noAccountText
+                                : AuthConstants.haveAccountText,
                             style: const TextStyle(
-                              fontSize: 14,
+                              fontSize: AppTypography.bodyFontSize,
                               color: AppColors.primaryColor,
                             ),
                           ),

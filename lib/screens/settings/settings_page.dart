@@ -7,6 +7,7 @@ import '../../theme/theme.dart';
 import '../../core/services/db_service.dart';
 import '../../core/services/auth_service.dart';
 import '../../core/services/storage_service.dart';
+import 'settings_constants.dart';
 import 'dart:developer' as developer;
 
 class SettingsPage extends StatefulWidget {
@@ -25,14 +26,14 @@ class _SettingsPageState extends State<SettingsPage> {
   final TextEditingController _nameController = TextEditingController();
 
   String? _userId;
-  String _username = '';
-  String _avatarUrl = '';
-  bool _notifications = true;
+  String _username = AppStrings.defaultUsername;
+  String _avatarUrl = AppStrings.defaultAvatar;
+  bool _notifications = AppStrings.defaultNotifications;
 
   XFile? _newAvatarFile;
   bool _isLoading = true;
 
-  int _easterEggCounter = 0;
+  int _easterEggCounter = AppValues.easterEggResetCount;
 
   @override
   void initState() {
@@ -47,7 +48,11 @@ class _SettingsPageState extends State<SettingsPage> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Logout failed: ${e.toString()}')),
+          SnackBar(
+            content: Text(
+              '${SettingsConstants.logoutFailedPrefix}${e.toString()}',
+            ),
+          ),
         );
       }
     }
@@ -72,16 +77,21 @@ class _SettingsPageState extends State<SettingsPage> {
     String? avatarUrlFromStorage;
     try {
       avatarUrlFromStorage = await _storageService.getAvatarUrl(userId);
-      developer.log('Avatar URL from storage: $avatarUrlFromStorage');
+      developer.log(
+        '${SettingsConstants.avatarUrlFromStorageLog}$avatarUrlFromStorage',
+      );
     } catch (e) {
       avatarUrlFromStorage = null; // kein Avatar gefunden
     }
 
     setState(() {
       _userId = userId;
-      _username = data?['username'] ?? '';
-      _avatarUrl = avatarUrlFromStorage ?? (data?['avatar'] ?? '');
-      _notifications = data?['notifications'] ?? true;
+      _username = data?[AppStrings.usernameKey] ?? AppStrings.defaultUsername;
+      _avatarUrl =
+          avatarUrlFromStorage ??
+          (data?[AppStrings.avatarKey] ?? AppStrings.defaultAvatar);
+      _notifications =
+          data?[AppStrings.notificationsKey] ?? AppStrings.defaultNotifications;
       _nameController.text = _username;
       _isLoading = false;
     });
@@ -100,13 +110,13 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Future<void> _pickImage() async {
-    developer.log('Picking image...');
+    developer.log(SettingsConstants.pickingImageLog);
     final picked = await _picker.pickImage(source: ImageSource.gallery);
     if (picked != null && _userId != null) {
       setState(() {
         _newAvatarFile = picked;
       });
-      developer.log('Image picked: ${picked.path}');
+      developer.log('${SettingsConstants.imagePickedLog}${picked.path}');
       final downloadUrl = await _storageService.uploadAvatar(_userId!, picked);
       setState(() {
         _avatarUrl = downloadUrl;
@@ -138,22 +148,25 @@ class _SettingsPageState extends State<SettingsPage> {
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF2F7F3),
+      backgroundColor: AppColors.backgroundColor,
       appBar: AppBar(
-        toolbarHeight: 80,
-        backgroundColor: const Color(0xFFF2F7F3),
+        toolbarHeight: AppDimensions.appBarHeight,
+        backgroundColor: AppColors.backgroundColor,
         centerTitle: true,
         elevation: 0,
         title: const Padding(
-          padding: EdgeInsets.only(top: 16.0),
+          padding: EdgeInsets.only(top: AppDimensions.appBarTopPadding),
           child: Text(
-            "Settings",
-            style: TextStyle(fontWeight: FontWeight.bold),
+            SettingsConstants.pageTitle,
+            style: TextStyle(fontWeight: AppTypography.boldWeight),
           ),
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppDimensions.horizontalPadding,
+          vertical: AppDimensions.verticalPadding,
+        ),
         child: Column(
           children: [
             // Avatar Section
@@ -161,33 +174,35 @@ class _SettingsPageState extends State<SettingsPage> {
               onTap: _pickImage,
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
+                  color: AppColors.whiteColor,
+                  borderRadius: BorderRadius.circular(
+                    AppDimensions.borderRadius,
+                  ),
                 ),
                 padding: const EdgeInsets.symmetric(
-                  vertical: 20,
-                  horizontal: 12,
+                  vertical: AppDimensions.largeContainerPaddingVertical,
+                  horizontal: AppDimensions.containerPaddingHorizontal,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
-                      'Change Avatar',
+                      SettingsConstants.changeAvatarText,
                       style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                        fontWeight: AppTypography.boldWeight,
+                        fontSize: AppTypography.headingFontSize,
                       ),
                     ),
                     CircleAvatar(
-                      radius: 32,
+                      radius: AppDimensions.largeAvatarRadius,
                       backgroundColor: AppColors.primaryContainerColor,
                       backgroundImage: avatarImage,
                       child:
                           avatarImage == null
                               ? const Icon(
                                 Icons.person,
-                                color: Colors.white,
-                                size: 32,
+                                color: AppColors.whiteColor,
+                                size: AppDimensions.largeIconSize,
                               )
                               : null,
                     ),
@@ -195,24 +210,26 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: AppDimensions.sectionSpacing),
             // Username Section
             GestureDetector(
               onTap: () {
                 setState(() {
                   _easterEggCounter++;
-                  if (_easterEggCounter >= 7) {
-                    _easterEggCounter = 0;
+                  if (_easterEggCounter >= AppValues.easterEggTriggerCount) {
+                    _easterEggCounter = AppValues.easterEggResetCount;
                     showDialog(
                       context: context,
                       builder:
                           (_) => AlertDialog(
-                            title: const Text("🧙‍♂️ Seepold has appeared!"),
-                            content: Image.asset("assets/images/seepold.png"),
+                            title: const Text(SettingsConstants.easterEggTitle),
+                            content: Image.asset(
+                              SettingsConstants.easterEggImagePath,
+                            ),
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.pop(context),
-                                child: const Text("Hide"),
+                                child: const Text(AppStrings.hideText),
                               ),
                             ],
                           ),
@@ -222,29 +239,33 @@ class _SettingsPageState extends State<SettingsPage> {
               },
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
+                  color: AppColors.whiteColor,
+                  borderRadius: BorderRadius.circular(
+                    AppDimensions.borderRadius,
+                  ),
                 ),
                 padding: const EdgeInsets.symmetric(
-                  vertical: 10.0,
-                  horizontal: 12.0,
+                  vertical: AppDimensions.containerPaddingVertical,
+                  horizontal: AppDimensions.containerPaddingHorizontal,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
-                      'Username',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      SettingsConstants.usernameText,
+                      style: TextStyle(fontWeight: AppTypography.boldWeight),
                     ),
                     SizedBox(
-                      width: 150,
+                      width: AppDimensions.textFieldWidth,
                       child: TextField(
                         controller: _nameController,
                         textAlign: TextAlign.right,
                         decoration: const InputDecoration(
                           border: InputBorder.none,
                           isDense: true,
-                          contentPadding: EdgeInsets.symmetric(vertical: 8),
+                          contentPadding: EdgeInsets.symmetric(
+                            vertical: AppDimensions.textFieldVerticalPadding,
+                          ),
                         ),
                         onChanged: (value) {
                           setState(() => _username = value);
@@ -256,23 +277,23 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: AppDimensions.sectionSpacing),
             // Notifications Section
             Container(
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
+                color: AppColors.whiteColor,
+                borderRadius: BorderRadius.circular(AppDimensions.borderRadius),
               ),
               padding: const EdgeInsets.symmetric(
-                vertical: 10.0,
-                horizontal: 12.0,
+                vertical: AppDimensions.containerPaddingVertical,
+                horizontal: AppDimensions.containerPaddingHorizontal,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    'Notifications',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    SettingsConstants.notificationsText,
+                    style: TextStyle(fontWeight: AppTypography.boldWeight),
                   ),
                   Switch(
                     value: _notifications,
@@ -286,7 +307,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
             // Add spacing before logout button
-            const SizedBox(height: 40),
+            const SizedBox(height: AppDimensions.beforeLogoutSpacing),
             // Logout Button
             SizedBox(
               width: double.infinity,
@@ -296,14 +317,16 @@ class _SettingsPageState extends State<SettingsPage> {
                     context: context,
                     builder:
                         (context) => AlertDialog(
-                          title: const Text('Logout'),
+                          title: const Text(
+                            SettingsConstants.logoutConfirmTitle,
+                          ),
                           content: const Text(
-                            'Are you sure you want to logout?',
+                            SettingsConstants.logoutConfirmMessage,
                           ),
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.pop(context),
-                              child: const Text('Cancel'),
+                              child: const Text(AppStrings.cancelText),
                             ),
                             TextButton(
                               onPressed: () {
@@ -311,8 +334,10 @@ class _SettingsPageState extends State<SettingsPage> {
                                 _logout();
                               },
                               child: const Text(
-                                'Logout',
-                                style: TextStyle(color: Colors.red),
+                                SettingsConstants.logoutText,
+                                style: TextStyle(
+                                  color: AppColors.logoutTextColor,
+                                ),
                               ),
                             ),
                           ],
@@ -320,16 +345,20 @@ class _SettingsPageState extends State<SettingsPage> {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  backgroundColor: AppColors.logoutButtonColor,
+                  foregroundColor: AppColors.whiteColor,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: AppDimensions.buttonVerticalPadding,
+                  ),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(
+                      AppDimensions.borderRadius,
+                    ),
                   ),
                 ),
                 child: const Text(
-                  'Logout',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  SettingsConstants.logoutText,
+                  style: TextStyle(fontWeight: AppTypography.boldWeight),
                 ),
               ),
             ),
