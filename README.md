@@ -63,14 +63,138 @@ PhoneAway addresses these issues by providing structured, gamified interventions
 - **🔔 Smart Notifications**: Notifications during concentration phases
 - **⚙️ User Profiles**: Customizable profiles with avatar upload
 - **🎯 Gamification**: Reward system with apples and rotten apples for early termination
+- **📱 Offline Support**: Full timer functionality works without internet connection
+- **🔄 Auto-Sync**: Automatic synchronization when connection is restored
+- **⚠️ Error Handling**: Comprehensive timeout and connection error management
+
+## 🌐 Offline Support & Error Handling
+
+PhoneAway is designed with robust offline capabilities and comprehensive error handling to ensure a seamless user experience regardless of network conditions.
+
+### 📱 Offline Functionality
+
+#### **Core Timer Operations**
+
+- **Complete Offline Mode**: Timer sessions work entirely without internet connection
+- **Local State Persistence**: Timer state, duration, and progress saved locally
+- **Offline Session Completion**: Users can complete focus sessions and collect apples offline
+- **Background Processing**: Timer continues running even when app is backgrounded
+
+#### **Data Synchronization**
+
+- **Auto-Sync on Reconnect**: Offline data automatically syncs when connection is restored
+- **Queue Management**: Offline actions queued and processed in order upon reconnection
+- **Conflict Resolution**: Intelligent merging of offline and online data states
+- **Sync Status Indicators**: Visual feedback showing sync progress and connection status
+
+#### **Offline Data Storage**
+
+- **SharedPreferences**: Critical timer data and user preferences stored locally
+- **Session Caching**: Completed sessions cached until successful upload
+- **Avatar Caching**: Profile images cached for offline viewing
+- **Friend Data**: Basic friend information cached for offline access
+
+### ⚠️ Error Handling System
+
+#### **Network Error Management**
+
+- **Timeout Handling**: 10-second default timeout with 5-second quick timeout option
+- **Connection Detection**: Real-time network status monitoring and user feedback
+- **Graceful Degradation**: App functionality maintained with limited features during outages
+- **Retry Mechanisms**: Automatic retry with exponential backoff for failed operations
+
+#### **User-Friendly Error States**
+
+- **Empty State Widgets**: Informative screens for no data, connection issues, and timeouts
+- **Error Notifications**: Non-intrusive SnackBar notifications for temporary issues
+- **Recovery Actions**: Clear "Retry" and "Try Again" buttons for user-initiated recovery
+- **Connection Status Banner**: Persistent banner showing connection restoration
+
+#### **Error Categories**
+
+- **Timeout Errors**: "Request timed out - Check your internet connection"
+- **Connection Errors**: "No internet connection - Check your network settings"
+- **General Network Errors**: "Network error - [specific error message]"
+- **Unexpected Errors**: "An unexpected error occurred - Please try again"
+
+### 🔧 Technical Implementation
+
+#### **Network Service Architecture**
+
+```dart
+class NetworkService {
+  // Timeout wrapper for all network operations
+  Future<T> executeWithTimeout<T>(Future<T> operation, {Duration timeout});
+
+  // Connection monitoring
+  Stream<bool> get connectionStatus;
+
+  // Custom exception hierarchy
+  // - NetworkTimeoutException
+  // - NetworkConnectionException
+  // - NetworkException
+}
+```
+
+#### **Error Handler System**
+
+```dart
+class ErrorHandler {
+  // Unified error display
+  static void showErrorSnackBar(BuildContext context, Object error);
+
+  // Error widget generation
+  static Widget getErrorWidget(Object error, VoidCallback onRetry);
+
+  // Network operation wrapper
+  static Future<T> executeWithErrorHandling<T>(Future<T> operation);
+}
+```
+
+#### **Sync Manager**
+
+```dart
+class SyncManager {
+  // Background synchronization
+  static Future<void> syncOfflineData();
+
+  // Queue management
+  static void queueOfflineUpdate(Map<String, dynamic> data);
+
+  // Conflict resolution
+  static Map<String, dynamic> mergeOfflineData(local, remote);
+}
+```
+
+### 📊 Offline Capabilities by Feature
+
+| Feature          | Offline Support        | Sync Behavior              |
+| ---------------- | ---------------------- | -------------------------- |
+| Timer Sessions   | ✅ Full Support        | Auto-sync on reconnect     |
+| Apple Collection | ✅ Local Storage       | Synced with session data   |
+| Tree Growth      | ✅ Cached State        | Updated from synced apples |
+| Friend List      | 📱 Cached View         | Refreshed on reconnect     |
+| Profile Updates  | ❌ Requires Connection | Queued for later upload    |
+| Friend Invites   | ❌ Requires Connection | Real-time only             |
+
+### 🎯 User Experience Benefits
+
+- **Uninterrupted Focus**: Timer sessions never fail due to connectivity issues
+- **Reliable Progress**: Apple collection and tree growth work offline
+- **Transparent Recovery**: Users informed of sync status and connection issues
+- **Predictable Behavior**: Consistent app behavior regardless of network state
+- **Battery Efficiency**: Reduced network polling and intelligent sync scheduling
 
 ## 🚀 Technology Stack
 
 - **Framework**: Flutter 3.7.2+
 - **Backend**: Firebase (Authentication, Realtime Database, Storage)
-- **State Management**: Flutter Hooks
+- **State Management**: Flutter Hooks + Local State
 - **Notifications**: Flutter Local Notifications
 - **UI Components**: Sleek Circular Slider, Custom Widgets
+- **Offline Storage**: SharedPreferences + Local Caching
+- **Network Handling**: Custom NetworkService with timeout management
+- **Error Management**: Centralized ErrorHandler with user-friendly messages
 - **Platforms**: iOS, Android, Web
 
 ## 📋 Prerequisites
@@ -201,11 +325,16 @@ PhoneAway implements a **layered architecture** combined with **service-oriented
 
 ### Key Architectural Decisions
 
+### Key Architectural Decisions
+
 #### **Service-Oriented Architecture**
 
-- **TimerService**: Manages timer state, notifications, and persistence
-- **DBService**: Handles all Firebase Realtime Database operations
-- **StorageService**: Manages file uploads and avatar handling
+- **TimerService**: Manages timer state, notifications, and persistence with offline support
+- **DBService**: Handles all Firebase Realtime Database operations with timeout handling
+- **StorageService**: Manages file uploads and avatar handling with error recovery
+- **NetworkService**: Centralized network operations with timeout and retry logic
+- **ErrorHandler**: Unified error handling and user feedback system
+- **SyncManager**: Background synchronization and offline data management
 - **Singleton Pattern**: Ensures single instances of critical services
 
 #### **State Management Strategy**
@@ -219,6 +348,9 @@ PhoneAway implements a **layered architecture** combined with **service-oriented
 - **Remote State**: User profiles, friend connections, and progress stored in Firebase
 - **Local State**: Timer sessions, user preferences cached locally for offline functionality
 - **Hybrid Approach**: Critical data synced to cloud with local fallbacks
+- **Offline-First Design**: Timer functionality works completely offline with automatic sync
+- **Timeout Handling**: 10-second default timeout with graceful degradation
+- **Error Recovery**: Automatic retry mechanisms and user-friendly error messages
 
 #### **Scalability Considerations**
 

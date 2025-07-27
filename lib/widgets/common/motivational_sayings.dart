@@ -1,7 +1,7 @@
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../theme/theme.dart';
+import '../../theme/theme.dart';
 
 class MotivationalSaying extends StatefulWidget {
   final String text;

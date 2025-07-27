@@ -7,6 +7,7 @@ import '../../theme/theme.dart';
 import '../../core/services/db_service.dart';
 import '../../core/services/auth_service.dart';
 import '../../core/services/storage_service.dart';
+import '../../core/helpers/error_handler.dart';
 import 'settings_constants.dart';
 import 'dart:developer' as developer;
 
@@ -69,59 +70,118 @@ class _SettingsPageState extends State<SettingsPage> {
 
     final userId = user.uid;
 
-    // Lade Daten aus DB
-    final snapshot = await _dbService.getUserData(userId);
-    final data = snapshot.value as Map?;
-
-    // Lade Avatar direkt aus Firebase Storage
-    String? avatarUrlFromStorage;
     try {
-      avatarUrlFromStorage = await _storageService.getAvatarUrl(userId);
-      developer.log(
-        '${SettingsConstants.avatarUrlFromStorageLog}$avatarUrlFromStorage',
-      );
-    } catch (e) {
-      avatarUrlFromStorage = null; // kein Avatar gefunden
-    }
+      // Use ErrorHandler for consistent timeout handling
+      await ErrorHandler.executeWithErrorHandling(() async {
+        // Lade Daten aus DB
+        final snapshot = await _dbService.getUserData(userId);
+        final data = snapshot.value as Map?;
 
-    setState(() {
-      _userId = userId;
-      _username = data?[AppStrings.usernameKey] ?? AppStrings.defaultUsername;
-      _avatarUrl =
-          avatarUrlFromStorage ??
-          (data?[AppStrings.avatarKey] ?? AppStrings.defaultAvatar);
-      _notifications =
-          data?[AppStrings.notificationsKey] ?? AppStrings.defaultNotifications;
-      _nameController.text = _username;
-      _isLoading = false;
-    });
+        // Lade Avatar direkt aus Firebase Storage
+        String? avatarUrlFromStorage;
+        try {
+          avatarUrlFromStorage = await _storageService.getAvatarUrl(userId);
+          developer.log(
+            '${SettingsConstants.avatarUrlFromStorageLog}$avatarUrlFromStorage',
+          );
+        } catch (e) {
+          avatarUrlFromStorage = null; // kein Avatar gefunden
+        }
+
+        setState(() {
+          _userId = userId;
+          _username =
+              data?[AppStrings.usernameKey] ?? AppStrings.defaultUsername;
+          _avatarUrl =
+              avatarUrlFromStorage ??
+              (data?[AppStrings.avatarKey] ?? AppStrings.defaultAvatar);
+          _notifications =
+              data?[AppStrings.notificationsKey] ??
+              AppStrings.defaultNotifications;
+          _nameController.text = _username;
+          _isLoading = false;
+        });
+      });
+    } catch (e) {
+      // Show error message and provide fallback
+      if (mounted) {
+        ErrorHandler.showErrorSnackBar(context, e);
+
+        // Set fallback values
+        setState(() {
+          _userId = userId;
+          _username = AppStrings.defaultUsername;
+          _avatarUrl = AppStrings.defaultAvatar;
+          _notifications = AppStrings.defaultNotifications;
+          _nameController.text = _username;
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   Future<void> _updateUsername(String newName) async {
     if (_userId != null) {
-      await _dbService.updateUsername(_userId!, newName);
+      try {
+        await ErrorHandler.executeWithErrorHandling(() async {
+          await _dbService.updateUsername(_userId!, newName);
+        });
+      } catch (e) {
+        if (mounted) {
+          ErrorHandler.showErrorSnackBar(context, e);
+        }
+      }
     }
   }
 
   Future<void> _updateNotifications(bool value) async {
     if (_userId != null) {
-      await _dbService.updateNotifications(_userId!, value);
+      try {
+        await ErrorHandler.executeWithErrorHandling(() async {
+          await _dbService.updateNotifications(_userId!, value);
+        });
+      } catch (e) {
+        if (mounted) {
+          ErrorHandler.showErrorSnackBar(context, e);
+          // Revert the switch state on error
+          setState(() {
+            _notifications = !value;
+          });
+        }
+      }
     }
   }
 
   Future<void> _pickImage() async {
     developer.log(SettingsConstants.pickingImageLog);
-    final picked = await _picker.pickImage(source: ImageSource.gallery);
-    if (picked != null && _userId != null) {
-      setState(() {
-        _newAvatarFile = picked;
-      });
-      developer.log('${SettingsConstants.imagePickedLog}${picked.path}');
-      final downloadUrl = await _storageService.uploadAvatar(_userId!, picked);
-      setState(() {
-        _avatarUrl = downloadUrl;
-      });
-      await _dbService.updateAvatar(_userId!, downloadUrl);
+
+    try {
+      final picked = await _picker.pickImage(source: ImageSource.gallery);
+      if (picked != null && _userId != null) {
+        setState(() {
+          _newAvatarFile = picked;
+        });
+        developer.log('${SettingsConstants.imagePickedLog}${picked.path}');
+
+        await ErrorHandler.executeWithErrorHandling(() async {
+          final downloadUrl = await _storageService.uploadAvatar(
+            _userId!,
+            picked,
+          );
+          setState(() {
+            _avatarUrl = downloadUrl;
+          });
+          await _dbService.updateAvatar(_userId!, downloadUrl);
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        ErrorHandler.showErrorSnackBar(context, e);
+        // Revert avatar file on error
+        setState(() {
+          _newAvatarFile = null;
+        });
+      }
     }
   }
 

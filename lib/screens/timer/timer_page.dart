@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:phone_away/core/services/db_service.dart';
-import 'package:phone_away/widgets/motivational_sayings.dart';
+import 'package:phone_away/widgets/common/motivational_sayings.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
 import '../../core/services/timer_service.dart';
 import '../../theme/theme.dart';
-import '../../widgets/custom_action_button.dart';
+import '../../widgets/buttons/custom_action_button.dart';
 import 'timer_constants.dart';
 
 class TimerPage extends StatefulWidget {

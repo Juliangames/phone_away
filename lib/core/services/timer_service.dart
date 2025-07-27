@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:phone_away/core/services/db_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
+import '../helpers/error_handler.dart';
 
 class TimerService {
   final DBService dbService;
@@ -81,7 +82,15 @@ class TimerService {
       await _showConcentrationNotification();
       _timeStreamController.add(_calculateRemaining());
     } else {
-      await dbService.addApple(userId, 1);
+      try {
+        await ErrorHandler.executeWithErrorHandling(() async {
+          await dbService.addApple(userId, 1);
+        });
+      } catch (e) {
+        // If offline, save for later sync
+        await _saveOfflineUpdate('apple');
+        print('⚠️ Resume timer update saved offline: $e');
+      }
       await _clearPrefs();
       _timeStreamController.add(0);
     }
@@ -90,10 +99,18 @@ class TimerService {
   Future<void> stop() async {
     final remaining = _calculateRemaining();
 
-    if (remaining <= 0) {
-      await dbService.addApple(userId, 1);
-    } else {
-      await dbService.addRottenApple(userId, 1);
+    try {
+      await ErrorHandler.executeWithErrorHandling(() async {
+        if (remaining <= 0) {
+          await dbService.addApple(userId, 1);
+        } else {
+          await dbService.addRottenApple(userId, 1);
+        }
+      });
+    } catch (e) {
+      // If offline, save locally for later sync
+      await _saveOfflineUpdate(remaining <= 0 ? 'apple' : 'rotten_apple');
+      print('⚠️ Timer update saved offline: $e');
     }
 
     _timer?.cancel();
@@ -102,6 +119,48 @@ class TimerService {
     _timeStreamController.add(0);
     await _clearPrefs();
     await _cancelConcentrationNotification();
+  }
+
+  Future<void> _saveOfflineUpdate(String type) async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<String> offlineUpdates =
+        prefs.getStringList('offline_updates') ?? [];
+
+    offlineUpdates.add('${DateTime.now().toIso8601String()}:$type:$userId');
+    await prefs.setStringList('offline_updates', offlineUpdates);
+  }
+
+  // Method to sync offline updates when back online
+  Future<void> syncOfflineUpdates() async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<String> offlineUpdates =
+        prefs.getStringList('offline_updates') ?? [];
+
+    if (offlineUpdates.isEmpty) return;
+
+    try {
+      await ErrorHandler.executeWithErrorHandling(() async {
+        for (final update in offlineUpdates) {
+          final parts = update.split(':');
+          if (parts.length >= 3) {
+            final type = parts[1];
+            final updateUserId = parts[2];
+
+            if (type == 'apple') {
+              await dbService.addApple(updateUserId, 1);
+            } else if (type == 'rotten_apple') {
+              await dbService.addRottenApple(updateUserId, 1);
+            }
+          }
+        }
+
+        // Clear offline updates after successful sync
+        await prefs.remove('offline_updates');
+        print('✅ Offline updates synced successfully');
+      });
+    } catch (e) {
+      print('❌ Failed to sync offline updates: $e');
+    }
   }
 
   int _calculateRemaining() {

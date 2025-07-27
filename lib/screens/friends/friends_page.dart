@@ -6,8 +6,10 @@ import 'package:cached_network_image/cached_network_image.dart'; // Add this imp
 
 import '../../core/services/db_service.dart';
 import '../../core/services/storage_service.dart'; // Add this import
+import '../../core/services/network_service.dart';
 import '../../theme/theme.dart';
 import '../../core/helpers/invite_helper.dart';
+import '../../widgets/empty_state/empty_state_widget.dart';
 import 'friends_constants.dart';
 
 class FriendsPage extends StatefulWidget {
@@ -23,13 +25,17 @@ class _FriendsPageState extends State<FriendsPage> {
   List<Map<String, dynamic>> friends = [];
   Map<String, dynamic>? currentUserData;
   bool isLoading = true;
+  bool hasError = false;
+  Object? error;
   late final StorageService _storageService; // Add storage service
+  late final NetworkService _networkService;
   late final AppLinks _appLinks;
 
   @override
   void initState() {
     super.initState();
     _storageService = StorageService(); // Initialize storage service
+    _networkService = NetworkService();
     developer.log(
       FriendsConstants.initStateLog,
       name: FriendsConstants.loggerName,
@@ -132,115 +138,125 @@ class _FriendsPageState extends State<FriendsPage> {
     );
     setState(() {
       isLoading = true;
+      hasError = false;
+      error = null;
     });
 
     try {
-      final dbService = DBService();
-      developer.log(
-        FriendsConstants.fetchingFriendsLog,
-        name: FriendsConstants.loggerName,
-      );
-      final snapshot = await dbService.getFriends(widget.userId);
-
-      // Get current user data
-      final userSnapshot = await dbService.getUserData(widget.userId);
-      currentUserData =
-          (userSnapshot.value as Map<dynamic, dynamic>?)
-              ?.cast<String, dynamic>() ??
-          {};
-
-      developer.log(
-        '${FriendsConstants.dbSnapshotLog}${snapshot.exists}',
-        name: FriendsConstants.loggerName,
-      );
-
-      List<Map<String, dynamic>> loadedFriends = [];
-
-      // Add current user to the list
-      final currentApples =
-          (currentUserData?[AppStrings.applesKey] ?? AppValues.defaultApples)
-              as int;
-      final currentRottenApples =
-          (currentUserData?[AppStrings.rottenApplesKey] ??
-                  AppValues.defaultRottenApples)
-              as int;
-      final currentUserAvatarUrl = await _getAvatarUrl(widget.userId);
-
-      loadedFriends.add({
-        AppStrings.idKey: widget.userId,
-        AppStrings.nameKey:
-            currentUserData?[AppStrings.usernameKey] ??
-            FriendsConstants.currentUserDisplayName,
-        AppStrings.applesKey: currentApples - currentRottenApples,
-        AppStrings.isCurrentUserKey: true,
-        AppStrings.avatarUrlKey: currentUserAvatarUrl,
-      });
-
-      if (snapshot.exists) {
+      // Use NetworkService to wrap the database calls with timeout
+      await _networkService.executeWithTimeout(() async {
+        final dbService = DBService();
         developer.log(
-          FriendsConstants.processingFriendsLog,
+          FriendsConstants.fetchingFriendsLog,
           name: FriendsConstants.loggerName,
         );
-        final data = snapshot.value as Map<dynamic, dynamic>;
+        final snapshot = await dbService.getFriends(widget.userId);
+
+        // Get current user data
+        final userSnapshot = await dbService.getUserData(widget.userId);
+        currentUserData =
+            (userSnapshot.value as Map<dynamic, dynamic>?)
+                ?.cast<String, dynamic>() ??
+            {};
+
         developer.log(
-          '${FriendsConstants.rawFriendsDataLog}$data',
+          '${FriendsConstants.dbSnapshotLog}${snapshot.exists}',
           name: FriendsConstants.loggerName,
         );
 
-        // Get all friend IDs
-        final friendIds = data.keys.cast<String>().toList();
+        List<Map<String, dynamic>> loadedFriends = [];
 
-        // Fetch user data for each friend in parallel
-        final friendsData = await Future.wait(
-          friendIds.map((friendId) async {
-            final userSnapshot = await dbService.getUserData(friendId);
-            final userData = userSnapshot.value as Map<dynamic, dynamic>? ?? {};
-            developer.log(
-              '${FriendsConstants.fetchedUserDataLog}$friendId: $userData',
-              name: FriendsConstants.loggerName,
-            );
-            final apples =
-                (userData[AppStrings.applesKey] ?? AppValues.defaultApples)
-                    as int;
-            final rottenApples =
-                (userData[AppStrings.rottenApplesKey] ??
-                        AppValues.defaultRottenApples)
-                    as int;
-            final avatarUrl = await _getAvatarUrl(friendId);
+        // Add current user to the list
+        final currentApples =
+            (currentUserData?[AppStrings.applesKey] ?? AppValues.defaultApples)
+                as int;
+        final currentRottenApples =
+            (currentUserData?[AppStrings.rottenApplesKey] ??
+                    AppValues.defaultRottenApples)
+                as int;
+        final currentUserAvatarUrl = await _getAvatarUrl(widget.userId);
 
-            return {
-              AppStrings.idKey: friendId,
-              AppStrings.nameKey:
-                  userData[AppStrings.usernameKey] ?? AppValues.defaultUsername,
-              AppStrings.applesKey: apples - rottenApples,
-              AppStrings.isCurrentUserKey: false,
-              AppStrings.avatarUrlKey: avatarUrl,
-            };
-          }),
-        );
+        loadedFriends.add({
+          AppStrings.idKey: widget.userId,
+          AppStrings.nameKey:
+              currentUserData?[AppStrings.usernameKey] ??
+              FriendsConstants.currentUserDisplayName,
+          AppStrings.applesKey: currentApples - currentRottenApples,
+          AppStrings.isCurrentUserKey: true,
+          AppStrings.avatarUrlKey: currentUserAvatarUrl,
+        });
 
-        loadedFriends.addAll(friendsData);
+        if (snapshot.exists) {
+          developer.log(
+            FriendsConstants.processingFriendsLog,
+            name: FriendsConstants.loggerName,
+          );
+          final data = snapshot.value as Map<dynamic, dynamic>;
+          developer.log(
+            '${FriendsConstants.rawFriendsDataLog}$data',
+            name: FriendsConstants.loggerName,
+          );
+
+          // Get all friend IDs
+          final friendIds = data.keys.cast<String>().toList();
+
+          // Fetch user data for each friend in parallel
+          final friendsData = await Future.wait(
+            friendIds.map((friendId) async {
+              final userSnapshot = await dbService.getUserData(friendId);
+              final userData =
+                  userSnapshot.value as Map<dynamic, dynamic>? ?? {};
+              developer.log(
+                '${FriendsConstants.fetchedUserDataLog}$friendId: $userData',
+                name: FriendsConstants.loggerName,
+              );
+              final apples =
+                  (userData[AppStrings.applesKey] ?? AppValues.defaultApples)
+                      as int;
+              final rottenApples =
+                  (userData[AppStrings.rottenApplesKey] ??
+                          AppValues.defaultRottenApples)
+                      as int;
+              final avatarUrl = await _getAvatarUrl(friendId);
+
+              return {
+                AppStrings.idKey: friendId,
+                AppStrings.nameKey:
+                    userData[AppStrings.usernameKey] ??
+                    AppValues.defaultUsername,
+                AppStrings.applesKey: apples - rottenApples,
+                AppStrings.isCurrentUserKey: false,
+                AppStrings.avatarUrlKey: avatarUrl,
+              };
+            }),
+          );
+
+          loadedFriends.addAll(friendsData);
+        }
 
         // Sort by apples (descending)
-      }
-      loadedFriends.sort(
-        (a, b) => (b[AppStrings.applesKey] as int).compareTo(
-          a[AppStrings.applesKey] as int,
-        ),
-      );
+        loadedFriends.sort(
+          (a, b) => (b[AppStrings.applesKey] as int).compareTo(
+            a[AppStrings.applesKey] as int,
+          ),
+        );
 
-      // Add ranks
-      for (int i = 0; i < loadedFriends.length; i++) {
-        loadedFriends[i][AppStrings.rankKey] = i + AppValues.rankOffset;
-      }
+        // Add ranks
+        for (int i = 0; i < loadedFriends.length; i++) {
+          loadedFriends[i][AppStrings.rankKey] = i + AppValues.rankOffset;
+        }
 
-      developer.log(
-        '${FriendsConstants.loadedFriendsLog}${loadedFriends.length}${FriendsConstants.friendsCountLog}',
-        name: FriendsConstants.loggerName,
-      );
-      setState(() {
-        friends = loadedFriends;
-        isLoading = false;
+        developer.log(
+          '${FriendsConstants.loadedFriendsLog}${loadedFriends.length}${FriendsConstants.friendsCountLog}',
+          name: FriendsConstants.loggerName,
+        );
+
+        setState(() {
+          friends = loadedFriends;
+          isLoading = false;
+          hasError = false;
+          error = null;
+        });
       });
     } catch (e) {
       developer.log(
@@ -250,6 +266,8 @@ class _FriendsPageState extends State<FriendsPage> {
       );
       setState(() {
         isLoading = false;
+        hasError = true;
+        error = e;
       });
     }
   }
@@ -264,6 +282,17 @@ class _FriendsPageState extends State<FriendsPage> {
       );
       return '';
     }
+  }
+
+  Widget _buildEmptyState() {
+    return EmptyStateWidget.noFriends();
+  }
+
+  Widget _buildErrorState() {
+    return EmptyStateWidget.fromError(
+      error: error ?? Exception('Unknown error'),
+      onRetry: _loadFriends,
+    );
   }
 
   @override
@@ -322,10 +351,10 @@ class _FriendsPageState extends State<FriendsPage> {
                   ),
                   Expanded(
                     child:
-                        friends.isEmpty
-                            ? const Center(
-                              child: Text(FriendsConstants.noFriendsMessage),
-                            )
+                        hasError
+                            ? _buildErrorState()
+                            : friends.isEmpty
+                            ? _buildEmptyState()
                             : ListView.builder(
                               itemCount: friends.length,
                               itemBuilder: (context, index) {

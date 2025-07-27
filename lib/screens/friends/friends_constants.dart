@@ -9,10 +9,17 @@ class FriendsConstants {
   static const String applesHeader = 'Apples';
   static const String currentUserDisplayName = 'You';
   static const String noFriendsMessage = 'No friends found';
+  static const String noFriendsSubMessage =
+      'Invite friends to compare your focus progress!';
+  static const String offlineMessage =
+      'Unable to load friends - check your internet connection';
+  static const String retryButtonLabel = 'Retry';
   static const String friendAddedMessage = 'You are now friends!';
   static const String inviteText =
       'Hey! Join me in the app and add me as a friend: ';
   static const String linkCreationError = 'Fehler beim Erstellen des Links';
+  static const String networkErrorMessage =
+      'Network error - please check your connection';
   static const String inviteButtonLabel = 'Invite';
 
   // Deep link paths and parameters
