@@ -11,11 +11,11 @@ class NetworkException implements Exception {
 }
 
 class NetworkTimeoutException extends NetworkException {
-  NetworkTimeoutException(String message) : super(message);
+  NetworkTimeoutException(super.message);
 }
 
 class NetworkConnectionException extends NetworkException {
-  NetworkConnectionException(String message) : super(message);
+  NetworkConnectionException(super.message);
 }
 
 class NetworkService {

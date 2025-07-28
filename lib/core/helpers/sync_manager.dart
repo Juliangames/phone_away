@@ -30,8 +30,6 @@ class SyncManager {
 
   /// Perform sync when connection is restored
   Future<void> _performSync(String userId) async {
-    try {
-      print('🔄 Starting sync process...');
 
       // Create services
       final dbService = DBService();
@@ -39,11 +37,6 @@ class SyncManager {
 
       // Sync offline timer updates
       await timerService.syncOfflineUpdates();
-
-      print('✅ Sync completed successfully');
-    } catch (e) {
-      print('❌ Sync failed: $e');
-    }
   }
 
   /// Force sync now (for manual retry)

@@ -29,7 +29,6 @@ class DBService {
 
   /// Legt einen neuen Nutzer mit Standardwerten an
   Future<void> createDefaultUser(String userId) async {
-    print('Creating default user with ID: $userId');
     await _usersRef.child(userId).set({
       'username': 'Neuer Nutzer',
       'avatar': '', // Leerer String oder Default-URL, falls vorhanden
