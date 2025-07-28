@@ -8,7 +8,10 @@ import 'auth_constants.dart';
 import '../../core/services/auth_service.dart';
 
 class AuthPage extends StatefulWidget {
-  const AuthPage({super.key});
+  final AuthService? authService;
+  final UserRepository? dbService;
+
+  const AuthPage({super.key, this.authService, this.dbService});
 
   @override
   State<AuthPage> createState() => _AuthPageState();
