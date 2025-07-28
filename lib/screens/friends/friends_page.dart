@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:phone_away/core/providers/user_repository_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:app_links/app_links.dart';
 import 'dart:developer' as developer;
 import 'package:cached_network_image/cached_network_image.dart'; // Add this import
 
-import '../../core/services/db_service.dart';
+import '../../core/services/firebase_user_repository.dart';
 import '../../core/services/storage_service.dart'; // Add this import
 import '../../core/services/network_service.dart';
 import '../../theme/app_constants.dart';
@@ -101,7 +102,7 @@ class _FriendsPageState extends State<FriendsPage> {
           return;
         }
 
-        final dbService = DBService();
+        final dbService = UserRepositoryProvider.instance;
         developer.log(
           '${FriendsConstants.addingFriendLog}$inviterId${FriendsConstants.toUserLog}$currentUserId',
           name: FriendsConstants.loggerName,
@@ -145,7 +146,7 @@ class _FriendsPageState extends State<FriendsPage> {
     try {
       // Use NetworkService to wrap the database calls with timeout
       await _networkService.executeWithTimeout(() async {
-        final dbService = DBService();
+        final dbService = FirebaseUserRepository();
         developer.log(
           FriendsConstants.fetchingFriendsLog,
           name: FriendsConstants.loggerName,
@@ -153,14 +154,12 @@ class _FriendsPageState extends State<FriendsPage> {
         final snapshot = await dbService.getFriends(widget.userId);
 
         // Get current user data
-        final userSnapshot = await dbService.getUserData(widget.userId);
-        currentUserData =
-            (userSnapshot.value as Map<dynamic, dynamic>?)
-                ?.cast<String, dynamic>() ??
-            {};
+        final userData = await dbService.getUserData(widget.userId);
+
+        currentUserData = userData ?? {};
 
         developer.log(
-          '${FriendsConstants.dbSnapshotLog}${snapshot.exists}',
+          '${FriendsConstants.dbSnapshotLog}${snapshot.isNotEmpty}',
           name: FriendsConstants.loggerName,
         );
 
@@ -186,26 +185,33 @@ class _FriendsPageState extends State<FriendsPage> {
           AppStrings.avatarUrlKey: currentUserAvatarUrl,
         });
 
-        if (snapshot.exists) {
+        if (snapshot.isNotEmpty) {
           developer.log(
             FriendsConstants.processingFriendsLog,
             name: FriendsConstants.loggerName,
           );
-          final data = snapshot.value as Map<dynamic, dynamic>;
+          final data = snapshot as List<String>?;
           developer.log(
             '${FriendsConstants.rawFriendsDataLog}$data',
             name: FriendsConstants.loggerName,
           );
 
+          if (data == null || data.isEmpty) {
+            setState(() {
+              isLoading = false;
+              hasError = false;
+              error = null;
+            });
+            return;
+          }
           // Get all friend IDs
-          final friendIds = data.keys.cast<String>().toList();
+          final friendIds = data.cast<String>().toList();
 
           // Fetch user data for each friend in parallel
           final friendsData = await Future.wait(
             friendIds.map((friendId) async {
               final userSnapshot = await dbService.getUserData(friendId);
-              final userData =
-                  userSnapshot.value as Map<dynamic, dynamic>? ?? {};
+              final userData = userSnapshot as Map<dynamic, dynamic>? ?? {};
               developer.log(
                 '${FriendsConstants.fetchedUserDataLog}$friendId: $userData',
                 name: FriendsConstants.loggerName,
@@ -371,7 +377,9 @@ class _FriendsPageState extends State<FriendsPage> {
                                   decoration: BoxDecoration(
                                     color:
                                         isCurrentUser
-                                            ? Theme.of(context).colorScheme.primaryContainer
+                                            ? Theme.of(
+                                              context,
+                                            ).colorScheme.primaryContainer
                                             : Theme.of(context).cardColor,
                                     borderRadius: BorderRadius.circular(
                                       AppDimensions.borderRadius,
@@ -405,7 +413,9 @@ class _FriendsPageState extends State<FriendsPage> {
                                                     AppDimensions
                                                         .circleAvatarRadius,
                                                 backgroundColor:
-                                                    Theme.of(context).colorScheme.primary,
+                                                    Theme.of(
+                                                      context,
+                                                    ).colorScheme.primary,
                                                 backgroundImage:
                                                     friend[AppStrings
                                                                     .avatarUrlKey]
@@ -423,8 +433,7 @@ class _FriendsPageState extends State<FriendsPage> {
                                                             true
                                                         ? const Icon(
                                                           Icons.person,
-                                                          color:
-                                                              Colors.white,
+                                                          color: Colors.white,
                                                           size:
                                                               AppDimensions
                                                                   .iconSize,
@@ -482,6 +491,7 @@ class _FriendsPageState extends State<FriendsPage> {
                   FriendsConstants.failedInviteLinkLog,
                   name: FriendsConstants.loggerName,
                 );
+                if (!context.mounted) return;
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     content: Text(FriendsConstants.linkCreationError),

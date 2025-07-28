@@ -3,14 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart'; // <-- Diesen Import benötigst du weiterhin
 // import 'package:phone_away/app_router.dart'; // <-- Diesen Import kannst du entfernen, da wir TimerRoute nicht direkt nutzen
 
+import 'package:phone_away/core/providers/user_repository_provider.dart';
+import 'package:phone_away/core/repositories/user_repository.dart';
 import 'package:phone_away/theme/app_constants.dart';
 import 'auth_constants.dart';
 
 import '../../core/services/auth_service.dart';
-import '../../core/services/db_service.dart';
 
 class AuthPage extends StatefulWidget {
-  const AuthPage({super.key});
+  final AuthService? authService;
+  final UserRepository? dbService;
+
+  const AuthPage({super.key, this.authService, this.dbService});
 
   @override
   State<AuthPage> createState() => _AuthPageState();
@@ -18,7 +22,7 @@ class AuthPage extends StatefulWidget {
 
 class _AuthPageState extends State<AuthPage> {
   final AuthService _authService = AuthService();
-  final DBService _dbService = DBService();
+  final UserRepository _dbService = UserRepositoryProvider.instance;
   final _formKey = GlobalKey<FormState>();
   bool _isLogin = true; // toggle between login/register
   bool _loading = false;
@@ -84,9 +88,9 @@ class _AuthPageState extends State<AuthPage> {
             left: AuthConstants.circle1Left,
             child: _buildCircle(
               AuthConstants.circle1Size,
-              Theme.of(
-                context,
-              ).colorScheme.primary.withOpacity(AuthConstants.circle1Opacity),
+              Theme.of(context).colorScheme.primary.withAlpha(
+                (AuthConstants.circle1Opacity * 255).toInt(),
+              ),
             ),
           ),
           Positioned(
@@ -94,8 +98,8 @@ class _AuthPageState extends State<AuthPage> {
             right: AuthConstants.circle2Right,
             child: _buildCircle(
               AuthConstants.circle2Size,
-              Theme.of(context).colorScheme.primaryContainer.withOpacity(
-                AuthConstants.circle2Opacity,
+              Theme.of(context).colorScheme.primaryContainer.withAlpha(
+                (AuthConstants.circle2Opacity * 255).toInt(),
               ),
             ),
           ),
@@ -104,9 +108,9 @@ class _AuthPageState extends State<AuthPage> {
             left: AuthConstants.circle3Left,
             child: _buildCircle(
               AuthConstants.circle3Size,
-              Theme.of(
-                context,
-              ).colorScheme.primary.withOpacity(AuthConstants.circle3Opacity),
+              Theme.of(context).colorScheme.primary.withAlpha(
+                (AuthConstants.circle3Opacity * 255).toInt(),
+              ),
             ),
           ),
           Positioned(
@@ -114,8 +118,8 @@ class _AuthPageState extends State<AuthPage> {
             left: AuthConstants.circle4Left,
             child: _buildCircle(
               AuthConstants.circle4Size,
-              Theme.of(context).colorScheme.secondaryContainer.withOpacity(
-                AuthConstants.circle4Opacity,
+              Theme.of(context).colorScheme.secondaryContainer.withAlpha(
+                (AuthConstants.circle4Opacity * 255).toInt(),
               ),
             ),
           ),
@@ -124,9 +128,9 @@ class _AuthPageState extends State<AuthPage> {
             right: AuthConstants.circle5Right,
             child: _buildCircle(
               AuthConstants.circle5Size,
-              Theme.of(
-                context,
-              ).colorScheme.primary.withOpacity(AuthConstants.circle5Opacity),
+              Theme.of(context).colorScheme.primary.withAlpha(
+                (AuthConstants.circle5Opacity * 255).toInt(),
+              ),
             ),
           ),
           Positioned(
@@ -136,9 +140,9 @@ class _AuthPageState extends State<AuthPage> {
                 AuthConstants.circle6CenterOffset,
             child: _buildCircle(
               AuthConstants.circle6Size,
-              Theme.of(
-                context,
-              ).colorScheme.primary.withOpacity(AuthConstants.circle6Opacity),
+              Theme.of(context).colorScheme.primary.withAlpha(
+                (AuthConstants.circle6Opacity * 255).toInt(),
+              ),
             ),
           ),
 

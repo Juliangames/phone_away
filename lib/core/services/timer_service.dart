@@ -1,12 +1,12 @@
 import 'dart:async';
+import 'package:phone_away/core/repositories/user_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:phone_away/core/services/db_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../helpers/error_handler.dart';
 
 class TimerService {
-  final DBService dbService;
+  final UserRepository userRepository;
   final String userId;
 
   final FlutterLocalNotificationsPlugin _notifications =
@@ -18,16 +18,20 @@ class TimerService {
 
   final _timeStreamController = StreamController<int>.broadcast();
 
-  TimerService._internal({required this.dbService, required this.userId}) {
+  TimerService._internal({required this.userRepository, required this.userId}) {
     _initializeTimer();
   }
 
   static TimerService? _instance;
 
-  factory TimerService({required DBService dbService, required String userId}) {
-    if (_instance == null) {
-      _instance = TimerService._internal(dbService: dbService, userId: userId);
-    }
+  factory TimerService({
+    required UserRepository userRepository,
+    required String userId,
+  }) {
+    _instance ??= TimerService._internal(
+      userRepository: userRepository,
+      userId: userId,
+    );
     return _instance!;
   }
 
@@ -84,12 +88,11 @@ class TimerService {
     } else {
       try {
         await ErrorHandler.executeWithErrorHandling(() async {
-          await dbService.addApple(userId, 1);
+          await userRepository.addApple(userId, 1);
         });
       } catch (e) {
         // If offline, save for later sync
         await _saveOfflineUpdate('apple');
-        print('⚠️ Resume timer update saved offline: $e');
       }
       await _clearPrefs();
       _timeStreamController.add(0);
@@ -102,15 +105,14 @@ class TimerService {
     try {
       await ErrorHandler.executeWithErrorHandling(() async {
         if (remaining <= 0) {
-          await dbService.addApple(userId, 1);
+          await userRepository.addApple(userId, 1);
         } else {
-          await dbService.addRottenApple(userId, 1);
+          await userRepository.addRottenApple(userId, 1);
         }
       });
     } catch (e) {
       // If offline, save locally for later sync
       await _saveOfflineUpdate(remaining <= 0 ? 'apple' : 'rotten_apple');
-      print('⚠️ Timer update saved offline: $e');
     }
 
     _timer?.cancel();
@@ -138,29 +140,24 @@ class TimerService {
 
     if (offlineUpdates.isEmpty) return;
 
-    try {
-      await ErrorHandler.executeWithErrorHandling(() async {
-        for (final update in offlineUpdates) {
-          final parts = update.split(':');
-          if (parts.length >= 3) {
-            final type = parts[1];
-            final updateUserId = parts[2];
+    await ErrorHandler.executeWithErrorHandling(() async {
+      for (final update in offlineUpdates) {
+        final parts = update.split(':');
+        if (parts.length >= 3) {
+          final type = parts[1];
+          final updateUserId = parts[2];
 
-            if (type == 'apple') {
-              await dbService.addApple(updateUserId, 1);
-            } else if (type == 'rotten_apple') {
-              await dbService.addRottenApple(updateUserId, 1);
-            }
+          if (type == 'apple') {
+            await userRepository.addApple(updateUserId, 1);
+          } else if (type == 'rotten_apple') {
+            await userRepository.addRottenApple(updateUserId, 1);
           }
         }
+      }
 
-        // Clear offline updates after successful sync
-        await prefs.remove('offline_updates');
-        print('✅ Offline updates synced successfully');
-      });
-    } catch (e) {
-      print('❌ Failed to sync offline updates: $e');
-    }
+      // Clear offline updates after successful sync
+      await prefs.remove('offline_updates');
+    });
   }
 
   int _calculateRemaining() {
@@ -194,30 +191,24 @@ class TimerService {
   }
 
   Future<void> _showConcentrationNotification() async {
-    try {
-      print('🧠 Attempting to show notification');
-      const androidDetails = AndroidNotificationDetails(
-        'concentration_channel',
-        'Concentration Phase',
-        channelDescription: 'Notifies when concentration mode is active',
-        importance: Importance.max,
-        priority: Priority.high,
-        ongoing: true,
-        autoCancel: false,
-      );
+    const androidDetails = AndroidNotificationDetails(
+      'concentration_channel',
+      'Concentration Phase',
+      channelDescription: 'Notifies when concentration mode is active',
+      importance: Importance.max,
+      priority: Priority.high,
+      ongoing: true,
+      autoCancel: false,
+    );
 
-      const notificationDetails = NotificationDetails(android: androidDetails);
+    const notificationDetails = NotificationDetails(android: androidDetails);
 
-      print('🚀 Showing notification');
-      await _notifications.show(
-        0,
-        'Concentration Phase Running!',
-        'Turn off your phone to earn apples!',
-        notificationDetails,
-      );
-    } catch (e) {
-      print('❌ Notification error: $e');
-    }
+    await _notifications.show(
+      0,
+      'Concentration Phase Running!',
+      'Turn off your phone to earn apples!',
+      notificationDetails,
+    );
   }
 
   Future<void> _cancelConcentrationNotification() async {

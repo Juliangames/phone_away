@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:phone_away/core/services/db_service.dart';
+import 'package:phone_away/core/providers/user_repository_provider.dart';
 import 'package:phone_away/widgets/common/motivational_sayings.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
@@ -23,7 +23,10 @@ class _TimerPageState extends State<TimerPage> {
   @override
   void initState() {
     super.initState();
-    _timerService = TimerService(userId: widget.userId, dbService: DBService());
+    _timerService = TimerService(
+      userId: widget.userId,
+      userRepository: UserRepositoryProvider.instance,
+    );
   }
 
   void onTimeChanged(double value) {
@@ -82,9 +85,12 @@ class _TimerPageState extends State<TimerPage> {
                                     child: CircularProgressIndicator(
                                       value: 1 - (remaining / selectedSeconds),
                                       strokeWidth: AppDimensions.strokeWidth,
-                                      color: Theme.of(context).colorScheme.primary,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
                                       backgroundColor:
-                                          Theme.of(context).colorScheme.secondaryContainer,
+                                          Theme.of(
+                                            context,
+                                          ).colorScheme.secondaryContainer,
                                       strokeCap: StrokeCap.round,
                                     ),
                                   )
@@ -106,10 +112,17 @@ class _TimerPageState extends State<TimerPage> {
                                       angleRange: AppValues.angleRange,
                                       customColors: CustomSliderColors(
                                         progressBarColor:
-                                            Theme.of(context).colorScheme.primary,
+                                            Theme.of(
+                                              context,
+                                            ).colorScheme.primary,
                                         trackColor:
-                                            Theme.of(context).colorScheme.secondaryContainer,
-                                        dotColor: Theme.of(context).colorScheme.primary,
+                                            Theme.of(
+                                              context,
+                                            ).colorScheme.secondaryContainer,
+                                        dotColor:
+                                            Theme.of(
+                                              context,
+                                            ).colorScheme.primary,
                                       ),
                                       infoProperties: InfoProperties(
                                         modifier: (_) => '',

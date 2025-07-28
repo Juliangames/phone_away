@@ -9,18 +9,15 @@ class StorageService {
 
   /// Pfad: avatars/{userId}.jpg
   Future<String> uploadAvatar(String userId, XFile file) async {
-    print('uploadAvatar called for $userId');
 
     final ref = _storage.ref().child('avatars').child('$userId.jpg');
 
     if (!kIsWeb) {
-      print('Running on Mobile – using putFile');
       final File imageFile = File(file.path);
       await ref.putFile(imageFile);
     }
 
     final url = await ref.getDownloadURL();
-    print('Upload done! Firebase URL: $url');
     return url;
   }
 

@@ -1,7 +1,8 @@
 import 'dart:async';
+import 'package:phone_away/core/providers/user_repository_provider.dart';
+
 import '../services/network_service.dart';
 import '../services/timer_service.dart';
-import '../services/db_service.dart';
 
 class SyncManager {
   static final SyncManager _instance = SyncManager._internal();
@@ -30,20 +31,14 @@ class SyncManager {
 
   /// Perform sync when connection is restored
   Future<void> _performSync(String userId) async {
-    try {
-      print('🔄 Starting sync process...');
+    // Create services
+    final timerService = TimerService(
+      userRepository: UserRepositoryProvider.instance,
+      userId: userId,
+    );
 
-      // Create services
-      final dbService = DBService();
-      final timerService = TimerService(dbService: dbService, userId: userId);
-
-      // Sync offline timer updates
-      await timerService.syncOfflineUpdates();
-
-      print('✅ Sync completed successfully');
-    } catch (e) {
-      print('❌ Sync failed: $e');
-    }
+    // Sync offline timer updates
+    await timerService.syncOfflineUpdates();
   }
 
   /// Force sync now (for manual retry)
