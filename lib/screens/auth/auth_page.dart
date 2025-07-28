@@ -1,10 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:phone_away/core/providers/user_repository_provider.dart';
+import 'package:phone_away/core/repositories/user_repository.dart';
 import 'package:phone_away/theme/app_constants.dart';
 import 'auth_constants.dart';
 
 import '../../core/services/auth_service.dart';
-import '../../core/services/db_service.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
@@ -15,7 +16,7 @@ class AuthPage extends StatefulWidget {
 
 class _AuthPageState extends State<AuthPage> {
   final AuthService _authService = AuthService();
-  final DBService _dbService = DBService();
+  final UserRepository _dbService = UserRepositoryProvider.instance;
   final _formKey = GlobalKey<FormState>();
   bool _isLogin = true; // toggle between login/register
   bool _loading = false;

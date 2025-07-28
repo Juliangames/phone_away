@@ -2,10 +2,11 @@ import 'dart:io';
 import 'package:flutter/foundation.dart'; // für kIsWeb
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:phone_away/core/providers/user_repository_provider.dart';
+import 'package:phone_away/core/repositories/user_repository.dart';
 import 'package:provider/provider.dart';
 
 import '../../theme/theme.dart';
-import '../../core/services/db_service.dart';
 import '../../core/services/auth_service.dart';
 import '../../core/services/storage_service.dart';
 import '../../core/helpers/error_handler.dart';
@@ -21,7 +22,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   final AuthService _authService = AuthService();
-  final DBService _dbService = DBService();
+  final UserRepository _dbService = UserRepositoryProvider.instance;
   final StorageService _storageService = StorageService();
 
   final ImagePicker _picker = ImagePicker();
@@ -76,7 +77,7 @@ class _SettingsPageState extends State<SettingsPage> {
       await ErrorHandler.executeWithErrorHandling(() async {
         // Lade Daten aus DB
         final snapshot = await _dbService.getUserData(userId);
-        final data = snapshot.value as Map?;
+        final data = snapshot as Map?;
 
         // Lade Avatar direkt aus Firebase Storage
         String? avatarUrlFromStorage;
@@ -256,13 +257,17 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     CircleAvatar(
                       radius: AppDimensions.largeAvatarRadius,
-                      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                      backgroundColor:
+                          Theme.of(context).colorScheme.primaryContainer,
                       backgroundImage: avatarImage,
                       child:
                           avatarImage == null
                               ? Icon(
                                 Icons.person,
-                                color: Theme.of(context).colorScheme.onPrimaryContainer,
+                                color:
+                                    Theme.of(
+                                      context,
+                                    ).colorScheme.onPrimaryContainer,
                                 size: AppDimensions.largeIconSize,
                               )
                               : null,

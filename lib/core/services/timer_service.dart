@@ -1,12 +1,12 @@
 import 'dart:async';
+import 'package:phone_away/core/repositories/user_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:phone_away/core/services/db_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../helpers/error_handler.dart';
 
 class TimerService {
-  final DBService dbService;
+  final UserRepository userRepository;
   final String userId;
 
   final FlutterLocalNotificationsPlugin _notifications =
@@ -18,14 +18,20 @@ class TimerService {
 
   final _timeStreamController = StreamController<int>.broadcast();
 
-  TimerService._internal({required this.dbService, required this.userId}) {
+  TimerService._internal({required this.userRepository, required this.userId}) {
     _initializeTimer();
   }
 
   static TimerService? _instance;
 
-  factory TimerService({required DBService dbService, required String userId}) {
-    _instance ??= TimerService._internal(dbService: dbService, userId: userId);
+  factory TimerService({
+    required UserRepository userRepository,
+    required String userId,
+  }) {
+    _instance ??= TimerService._internal(
+      userRepository: userRepository,
+      userId: userId,
+    );
     return _instance!;
   }
 
@@ -82,7 +88,7 @@ class TimerService {
     } else {
       try {
         await ErrorHandler.executeWithErrorHandling(() async {
-          await dbService.addApple(userId, 1);
+          await userRepository.addApple(userId, 1);
         });
       } catch (e) {
         // If offline, save for later sync
@@ -99,9 +105,9 @@ class TimerService {
     try {
       await ErrorHandler.executeWithErrorHandling(() async {
         if (remaining <= 0) {
-          await dbService.addApple(userId, 1);
+          await userRepository.addApple(userId, 1);
         } else {
-          await dbService.addRottenApple(userId, 1);
+          await userRepository.addRottenApple(userId, 1);
         }
       });
     } catch (e) {
@@ -142,9 +148,9 @@ class TimerService {
           final updateUserId = parts[2];
 
           if (type == 'apple') {
-            await dbService.addApple(updateUserId, 1);
+            await userRepository.addApple(updateUserId, 1);
           } else if (type == 'rotten_apple') {
-            await dbService.addRottenApple(updateUserId, 1);
+            await userRepository.addRottenApple(updateUserId, 1);
           }
         }
       }
