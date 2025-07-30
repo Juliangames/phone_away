@@ -5,7 +5,7 @@ A Flutter app that helps users break away from constant smartphone usage and cre
 ![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)
 ![Firebase](https://img.shields.io/badge/firebase-ffca28?style=for-the-badge&logo=firebase&logoColor=black)
 ![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white)
-![Test Coverage](https://img.shields.io/badge/coverage-32.6%25-red?style=for-the-badge)
+![Test Coverage](https://img.shields.io/badge/coverage-56.3%25-orange?style=for-the-badge)
 ![Build Status](https://img.shields.io/github/actions/workflow/status/Juliangames/phone_away/test-coverage.yml?style=for-the-badge)
 
 ## 📱 About PhoneAway
