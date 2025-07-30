@@ -37,13 +37,13 @@ class _TimerPageState extends State<TimerPage> {
 
   String formatTime(int seconds) {
     final min = (seconds ~/ AppValues.secondsPerMinute).toString().padLeft(
-      AppValues.padLength,
-      AppStrings.padCharacter,
-    );
+          AppValues.padLength,
+          AppStrings.padCharacter,
+        );
     final sec = (seconds % AppValues.secondsPerMinute).toString().padLeft(
-      AppValues.padLength,
-      AppStrings.padCharacter,
-    );
+          AppValues.padLength,
+          AppStrings.padCharacter,
+        );
     return '$min${AppStrings.timeSeparator}$sec';
   }
 
@@ -75,60 +75,63 @@ class _TimerPageState extends State<TimerPage> {
                           final remaining = snapshot.data ?? selectedSeconds;
                           final isRunning = _timerService.isRunning;
 
+                          final totalSeconds = isRunning
+                              ? _timerService.totalDuration
+                              : selectedSeconds;
+
                           return Stack(
                             alignment: Alignment.center,
                             children: [
                               isRunning
                                   ? SizedBox(
-                                    width: AppDimensions.sliderSize,
-                                    height: AppDimensions.sliderSize,
-                                    child: CircularProgressIndicator(
-                                      value: 1 - (remaining / selectedSeconds),
-                                      strokeWidth: AppDimensions.strokeWidth,
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
-                                      backgroundColor:
-                                          Theme.of(
+                                      width: AppDimensions.sliderSize,
+                                      height: AppDimensions.sliderSize,
+                                      child: CircularProgressIndicator(
+                                        value: 1 - (remaining / totalSeconds),
+                                        strokeWidth: AppDimensions.strokeWidth,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        backgroundColor: Theme.of(
+                                          context,
+                                        ).colorScheme.secondaryContainer,
+                                        strokeCap: StrokeCap.round,
+                                      ),
+                                    )
+                                  : SleekCircularSlider(
+                                      min: AppValues.minSliderValue,
+                                      max: AppValues.maxSliderValue,
+                                      initialValue: selectedSeconds.toDouble(),
+                                      onChange: onTimeChanged,
+                                      innerWidget: (_) =>
+                                          const SizedBox.shrink(),
+                                      appearance: CircularSliderAppearance(
+                                        customWidths: CustomSliderWidths(
+                                          trackWidth: AppDimensions.strokeWidth,
+                                          progressBarWidth:
+                                              AppDimensions.strokeWidth,
+                                          handlerSize:
+                                              AppDimensions.strokeWidth,
+                                        ),
+                                        size: AppDimensions.sliderSize,
+                                        startAngle: AppValues.startAngle,
+                                        angleRange: AppValues.angleRange,
+                                        customColors: CustomSliderColors(
+                                          progressBarColor: Theme.of(
+                                            context,
+                                          ).colorScheme.primary,
+                                          trackColor: Theme.of(
                                             context,
                                           ).colorScheme.secondaryContainer,
-                                      strokeCap: StrokeCap.round,
-                                    ),
-                                  )
-                                  : SleekCircularSlider(
-                                    min: AppValues.minSliderValue,
-                                    max: AppValues.maxSliderValue,
-                                    initialValue: selectedSeconds.toDouble(),
-                                    onChange: onTimeChanged,
-                                    innerWidget: (_) => const SizedBox.shrink(),
-                                    appearance: CircularSliderAppearance(
-                                      customWidths: CustomSliderWidths(
-                                        trackWidth: AppDimensions.strokeWidth,
-                                        progressBarWidth:
-                                            AppDimensions.strokeWidth,
-                                        handlerSize: AppDimensions.strokeWidth,
-                                      ),
-                                      size: AppDimensions.sliderSize,
-                                      startAngle: AppValues.startAngle,
-                                      angleRange: AppValues.angleRange,
-                                      customColors: CustomSliderColors(
-                                        progressBarColor:
-                                            Theme.of(
-                                              context,
-                                            ).colorScheme.primary,
-                                        trackColor:
-                                            Theme.of(
-                                              context,
-                                            ).colorScheme.secondaryContainer,
-                                        dotColor:
-                                            Theme.of(
-                                              context,
-                                            ).colorScheme.primary,
-                                      ),
-                                      infoProperties: InfoProperties(
-                                        modifier: (_) => '',
+                                          dotColor: Theme.of(
+                                            context,
+                                          ).colorScheme.primary,
+                                        ),
+                                        infoProperties: InfoProperties(
+                                          modifier: (_) => '',
+                                        ),
                                       ),
                                     ),
-                                  ),
                               Text(
                                 formatTime(
                                   isRunning ? remaining : selectedSeconds,
@@ -151,10 +154,9 @@ class _TimerPageState extends State<TimerPage> {
                     stream: _timerService.timeStream,
                     builder: (context, snapshot) {
                       final isRunning = _timerService.isRunning;
-                      final saying =
-                          isRunning
-                              ? TimerConstants.focusedMotivationalText
-                              : TimerConstants.defaultMotivationalText;
+                      final saying = isRunning
+                          ? TimerConstants.focusedMotivationalText
+                          : TimerConstants.defaultMotivationalText;
 
                       return Padding(
                         padding: const EdgeInsets.only(
@@ -179,10 +181,9 @@ class _TimerPageState extends State<TimerPage> {
                             _timerService.start(selectedSeconds);
                           }
                         },
-                        text:
-                            isRunning
-                                ? TimerConstants.stopButtonText
-                                : TimerConstants.startButtonText,
+                        text: isRunning
+                            ? TimerConstants.stopButtonText
+                            : TimerConstants.startButtonText,
                         icon: isRunning ? Icons.stop : Icons.play_arrow,
                         isError: isRunning,
                       );

@@ -15,6 +15,7 @@ class TimerService {
   Timer? _timer;
   DateTime? _startTime;
   int _durationSeconds = 0;
+  int get totalDuration => _durationSeconds;
 
   final _timeStreamController = StreamController<int>.broadcast();
 
@@ -48,10 +49,10 @@ class TimerService {
   bool get isRunning => _startTime != null;
 
   Stream<int> get timeStream => Stream<int>.multi((listener) {
-    listener.add(_calculateRemaining());
-    final sub = _timeStreamController.stream.listen(listener.add);
-    listener.onCancel = sub.cancel;
-  });
+        listener.add(_calculateRemaining());
+        final sub = _timeStreamController.stream.listen(listener.add);
+        listener.onCancel = sub.cancel;
+      });
 
   Future<void> start(int totalSeconds) async {
     _startTime = DateTime.now();
