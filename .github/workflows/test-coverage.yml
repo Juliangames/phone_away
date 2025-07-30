@@ -9,11 +9,15 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
 
     steps:
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
@@ -44,7 +48,7 @@ jobs:
 
           # Calculate coverage percentage with fallback method
           COVERAGE=$(lcov --summary coverage/lcov.info 2>&1 | grep -E "lines\.*: [0-9]+\.[0-9]+%" | grep -oE "[0-9]+\.[0-9]+")
-          
+
           # Fallback: Calculate manually from lcov.info file
           if [ -z "$COVERAGE" ]; then
             echo "⚠️  Using fallback coverage calculation..."
@@ -66,7 +70,7 @@ jobs:
 
           # Ensure COVERAGE uses dot as decimal separator (not comma)
           COVERAGE=$(echo "$COVERAGE" | sed 's/,/./g')
-          
+
           echo "📈 Coverage: ${COVERAGE}%"
           echo "COVERAGE_PERCENTAGE=$COVERAGE" >> $GITHUB_ENV
 
@@ -86,7 +90,7 @@ jobs:
         run: |
           # Create or update coverage badge
           BADGE_URL="https://img.shields.io/badge/coverage-${COVERAGE_PERCENTAGE}%25-${BADGE_COLOR}?style=for-the-badge"
-          
+
           echo "🔗 Badge URL: $BADGE_URL"
 
           # Update README.md with improved regex
