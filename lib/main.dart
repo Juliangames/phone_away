@@ -75,3 +75,83 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+class AuthWrapper extends StatelessWidget {
+  const AuthWrapper({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        if (snapshot.hasData) {
+          return const MainNavigation();
+        }
+
+        return const AuthPage();
+      },
+    );
+  }
+}
+
+class MainNavigation extends StatefulWidget {
+  const MainNavigation({super.key});
+
+  @override
+  State<MainNavigation> createState() => _MainNavigationState();
+}
+
+class _MainNavigationState extends State<MainNavigation> {
+  int _selectedIndex = 0;
+
+  List<Widget> get _pages {
+    final userId = FirebaseAuth.instance.currentUser?.uid ?? 'unknown_user';
+    return [
+      TimerPage(userId: userId),
+      TreePage(model: TreeModel(userId: userId)),
+      FriendsPage(userId: userId),
+      const SettingsPage(),
+    ];
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _pages[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        type: BottomNavigationBarType.fixed,
+        backgroundColor:
+            Theme.of(context).bottomNavigationBarTheme.backgroundColor ??
+            Theme.of(context).scaffoldBackgroundColor,
+        selectedItemColor: Theme.of(context).colorScheme.primary,
+        unselectedItemColor: Theme.of(context).colorScheme.onSurfaceVariant,
+        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
+        unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.normal),
+        elevation: 8,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.timer), label: 'Timer'),
+          BottomNavigationBarItem(icon: Icon(Icons.park), label: 'Tree'),
+          BottomNavigationBarItem(icon: Icon(Icons.group), label: 'Friends'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
+          ),
+        ],
+      ),
+    );
+  }
+}

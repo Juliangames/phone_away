@@ -25,7 +25,8 @@ class CustomActionButton extends StatelessWidget {
               : isFilled
               ? Theme.of(context).colorScheme.primary
               : Theme.of(context).colorScheme.surface,
-      foregroundColor: isError == true 
+      foregroundColor:
+          isError == true
               ? Theme.of(context).colorScheme.onError
               : Theme.of(context).colorScheme.onPrimary,
       minimumSize: const Size(154, 54),

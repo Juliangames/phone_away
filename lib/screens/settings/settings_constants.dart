@@ -6,7 +6,7 @@ class SettingsConstants {
   static const String notificationsText = 'Notifications';
   static const String appearanceText = 'Appearance';
   static const String logoutText = 'Logout';
-  
+
   // Theme options
   static const String lightThemeText = 'Light';
   static const String darkThemeText = 'Dark';

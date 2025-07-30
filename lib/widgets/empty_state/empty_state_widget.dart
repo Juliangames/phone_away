@@ -140,12 +140,12 @@ class EmptyStateWidget extends StatelessWidget {
               icon,
               size: 80,
               color:
-                  iconColor?.withAlpha((178)) ??
+                  iconColor?.withOpacity(0.7) ??
                   (isError
-                      ? Theme.of(context).colorScheme.error.withAlpha((178))
+                      ? Theme.of(context).colorScheme.error.withOpacity(0.7)
                       : Theme.of(
                         context,
-                      ).colorScheme.onSurfaceVariant.withAlpha((128))),
+                      ).colorScheme.onSurfaceVariant.withOpacity(0.5)),
             ),
             const SizedBox(height: AppDimensions.mediumSpacing),
             Text(
@@ -167,7 +167,7 @@ class EmptyStateWidget extends StatelessWidget {
                 fontSize: 14,
                 color: Theme.of(
                   context,
-                ).colorScheme.onSurfaceVariant.withAlpha((178)),
+                ).colorScheme.onSurfaceVariant.withOpacity(0.7),
                 height: 1.4,
               ),
               textAlign: TextAlign.center,

@@ -88,9 +88,9 @@ class _AuthPageState extends State<AuthPage> {
             left: AuthConstants.circle1Left,
             child: _buildCircle(
               AuthConstants.circle1Size,
-              Theme.of(context).colorScheme.primary.withAlpha(
-                (AuthConstants.circle1Opacity * 255).toInt(),
-              ),
+              Theme.of(
+                context,
+              ).colorScheme.primary.withOpacity(AuthConstants.circle1Opacity),
             ),
           ),
           Positioned(
@@ -108,9 +108,9 @@ class _AuthPageState extends State<AuthPage> {
             left: AuthConstants.circle3Left,
             child: _buildCircle(
               AuthConstants.circle3Size,
-              Theme.of(context).colorScheme.primary.withAlpha(
-                (AuthConstants.circle3Opacity * 255).toInt(),
-              ),
+              Theme.of(
+                context,
+              ).colorScheme.primary.withOpacity(AuthConstants.circle3Opacity),
             ),
           ),
           Positioned(
@@ -128,9 +128,9 @@ class _AuthPageState extends State<AuthPage> {
             right: AuthConstants.circle5Right,
             child: _buildCircle(
               AuthConstants.circle5Size,
-              Theme.of(context).colorScheme.primary.withAlpha(
-                (AuthConstants.circle5Opacity * 255).toInt(),
-              ),
+              Theme.of(
+                context,
+              ).colorScheme.primary.withOpacity(AuthConstants.circle5Opacity),
             ),
           ),
           Positioned(
@@ -140,9 +140,9 @@ class _AuthPageState extends State<AuthPage> {
                 AuthConstants.circle6CenterOffset,
             child: _buildCircle(
               AuthConstants.circle6Size,
-              Theme.of(context).colorScheme.primary.withAlpha(
-                (AuthConstants.circle6Opacity * 255).toInt(),
-              ),
+              Theme.of(
+                context,
+              ).colorScheme.primary.withOpacity(AuthConstants.circle6Opacity),
             ),
           ),
 
