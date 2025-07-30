@@ -2,18 +2,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:phone_away/screens/tree/tree_model.dart';
+import 'package:phone_away/core/router/router.dart'; // Importiere deine neue Router-Datei
 import 'package:phone_away/theme/theme_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, TargetPlatform, kIsWeb;
 
 import 'firebase_options.dart';
-import 'screens/auth/auth_page.dart';
-import 'screens/friends/friends_page.dart';
-import 'screens/settings/settings_page.dart';
-import 'screens/timer/timer_page.dart';
-import 'screens/tree/tree_page.dart';
 
 // 🔔 Create the global instance
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -66,13 +61,14 @@ class MyApp extends StatelessWidget {
             themeManager.updateSystemBrightness(brightness == Brightness.dark);
           });
 
-          return MaterialApp(
+          return MaterialApp.router(
+            // Hier verwenden wir MaterialApp.router
             debugShowCheckedModeBanner: false,
             title: 'PhoneAway',
             theme: themeManager.lightTheme,
             darkTheme: themeManager.darkTheme,
             themeMode: themeManager.themeMode,
-            home: const AuthWrapper(),
+            routerConfig: appRouter, // Die GoRouter-Instanz übergeben
           );
         },
       ),

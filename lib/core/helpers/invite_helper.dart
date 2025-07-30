@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:share_plus/share_plus.dart';
 
 class InviteHelper {
   static const String _apiKey = 'AIzaSyCjpDe5qbe-APdpaiM6MqdNJH7kXirr758';
