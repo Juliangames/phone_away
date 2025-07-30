@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 /// Initializes Firebase for tests
 Future<void> setupFirebaseForTest() async {
   TestWidgetsFlutterBinding.ensureInitialized();
-  
+
   // Initialize Firebase with test configuration
   if (!Firebase.apps.any((app) => app.name == '[DEFAULT]')) {
     await Firebase.initializeApp(

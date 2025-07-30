@@ -20,19 +20,23 @@ void main() {
 
     test('dialog constants have correct values', () {
       expect(SettingsConstants.logoutConfirmTitle, equals('Logout'));
-      expect(SettingsConstants.logoutConfirmMessage, equals('Are you sure you want to logout?'));
+      expect(SettingsConstants.logoutConfirmMessage,
+          equals('Are you sure you want to logout?'));
       expect(SettingsConstants.logoutFailedPrefix, equals('Logout failed: '));
     });
 
     test('easter egg constants have correct values', () {
-      expect(SettingsConstants.easterEggTitle, equals('🧙‍♂️ Seepold has appeared!'));
-      expect(SettingsConstants.easterEggImagePath, equals('assets/images/seepold.png'));
+      expect(SettingsConstants.easterEggTitle,
+          equals('🧙‍♂️ Seepold has appeared!'));
+      expect(SettingsConstants.easterEggImagePath,
+          equals('assets/images/seepold.png'));
     });
 
     test('logging constants have correct values', () {
       expect(SettingsConstants.pickingImageLog, equals('Picking image...'));
       expect(SettingsConstants.imagePickedLog, equals('Image picked: '));
-      expect(SettingsConstants.avatarUrlFromStorageLog, equals('Avatar URL from storage: '));
+      expect(SettingsConstants.avatarUrlFromStorageLog,
+          equals('Avatar URL from storage: '));
     });
 
     test('all text constants are not empty', () {
@@ -45,13 +49,17 @@ void main() {
     });
 
     test('theme texts are different', () {
-      expect(SettingsConstants.lightThemeText, isNot(equals(SettingsConstants.darkThemeText)));
-      expect(SettingsConstants.darkThemeText, isNot(equals(SettingsConstants.systemThemeText)));
-      expect(SettingsConstants.lightThemeText, isNot(equals(SettingsConstants.systemThemeText)));
+      expect(SettingsConstants.lightThemeText,
+          isNot(equals(SettingsConstants.darkThemeText)));
+      expect(SettingsConstants.darkThemeText,
+          isNot(equals(SettingsConstants.systemThemeText)));
+      expect(SettingsConstants.lightThemeText,
+          isNot(equals(SettingsConstants.systemThemeText)));
     });
 
     test('dialog title matches action', () {
-      expect(SettingsConstants.logoutConfirmTitle, equals(SettingsConstants.logoutText));
+      expect(SettingsConstants.logoutConfirmTitle,
+          equals(SettingsConstants.logoutText));
     });
 
     test('easter egg title contains emoji', () {
@@ -88,7 +96,7 @@ void main() {
         SettingsConstants.darkThemeText,
         SettingsConstants.systemThemeText,
       ];
-      
+
       expect(themes, hasLength(3));
       expect(themes, contains('Light'));
       expect(themes, contains('Dark'));

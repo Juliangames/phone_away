@@ -54,8 +54,8 @@ void main() {
     });
 
     test('button labels are unique', () {
-      expect(FriendsConstants.retryButtonLabel, 
-        isNot(equals(FriendsConstants.inviteButtonLabel)));
+      expect(FriendsConstants.retryButtonLabel,
+          isNot(equals(FriendsConstants.inviteButtonLabel)));
     });
   });
 }

@@ -7,8 +7,10 @@ void main() {
       expect(TimerConstants.pageTitle, equals('Timer'));
       expect(TimerConstants.startButtonText, equals('Start'));
       expect(TimerConstants.stopButtonText, equals('Stop'));
-      expect(TimerConstants.focusedMotivationalText, equals('Stay focused and keep going!'));
-      expect(TimerConstants.defaultMotivationalText, equals('Set a goal and earn apples!'));
+      expect(TimerConstants.focusedMotivationalText,
+          equals('Stay focused and keep going!'));
+      expect(TimerConstants.defaultMotivationalText,
+          equals('Set a goal and earn apples!'));
     });
 
     test('dimension constants have correct values', () {
@@ -16,11 +18,13 @@ void main() {
     });
 
     test('button text constants are different', () {
-      expect(TimerConstants.startButtonText, isNot(equals(TimerConstants.stopButtonText)));
+      expect(TimerConstants.startButtonText,
+          isNot(equals(TimerConstants.stopButtonText)));
     });
 
     test('motivational text constants are different', () {
-      expect(TimerConstants.focusedMotivationalText, isNot(equals(TimerConstants.defaultMotivationalText)));
+      expect(TimerConstants.focusedMotivationalText,
+          isNot(equals(TimerConstants.defaultMotivationalText)));
     });
 
     test('all text constants are not empty', () {
