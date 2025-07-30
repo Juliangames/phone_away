@@ -141,9 +141,11 @@ class EmptyStateWidget extends StatelessWidget {
               size: 80,
               color:
                   iconColor?.withOpacity(0.7) ??
-                  (isError 
-                    ? Theme.of(context).colorScheme.error.withOpacity(0.7)
-                    : Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.5)),
+                  (isError
+                      ? Theme.of(context).colorScheme.error.withOpacity(0.7)
+                      : Theme.of(
+                        context,
+                      ).colorScheme.onSurfaceVariant.withOpacity(0.5)),
             ),
             const SizedBox(height: AppDimensions.mediumSpacing),
             Text(
@@ -163,7 +165,9 @@ class EmptyStateWidget extends StatelessWidget {
               subtitle,
               style: TextStyle(
                 fontSize: 14,
-                color: Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.7),
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurfaceVariant.withOpacity(0.7),
                 height: 1.4,
               ),
               textAlign: TextAlign.center,

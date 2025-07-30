@@ -79,7 +79,9 @@ class _AuthPageState extends State<AuthPage> {
             left: AuthConstants.circle1Left,
             child: _buildCircle(
               AuthConstants.circle1Size,
-              Theme.of(context).colorScheme.primary.withOpacity(AuthConstants.circle1Opacity),
+              Theme.of(
+                context,
+              ).colorScheme.primary.withOpacity(AuthConstants.circle1Opacity),
             ),
           ),
           Positioned(
@@ -97,7 +99,9 @@ class _AuthPageState extends State<AuthPage> {
             left: AuthConstants.circle3Left,
             child: _buildCircle(
               AuthConstants.circle3Size,
-              Theme.of(context).colorScheme.primary.withOpacity(AuthConstants.circle3Opacity),
+              Theme.of(
+                context,
+              ).colorScheme.primary.withOpacity(AuthConstants.circle3Opacity),
             ),
           ),
           Positioned(
@@ -115,7 +119,9 @@ class _AuthPageState extends State<AuthPage> {
             right: AuthConstants.circle5Right,
             child: _buildCircle(
               AuthConstants.circle5Size,
-              Theme.of(context).colorScheme.primary.withOpacity(AuthConstants.circle5Opacity),
+              Theme.of(
+                context,
+              ).colorScheme.primary.withOpacity(AuthConstants.circle5Opacity),
             ),
           ),
           Positioned(
@@ -125,7 +131,9 @@ class _AuthPageState extends State<AuthPage> {
                 AuthConstants.circle6CenterOffset,
             child: _buildCircle(
               AuthConstants.circle6Size,
-              Theme.of(context).colorScheme.primary.withOpacity(AuthConstants.circle6Opacity),
+              Theme.of(
+                context,
+              ).colorScheme.primary.withOpacity(AuthConstants.circle6Opacity),
             ),
           ),
 
@@ -166,10 +174,14 @@ class _AuthPageState extends State<AuthPage> {
                           decoration: InputDecoration(
                             labelText: AuthConstants.emailLabel,
                             labelStyle: TextStyle(
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              color:
+                                  Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant,
                             ),
                             filled: true,
-                            fillColor: Theme.of(context).colorScheme.primaryContainer,
+                            fillColor:
+                                Theme.of(context).colorScheme.primaryContainer,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(
                                 AppDimensions.borderRadius,
@@ -193,10 +205,14 @@ class _AuthPageState extends State<AuthPage> {
                           decoration: InputDecoration(
                             labelText: AuthConstants.passwordLabel,
                             labelStyle: TextStyle(
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              color:
+                                  Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant,
                             ),
                             filled: true,
-                            fillColor: Theme.of(context).colorScheme.primaryContainer,
+                            fillColor:
+                                Theme.of(context).colorScheme.primaryContainer,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(
                                 AppDimensions.borderRadius,
@@ -218,7 +234,9 @@ class _AuthPageState extends State<AuthPage> {
                         if (_error != null)
                           Text(
                             _error!,
-                            style: TextStyle(color: Theme.of(context).colorScheme.error),
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.error,
+                            ),
                             textAlign: TextAlign.center,
                           ),
                         if (_loading)
@@ -227,8 +245,10 @@ class _AuthPageState extends State<AuthPage> {
                           ElevatedButton(
                             onPressed: _submit,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Theme.of(context).colorScheme.primary,
-                              foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.primary,
+                              foregroundColor:
+                                  Theme.of(context).colorScheme.onPrimary,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(
                                   AppDimensions.borderRadius,

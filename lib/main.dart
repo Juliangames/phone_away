@@ -138,8 +138,9 @@ class _MainNavigationState extends State<MainNavigation> {
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         type: BottomNavigationBarType.fixed,
-        backgroundColor: Theme.of(context).bottomNavigationBarTheme.backgroundColor ?? 
-                        Theme.of(context).scaffoldBackgroundColor,
+        backgroundColor:
+            Theme.of(context).bottomNavigationBarTheme.backgroundColor ??
+            Theme.of(context).scaffoldBackgroundColor,
         selectedItemColor: Theme.of(context).colorScheme.primary,
         unselectedItemColor: Theme.of(context).colorScheme.onSurfaceVariant,
         selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),

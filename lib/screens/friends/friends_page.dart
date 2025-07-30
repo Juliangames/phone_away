@@ -371,7 +371,9 @@ class _FriendsPageState extends State<FriendsPage> {
                                   decoration: BoxDecoration(
                                     color:
                                         isCurrentUser
-                                            ? Theme.of(context).colorScheme.primaryContainer
+                                            ? Theme.of(
+                                              context,
+                                            ).colorScheme.primaryContainer
                                             : Theme.of(context).cardColor,
                                     borderRadius: BorderRadius.circular(
                                       AppDimensions.borderRadius,
@@ -405,7 +407,9 @@ class _FriendsPageState extends State<FriendsPage> {
                                                     AppDimensions
                                                         .circleAvatarRadius,
                                                 backgroundColor:
-                                                    Theme.of(context).colorScheme.primary,
+                                                    Theme.of(
+                                                      context,
+                                                    ).colorScheme.primary,
                                                 backgroundImage:
                                                     friend[AppStrings
                                                                     .avatarUrlKey]
@@ -423,8 +427,7 @@ class _FriendsPageState extends State<FriendsPage> {
                                                             true
                                                         ? const Icon(
                                                           Icons.person,
-                                                          color:
-                                                              Colors.white,
+                                                          color: Colors.white,
                                                           size:
                                                               AppDimensions
                                                                   .iconSize,

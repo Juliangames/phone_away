@@ -256,13 +256,17 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     CircleAvatar(
                       radius: AppDimensions.largeAvatarRadius,
-                      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                      backgroundColor:
+                          Theme.of(context).colorScheme.primaryContainer,
                       backgroundImage: avatarImage,
                       child:
                           avatarImage == null
                               ? Icon(
                                 Icons.person,
-                                color: Theme.of(context).colorScheme.onPrimaryContainer,
+                                color:
+                                    Theme.of(
+                                      context,
+                                    ).colorScheme.onPrimaryContainer,
                                 size: AppDimensions.largeIconSize,
                               )
                               : null,
