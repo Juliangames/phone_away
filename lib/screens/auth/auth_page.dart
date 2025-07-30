@@ -21,14 +21,21 @@ class AuthPage extends StatefulWidget {
 }
 
 class _AuthPageState extends State<AuthPage> {
-  final AuthService _authService = AuthService();
-  final UserRepository _dbService = UserRepositoryProvider.instance;
+  late final AuthService _authService;
+  late final UserRepository _dbService;
   final _formKey = GlobalKey<FormState>();
   bool _isLogin = true; // toggle between login/register
   bool _loading = false;
   String _email = '';
   String _password = '';
   String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _authService = widget.authService ?? AuthService();
+    _dbService = widget.dbService ?? UserRepositoryProvider.instance;
+  }
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;

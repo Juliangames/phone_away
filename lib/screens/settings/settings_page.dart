@@ -97,11 +97,9 @@ class _SettingsPageState extends State<SettingsPage> {
           _userId = userId;
           _username =
               data?[AppStrings.usernameKey] ?? AppStrings.defaultUsername;
-          _avatarUrl =
-              avatarUrlFromStorage ??
+          _avatarUrl = avatarUrlFromStorage ??
               (data?[AppStrings.avatarKey] ?? AppStrings.defaultAvatar);
-          _notifications =
-              data?[AppStrings.notificationsKey] ??
+          _notifications = data?[AppStrings.notificationsKey] ??
               AppStrings.defaultNotifications;
           _nameController.text = _username;
           _isLoading = false;
@@ -204,10 +202,11 @@ class _SettingsPageState extends State<SettingsPage> {
 
     ImageProvider? avatarImage;
     if (_newAvatarFile != null) {
-      avatarImage =
-          kIsWeb
-              ? (_avatarUrl.isNotEmpty ? NetworkImage(_avatarUrl) : null)
-              : FileImage(File(_newAvatarFile!.path));
+      avatarImage = kIsWeb
+          ? (_avatarUrl.isNotEmpty
+              ? NetworkImage(_avatarUrl) as ImageProvider<Object>?
+              : null)
+          : FileImage(File(_newAvatarFile!.path)) as ImageProvider<Object>?;
     } else {
       avatarImage = (_avatarUrl.isNotEmpty) ? NetworkImage(_avatarUrl) : null;
     }
@@ -263,17 +262,15 @@ class _SettingsPageState extends State<SettingsPage> {
                       backgroundColor:
                           Theme.of(context).colorScheme.primaryContainer,
                       backgroundImage: avatarImage,
-                      child:
-                          avatarImage == null
-                              ? Icon(
-                                Icons.person,
-                                color:
-                                    Theme.of(
-                                      context,
-                                    ).colorScheme.onPrimaryContainer,
-                                size: AppDimensions.largeIconSize,
-                              )
-                              : null,
+                      child: avatarImage == null
+                          ? Icon(
+                              Icons.person,
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onPrimaryContainer,
+                              size: AppDimensions.largeIconSize,
+                            )
+                          : null,
                     ),
                   ],
                 ),
@@ -289,19 +286,18 @@ class _SettingsPageState extends State<SettingsPage> {
                     _easterEggCounter = AppValues.easterEggResetCount;
                     showDialog(
                       context: context,
-                      builder:
-                          (_) => AlertDialog(
-                            title: const Text(SettingsConstants.easterEggTitle),
-                            content: Image.asset(
-                              SettingsConstants.easterEggImagePath,
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(context),
-                                child: const Text(AppStrings.hideText),
-                              ),
-                            ],
+                      builder: (_) => AlertDialog(
+                        title: const Text(SettingsConstants.easterEggTitle),
+                        content: Image.asset(
+                          SettingsConstants.easterEggImagePath,
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text(AppStrings.hideText),
                           ),
+                        ],
+                      ),
                     );
                   }
                 });
@@ -432,33 +428,32 @@ class _SettingsPageState extends State<SettingsPage> {
                 onPressed: () {
                   showDialog(
                     context: context,
-                    builder:
-                        (context) => AlertDialog(
-                          title: const Text(
-                            SettingsConstants.logoutConfirmTitle,
-                          ),
-                          content: const Text(
-                            SettingsConstants.logoutConfirmMessage,
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: const Text(AppStrings.cancelText),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                                _logout();
-                              },
-                              child: Text(
-                                SettingsConstants.logoutText,
-                                style: TextStyle(
-                                  color: Theme.of(context).colorScheme.error,
-                                ),
-                              ),
-                            ),
-                          ],
+                    builder: (context) => AlertDialog(
+                      title: const Text(
+                        SettingsConstants.logoutConfirmTitle,
+                      ),
+                      content: const Text(
+                        SettingsConstants.logoutConfirmMessage,
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text(AppStrings.cancelText),
                         ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            _logout();
+                          },
+                          child: Text(
+                            SettingsConstants.logoutText,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.error,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   );
                 },
                 style: ElevatedButton.styleFrom(
