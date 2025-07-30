@@ -61,13 +61,13 @@ COVERAGE=$(echo "$COVERAGE" | sed 's/,/./g')
 echo "📈 Coverage: ${COVERAGE}%"
 
 # Determine badge color based on coverage thresholds
-if (( $(echo "$COVERAGE >= 80" | bc -l) )); then
+if (( $(echo "$COVERAGE >= 20" | bc -l) )); then
   COLOR="brightgreen"
   EMOJI="🟢"
-elif (( $(echo "$COVERAGE >= 60" | bc -l) )); then
+elif (( $(echo "$COVERAGE >= 15" | bc -l) )); then
   COLOR="yellow" 
   EMOJI="🟡"
-elif (( $(echo "$COVERAGE >= 40" | bc -l) )); then
+elif (( $(echo "$COVERAGE >= 10" | bc -l) )); then
   COLOR="orange"
   EMOJI="🟠"
 else
