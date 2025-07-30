@@ -1,0 +1,85 @@
+name: Test Coverage
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.24.3"
+          channel: "stable"
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run tests with coverage
+        run: |
+          flutter test --coverage
+
+      - name: Install lcov
+        run: sudo apt-get install -y lcov
+
+      - name: Generate coverage report
+        run: |
+          # Generate HTML coverage report
+          genhtml coverage/lcov.info -o coverage/html
+
+          # Calculate coverage percentage
+          COVERAGE=$(lcov --summary coverage/lcov.info 2>&1 | grep -E "lines\.*: [0-9]+\.[0-9]+%" | grep -o "[0-9]\+\.[0-9]\+")
+          echo "COVERAGE_PERCENTAGE=$COVERAGE" >> $GITHUB_ENV
+
+          # Determine badge color
+          if (( $(echo "$COVERAGE > 80" | bc -l) )); then
+            COLOR="brightgreen"
+          elif (( $(echo "$COVERAGE > 60" | bc -l) )); then
+            COLOR="yellow"
+          else
+            COLOR="red"
+          fi
+          echo "BADGE_COLOR=$COLOR" >> $GITHUB_ENV
+
+      - name: Update README with coverage badge
+        run: |
+          # Create or update coverage badge
+          BADGE_URL="https://img.shields.io/badge/coverage-${COVERAGE_PERCENTAGE}%25-${BADGE_COLOR}?style=for-the-badge"
+
+          # Update README.md
+          if grep -q "!\[Test Coverage\]" README.md; then
+            # Replace existing badge
+            sed -i "s|!\[Test Coverage\](.*)|![Test Coverage]($BADGE_URL)|g" README.md
+          else
+            # Add badge after existing badges
+            sed -i '/!\[Dart\]/a ![Test Coverage]('"$BADGE_URL"')' README.md
+          fi
+
+      - name: Commit coverage changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add README.md
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update test coverage badge [skip ci]"
+            git push
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload coverage to Codecov (optional)
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./coverage/lcov.info
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false

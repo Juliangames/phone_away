@@ -5,6 +5,8 @@ A Flutter app that helps users break away from constant smartphone usage and cre
 ![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)
 ![Firebase](https://img.shields.io/badge/firebase-ffca28?style=for-the-badge&logo=firebase&logoColor=black)
 ![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white)
+![Test Coverage](https://img.shields.io/badge/coverage-1.2%25-red?style=for-the-badge)
+![Build Status](https://img.shields.io/github/actions/workflow/status/Juliangames/phone_away/test-coverage.yml?style=for-the-badge)
 
 ## 📱 About PhoneAway
 
@@ -419,6 +421,52 @@ dependencies:
 - Encrypted data transmission
 - Local storage of sensitive timer data
 - Permission-based notifications
+
+## 🧪 Testing & Quality Assurance
+
+This project maintains high code quality through automated testing and continuous integration.
+
+### Test Coverage
+
+The current test coverage is automatically tracked and updated with each commit. Our testing strategy includes:
+
+- **Unit Tests**: Core business logic and services
+- **Widget Tests**: UI components and user interactions
+- **Integration Tests**: End-to-end user workflows
+- **Mock Testing**: Firebase services and external dependencies
+
+### Running Tests
+
+```bash
+# Run all tests
+flutter test
+
+# Run tests with coverage
+flutter test --coverage
+
+# Update coverage badge (requires lcov)
+./scripts/update_coverage.sh
+
+# Generate HTML coverage report
+genhtml coverage/lcov.info -o coverage/html
+```
+
+### Test Structure
+
+```
+test/
+├── auth_page_test.dart          # Authentication UI tests
+├── widget_test.dart             # Basic widget tests
+└── mocks/                       # Mock implementations
+    ├── mock_auth_service.dart
+    └── mock_user_repository.dart
+```
+
+### Continuous Integration
+
+- Automated testing on every pull request
+- Coverage reports generated and updated automatically
+- Badge updates reflect current code coverage status
 
 ## 🧪 Easter Eggs
 
