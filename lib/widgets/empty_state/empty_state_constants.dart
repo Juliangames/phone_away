@@ -23,8 +23,8 @@ class EmptyStateConstants {
   static const String tryAgainAction = 'Try Again';
   
   // Empty tree
-  static const String emptyTreeTitle = '🌱 Plant your first tree!';
-  static const String emptyTreeSubtitle = 'Complete focus sessions to grow your tree and collect apples. Each session brings you closer to a flourishing digital garden!';
+  static const String emptyTreeTitle = '🌱 Plant your tree!';
+  static const String emptyTreeSubtitle = 'Complete a focus session to grow your tree and collect apples. Each session brings you closer to a flourishing digital garden!';
   
   // Connection status
   static const String connectionRestored = 'Connection restored';
