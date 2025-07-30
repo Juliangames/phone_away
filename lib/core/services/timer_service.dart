@@ -195,7 +195,7 @@ class TimerService {
     const androidDetails = AndroidNotificationDetails(
       'concentration_channel',
       'Concentration Phase',
-      largeIcon: DrawableResourceAndroidBitmap('icon'),
+      icon: 'icon',
       channelDescription: 'Notifies when concentration mode is active',
       importance: Importance.max,
       priority: Priority.high,
