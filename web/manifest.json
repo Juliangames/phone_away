@@ -1,6 +1,6 @@
 {
-    "name": "phone_away",
-    "short_name": "phone_away",
+    "name": "phone Away",
+    "short_name": "phone Away",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
