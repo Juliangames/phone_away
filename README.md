@@ -190,7 +190,7 @@ class SyncManager {
 
 ## 🚀 Technology Stack
 
-- **Framework**: Flutter 3.7.2+
+- **Framework**: Flutter 3.3.0+
 - **Backend**: Firebase (Authentication, Realtime Database, Storage)
 - **State Management**: Provider for theme management + Flutter Hooks + Local State
 - **Theme System**: Material 3 ColorScheme with comprehensive dark mode support
@@ -203,7 +203,7 @@ class SyncManager {
 
 ## 📋 Prerequisites
 
-- Flutter SDK 3.7.2 or higher
+- Flutter SDK 3.3.0 or higher
 - Dart SDK
 - Firebase project with enabled services:
   - Authentication
