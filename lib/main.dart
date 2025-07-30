@@ -3,6 +3,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:phone_away/core/router/router.dart'; // Importiere deine neue Router-Datei
+import 'package:phone_away/screens/auth/auth_page.dart';
+import 'package:phone_away/screens/friends/friends_page.dart';
+import 'package:phone_away/screens/settings/settings_page.dart';
+import 'package:phone_away/screens/timer/timer_page.dart';
+import 'package:phone_away/screens/tree/tree_model.dart';
+import 'package:phone_away/screens/tree/tree_page.dart';
 import 'package:phone_away/theme/theme_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart'
