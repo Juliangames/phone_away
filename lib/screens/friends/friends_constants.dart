@@ -6,7 +6,7 @@ class FriendsConstants {
   static const String pageTitle = 'Friends';
   static const String rankHeader = 'Rank';
   static const String userHeader = 'User';
-  static const String applesHeader = 'Apples';
+  static const String applesHeader = 'Score';
   static const String currentUserDisplayName = 'You';
   static const String noFriendsMessage = 'No friends found';
   static const String noFriendsSubMessage =
