@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart'; // für kIsWeb
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:phone_away/core/providers/user_repository_provider.dart';
 import 'package:phone_away/core/repositories/user_repository.dart';
@@ -47,7 +48,9 @@ class _SettingsPageState extends State<SettingsPage> {
   Future<void> _logout() async {
     try {
       await _authService.signOut();
-      // Optional: Navigate to login screen or handle logout state
+      if (context.mounted) {
+        GoRouter.of(context).go('/auth');
+      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

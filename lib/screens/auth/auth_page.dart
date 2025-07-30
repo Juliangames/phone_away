@@ -59,7 +59,7 @@ class _AuthPageState extends State<AuthPage> {
       }
 
       if (mounted) {
-        GoRouter.of(context).go('/timer'); // <-- Hier den Pfad-String verwenden
+        GoRouter.of(context).go('/timer');
       }
     } on FirebaseAuthException catch (e) {
       setState(() {
