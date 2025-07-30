@@ -51,7 +51,13 @@ class _TimerPageState extends State<TimerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(TimerConstants.pageTitle),
+        toolbarHeight: AppDimensions.appBarHeight,
+        title: const Padding(
+          padding: EdgeInsets.only(top: AppDimensions.appBarTopPadding),
+          child: Text(
+            TimerConstants.pageTitle,
+          ),
+        ),
         centerTitle: true,
       ),
       body: SafeArea(

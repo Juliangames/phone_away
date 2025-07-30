@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phone_away/screens/tree/tree_model.dart';
 
+import '../../theme/app_constants.dart';
 import '../../widgets/tree/apple_tree.dart';
 import '../../widgets/empty_state/empty_state_widget.dart';
 import '../../core/services/network_service.dart';
@@ -67,22 +68,32 @@ class _TreePageState extends State<TreePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: AppDimensions.appBarHeight,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        centerTitle: true,
+        elevation: 0,
+        title: const Padding(
+          padding: EdgeInsets.only(top: AppDimensions.appBarTopPadding),
+          child: Text(TreeConstants.pageTitle), // Oder TreeConstants.pageTitle
+        ),
+      ),
       body: Center(
-        child:
-            isLoading
-                ? const CircularProgressIndicator()
-                : hasError
+        child: isLoading
+            ? const CircularProgressIndicator()
+            : hasError
                 ? EmptyStateWidget.fromError(
-                  error: error ?? Exception(TreeConstants.unknownErrorMessage),
-                  onRetry: _loadApples,
-                )
+                    error:
+                        error ?? Exception(TreeConstants.unknownErrorMessage),
+                    onRetry: _loadApples,
+                  )
                 : widget.model.apples == 0 && widget.model.rottenApples == 0
-                ? EmptyStateWidget.emptyTree()
-                : AppleTreeWidget(
-                  apples: widget.model.apples,
-                  rottenApples: widget.model.rottenApples,
-                  baseSize: TreeConstants.baseTreeSize,
-                ),
+                    ? EmptyStateWidget.emptyTree()
+                    : AppleTreeWidget(
+                        apples: widget.model.apples,
+                        rottenApples: widget.model.rottenApples,
+                        baseSize: TreeConstants.baseTreeSize,
+                      ),
       ),
     );
   }

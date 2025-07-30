@@ -17,7 +17,7 @@ class AppDimensions {
 
   // AppBar
   static const double appBarHeight = 80.0;
-  static const double appBarTopPadding = 16.0;
+  static const double appBarTopPadding = 12.0;
 
   // Buttons
   static const double buttonVerticalPadding = 16.0;

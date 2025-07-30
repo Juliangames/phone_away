@@ -222,7 +222,6 @@ class _SettingsPageState extends State<SettingsPage> {
           padding: EdgeInsets.only(top: AppDimensions.appBarTopPadding),
           child: Text(
             SettingsConstants.pageTitle,
-            style: TextStyle(fontWeight: AppTypography.boldWeight),
           ),
         ),
       ),

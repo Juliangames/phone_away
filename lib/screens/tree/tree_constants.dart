@@ -4,4 +4,6 @@ class TreeConstants {
 
   // Error messages
   static const String unknownErrorMessage = 'Unknown error';
+
+  static const String pageTitle = 'Tree';
 }
