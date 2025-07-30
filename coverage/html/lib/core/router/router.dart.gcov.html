@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Test Date:</td>
-            <td class="headerValue">2025-07-30 20:48:42</td>
+            <td class="headerValue">2025-07-30 21:14:05</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntryHi">-</td>
@@ -86,7 +86,7 @@
 <span id="L24"><span class="lineNum">      24</span>              :   ],</span>
 <span id="L25"><span class="lineNum">      25</span>              : )</span>
 <span id="L26"><span class="lineNum">      26</span>              : class MainShellRoute extends ShellRouteData {</span>
-<span id="L27"><span class="lineNum">      27</span> <span class="tlaGNC">           1 :   const MainShellRoute();</span></span>
+<span id="L27"><span class="lineNum">      27</span> <span class="tlaGNC">           9 :   const MainShellRoute();</span></span>
 <span id="L28"><span class="lineNum">      28</span>              : </span>
 <span id="L29"><span class="lineNum">      29</span> <span class="tlaUNC">           0 :   @override</span></span>
 <span id="L30"><span class="lineNum">      30</span>              :   Widget builder(BuildContext context, GoRouterState state, Widget navigator) {</span>
@@ -98,7 +98,7 @@
 <span id="L36"><span class="lineNum">      36</span>              : // Separate Definition der Auth-Route</span>
 <span id="L37"><span class="lineNum">      37</span>              : @TypedGoRoute&lt;AuthRoute&gt;(path: '/auth')</span>
 <span id="L38"><span class="lineNum">      38</span>              : class AuthRoute extends GoRouteData with _$AuthRoute {</span>
-<span id="L39"><span class="lineNum">      39</span> <span class="tlaGNC">           2 :   const AuthRoute();</span></span>
+<span id="L39"><span class="lineNum">      39</span> <span class="tlaGNC">          18 :   const AuthRoute();</span></span>
 <span id="L40"><span class="lineNum">      40</span> <span class="tlaUNC">           0 :   @override</span></span>
 <span id="L41"><span class="lineNum">      41</span>              :   Widget build(BuildContext context, GoRouterState state) =&gt; const AuthPage();</span>
 <span id="L42"><span class="lineNum">      42</span>              : }</span>
@@ -108,7 +108,7 @@
 <span id="L46"><span class="lineNum">      46</span>              : // da sie bereits oben als Kinder der Shell definiert wurden.</span>
 <span id="L47"><span class="lineNum">      47</span>              : // Sie benötigen aber weiterhin das generierte Mixin.</span>
 <span id="L48"><span class="lineNum">      48</span>              : class TimerRoute extends GoRouteData with _$TimerRoute {</span>
-<span id="L49"><span class="lineNum">      49</span> <span class="tlaGNC">           2 :   const TimerRoute();</span></span>
+<span id="L49"><span class="lineNum">      49</span> <span class="tlaGNC">          18 :   const TimerRoute();</span></span>
 <span id="L50"><span class="lineNum">      50</span> <span class="tlaUNC">           0 :   @override</span></span>
 <span id="L51"><span class="lineNum">      51</span>              :   Widget build(BuildContext context, GoRouterState state) {</span>
 <span id="L52"><span class="lineNum">      52</span> <span class="tlaUNC">           0 :     final userId = FirebaseAuth.instance.currentUser?.uid ?? 'unknown_user';</span></span>
@@ -117,7 +117,7 @@
 <span id="L55"><span class="lineNum">      55</span>              : }</span>
 <span id="L56"><span class="lineNum">      56</span>              : </span>
 <span id="L57"><span class="lineNum">      57</span>              : class TreeRoute extends GoRouteData with _$TreeRoute {</span>
-<span id="L58"><span class="lineNum">      58</span> <span class="tlaGNC">           2 :   const TreeRoute();</span></span>
+<span id="L58"><span class="lineNum">      58</span> <span class="tlaGNC">          18 :   const TreeRoute();</span></span>
 <span id="L59"><span class="lineNum">      59</span> <span class="tlaUNC">           0 :   @override</span></span>
 <span id="L60"><span class="lineNum">      60</span>              :   Widget build(BuildContext context, GoRouterState state) {</span>
 <span id="L61"><span class="lineNum">      61</span> <span class="tlaUNC">           0 :     final userId = FirebaseAuth.instance.currentUser?.uid ?? 'unknown_user';</span></span>
@@ -126,7 +126,7 @@
 <span id="L64"><span class="lineNum">      64</span>              : }</span>
 <span id="L65"><span class="lineNum">      65</span>              : </span>
 <span id="L66"><span class="lineNum">      66</span>              : class FriendsRoute extends GoRouteData with _$FriendsRoute {</span>
-<span id="L67"><span class="lineNum">      67</span> <span class="tlaGNC">           2 :   const FriendsRoute();</span></span>
+<span id="L67"><span class="lineNum">      67</span> <span class="tlaGNC">          18 :   const FriendsRoute();</span></span>
 <span id="L68"><span class="lineNum">      68</span> <span class="tlaUNC">           0 :   @override</span></span>
 <span id="L69"><span class="lineNum">      69</span>              :   Widget build(BuildContext context, GoRouterState state) {</span>
 <span id="L70"><span class="lineNum">      70</span> <span class="tlaUNC">           0 :     final userId = FirebaseAuth.instance.currentUser?.uid ?? 'unknown_user';</span></span>
@@ -135,7 +135,7 @@
 <span id="L73"><span class="lineNum">      73</span>              : }</span>
 <span id="L74"><span class="lineNum">      74</span>              : </span>
 <span id="L75"><span class="lineNum">      75</span>              : class SettingsRoute extends GoRouteData with _$SettingsRoute {</span>
-<span id="L76"><span class="lineNum">      76</span> <span class="tlaGNC">           2 :   const SettingsRoute();</span></span>
+<span id="L76"><span class="lineNum">      76</span> <span class="tlaGNC">          18 :   const SettingsRoute();</span></span>
 <span id="L77"><span class="lineNum">      77</span> <span class="tlaUNC">           0 :   @override</span></span>
 <span id="L78"><span class="lineNum">      78</span>              :   Widget build(BuildContext context, GoRouterState state) =&gt;</span>
 <span id="L79"><span class="lineNum">      79</span>              :       const SettingsPage();</span>

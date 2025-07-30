@@ -31,13 +31,13 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntryLo">1.4&nbsp;%</td>
+            <td class="headerCovTableEntryLo">68.9&nbsp;%</td>
             <td class="headerCovTableEntry">74</td>
-            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">51</td>
           </tr>
           <tr>
             <td class="headerItem">Test Date:</td>
-            <td class="headerValue">2025-07-30 20:48:42</td>
+            <td class="headerValue">2025-07-30 21:14:05</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntryHi">-</td>
@@ -74,7 +74,7 @@
 <span id="L12"><span class="lineNum">      12</span>              :   final Color? iconColor;</span>
 <span id="L13"><span class="lineNum">      13</span>              :   final bool isError;</span>
 <span id="L14"><span class="lineNum">      14</span>              : </span>
-<span id="L15"><span class="lineNum">      15</span> <span class="tlaGNC">           1 :   const EmptyStateWidget({</span></span>
+<span id="L15"><span class="lineNum">      15</span> <span class="tlaGNC">          11 :   const EmptyStateWidget({</span></span>
 <span id="L16"><span class="lineNum">      16</span>              :     super.key,</span>
 <span id="L17"><span class="lineNum">      17</span>              :     required this.icon,</span>
 <span id="L18"><span class="lineNum">      18</span>              :     required this.title,</span>
@@ -85,8 +85,8 @@
 <span id="L23"><span class="lineNum">      23</span>              :     this.isError = false,</span>
 <span id="L24"><span class="lineNum">      24</span>              :   });</span>
 <span id="L25"><span class="lineNum">      25</span>              : </span>
-<span id="L26"><span class="lineNum">      26</span> <span class="tlaUNC">           0 :   factory EmptyStateWidget.noFriends({VoidCallback? onInvite}) {</span></span>
-<span id="L27"><span class="lineNum">      27</span> <span class="tlaUNC">           0 :     return EmptyStateWidget(</span></span>
+<span id="L26"><span class="lineNum">      26</span> <span class="tlaGNC">           1 :   factory EmptyStateWidget.noFriends({VoidCallback? onInvite}) {</span></span>
+<span id="L27"><span class="lineNum">      27</span> <span class="tlaGNC">           1 :     return EmptyStateWidget(</span></span>
 <span id="L28"><span class="lineNum">      28</span>              :       icon: Icons.group_outlined,</span>
 <span id="L29"><span class="lineNum">      29</span>              :       title: EmptyStateConstants.noFriendsTitle,</span>
 <span id="L30"><span class="lineNum">      30</span>              :       subtitle: EmptyStateConstants.noFriendsSubtitle,</span>
@@ -96,11 +96,11 @@
 <span id="L34"><span class="lineNum">      34</span>              :     );</span>
 <span id="L35"><span class="lineNum">      35</span>              :   }</span>
 <span id="L36"><span class="lineNum">      36</span>              : </span>
-<span id="L37"><span class="lineNum">      37</span> <span class="tlaUNC">           0 :   factory EmptyStateWidget.networkError({</span></span>
+<span id="L37"><span class="lineNum">      37</span> <span class="tlaGNC">           1 :   factory EmptyStateWidget.networkError({</span></span>
 <span id="L38"><span class="lineNum">      38</span>              :     required VoidCallback onRetry,</span>
 <span id="L39"><span class="lineNum">      39</span>              :     String? errorMessage,</span>
 <span id="L40"><span class="lineNum">      40</span>              :   }) {</span>
-<span id="L41"><span class="lineNum">      41</span> <span class="tlaUNC">           0 :     return EmptyStateWidget(</span></span>
+<span id="L41"><span class="lineNum">      41</span> <span class="tlaGNC">           1 :     return EmptyStateWidget(</span></span>
 <span id="L42"><span class="lineNum">      42</span>              :       icon: Icons.wifi_off_outlined,</span>
 <span id="L43"><span class="lineNum">      43</span>              :       title: EmptyStateConstants.noInternetTitle,</span>
 <span id="L44"><span class="lineNum">      44</span>              :       subtitle: errorMessage ?? EmptyStateConstants.noInternetSubtitle,</span>
@@ -189,54 +189,54 @@
 <span id="L127"><span class="lineNum">     127</span>              :     );</span>
 <span id="L128"><span class="lineNum">     128</span>              :   }</span>
 <span id="L129"><span class="lineNum">     129</span>              : </span>
-<span id="L130"><span class="lineNum">     130</span> <span class="tlaUNC">           0 :   @override</span></span>
+<span id="L130"><span class="lineNum">     130</span> <span class="tlaGNC">           1 :   @override</span></span>
 <span id="L131"><span class="lineNum">     131</span>              :   Widget build(BuildContext context) {</span>
-<span id="L132"><span class="lineNum">     132</span> <span class="tlaUNC">           0 :     return Center(</span></span>
-<span id="L133"><span class="lineNum">     133</span> <span class="tlaUNC">           0 :       child: Padding(</span></span>
+<span id="L132"><span class="lineNum">     132</span> <span class="tlaGNC">           1 :     return Center(</span></span>
+<span id="L133"><span class="lineNum">     133</span> <span class="tlaGNC">           1 :       child: Padding(</span></span>
 <span id="L134"><span class="lineNum">     134</span>              :         padding: const EdgeInsets.all(AppDimensions.largeSpacing),</span>
-<span id="L135"><span class="lineNum">     135</span> <span class="tlaUNC">           0 :         child: Column(</span></span>
+<span id="L135"><span class="lineNum">     135</span> <span class="tlaGNC">           1 :         child: Column(</span></span>
 <span id="L136"><span class="lineNum">     136</span>              :           mainAxisAlignment: MainAxisAlignment.center,</span>
 <span id="L137"><span class="lineNum">     137</span>              :           mainAxisSize: MainAxisSize.min,</span>
-<span id="L138"><span class="lineNum">     138</span> <span class="tlaUNC">           0 :           children: [</span></span>
-<span id="L139"><span class="lineNum">     139</span> <span class="tlaUNC">           0 :             Icon(</span></span>
-<span id="L140"><span class="lineNum">     140</span> <span class="tlaUNC">           0 :               icon,</span></span>
+<span id="L138"><span class="lineNum">     138</span> <span class="tlaGNC">           1 :           children: [</span></span>
+<span id="L139"><span class="lineNum">     139</span> <span class="tlaGNC">           1 :             Icon(</span></span>
+<span id="L140"><span class="lineNum">     140</span> <span class="tlaGNC">           1 :               icon,</span></span>
 <span id="L141"><span class="lineNum">     141</span>              :               size: 80,</span>
 <span id="L142"><span class="lineNum">     142</span>              :               color:</span>
-<span id="L143"><span class="lineNum">     143</span> <span class="tlaUNC">           0 :                   iconColor?.withOpacity(0.7) ??</span></span>
-<span id="L144"><span class="lineNum">     144</span> <span class="tlaUNC">           0 :                   (isError</span></span>
-<span id="L145"><span class="lineNum">     145</span> <span class="tlaUNC">           0 :                       ? Theme.of(context).colorScheme.error.withOpacity(0.7)</span></span>
-<span id="L146"><span class="lineNum">     146</span> <span class="tlaUNC">           0 :                       : Theme.of(</span></span>
+<span id="L143"><span class="lineNum">     143</span> <span class="tlaGNC">           2 :                   iconColor?.withOpacity(0.7) ??</span></span>
+<span id="L144"><span class="lineNum">     144</span> <span class="tlaGNC">           1 :                   (isError</span></span>
+<span id="L145"><span class="lineNum">     145</span> <span class="tlaGNC">           4 :                       ? Theme.of(context).colorScheme.error.withOpacity(0.7)</span></span>
+<span id="L146"><span class="lineNum">     146</span> <span class="tlaGNC">           1 :                       : Theme.of(</span></span>
 <span id="L147"><span class="lineNum">     147</span>              :                         context,</span>
-<span id="L148"><span class="lineNum">     148</span> <span class="tlaUNC">           0 :                       ).colorScheme.onSurfaceVariant.withOpacity(0.5)),</span></span>
+<span id="L148"><span class="lineNum">     148</span> <span class="tlaGNC">           3 :                       ).colorScheme.onSurfaceVariant.withOpacity(0.5)),</span></span>
 <span id="L149"><span class="lineNum">     149</span>              :             ),</span>
 <span id="L150"><span class="lineNum">     150</span>              :             const SizedBox(height: AppDimensions.mediumSpacing),</span>
-<span id="L151"><span class="lineNum">     151</span> <span class="tlaUNC">           0 :             Text(</span></span>
-<span id="L152"><span class="lineNum">     152</span> <span class="tlaUNC">           0 :               title,</span></span>
-<span id="L153"><span class="lineNum">     153</span> <span class="tlaUNC">           0 :               style: TextStyle(</span></span>
+<span id="L151"><span class="lineNum">     151</span> <span class="tlaGNC">           1 :             Text(</span></span>
+<span id="L152"><span class="lineNum">     152</span> <span class="tlaGNC">           1 :               title,</span></span>
+<span id="L153"><span class="lineNum">     153</span> <span class="tlaGNC">           1 :               style: TextStyle(</span></span>
 <span id="L154"><span class="lineNum">     154</span>              :                 fontSize: 20,</span>
 <span id="L155"><span class="lineNum">     155</span>              :                 fontWeight: FontWeight.w600,</span>
 <span id="L156"><span class="lineNum">     156</span>              :                 color:</span>
-<span id="L157"><span class="lineNum">     157</span> <span class="tlaUNC">           0 :                     isError</span></span>
-<span id="L158"><span class="lineNum">     158</span> <span class="tlaUNC">           0 :                         ? Theme.of(context).colorScheme.error</span></span>
-<span id="L159"><span class="lineNum">     159</span> <span class="tlaUNC">           0 :                         : Theme.of(context).colorScheme.onSurface,</span></span>
+<span id="L157"><span class="lineNum">     157</span> <span class="tlaGNC">           1 :                     isError</span></span>
+<span id="L158"><span class="lineNum">     158</span> <span class="tlaGNC">           3 :                         ? Theme.of(context).colorScheme.error</span></span>
+<span id="L159"><span class="lineNum">     159</span> <span class="tlaGNC">           3 :                         : Theme.of(context).colorScheme.onSurface,</span></span>
 <span id="L160"><span class="lineNum">     160</span>              :               ),</span>
 <span id="L161"><span class="lineNum">     161</span>              :               textAlign: TextAlign.center,</span>
 <span id="L162"><span class="lineNum">     162</span>              :             ),</span>
 <span id="L163"><span class="lineNum">     163</span>              :             const SizedBox(height: AppDimensions.smallSpacing),</span>
-<span id="L164"><span class="lineNum">     164</span> <span class="tlaUNC">           0 :             Text(</span></span>
-<span id="L165"><span class="lineNum">     165</span> <span class="tlaUNC">           0 :               subtitle,</span></span>
-<span id="L166"><span class="lineNum">     166</span> <span class="tlaUNC">           0 :               style: TextStyle(</span></span>
+<span id="L164"><span class="lineNum">     164</span> <span class="tlaGNC">           1 :             Text(</span></span>
+<span id="L165"><span class="lineNum">     165</span> <span class="tlaGNC">           1 :               subtitle,</span></span>
+<span id="L166"><span class="lineNum">     166</span> <span class="tlaGNC">           1 :               style: TextStyle(</span></span>
 <span id="L167"><span class="lineNum">     167</span>              :                 fontSize: 14,</span>
-<span id="L168"><span class="lineNum">     168</span> <span class="tlaUNC">           0 :                 color: Theme.of(</span></span>
+<span id="L168"><span class="lineNum">     168</span> <span class="tlaGNC">           1 :                 color: Theme.of(</span></span>
 <span id="L169"><span class="lineNum">     169</span>              :                   context,</span>
-<span id="L170"><span class="lineNum">     170</span> <span class="tlaUNC">           0 :                 ).colorScheme.onSurfaceVariant.withOpacity(0.7),</span></span>
+<span id="L170"><span class="lineNum">     170</span> <span class="tlaGNC">           3 :                 ).colorScheme.onSurfaceVariant.withOpacity(0.7),</span></span>
 <span id="L171"><span class="lineNum">     171</span>              :                 height: 1.4,</span>
 <span id="L172"><span class="lineNum">     172</span>              :               ),</span>
 <span id="L173"><span class="lineNum">     173</span>              :               textAlign: TextAlign.center,</span>
 <span id="L174"><span class="lineNum">     174</span>              :             ),</span>
-<span id="L175"><span class="lineNum">     175</span> <span class="tlaUNC">           0 :             if (actionLabel != null &amp;&amp; onAction != null) ...[</span></span>
+<span id="L175"><span class="lineNum">     175</span> <span class="tlaGNC">           3 :             if (actionLabel != null &amp;&amp; onAction != null) ...[</span></span>
 <span id="L176"><span class="lineNum">     176</span>              :               const SizedBox(height: AppDimensions.largeSpacing),</span>
-<span id="L177"><span class="lineNum">     177</span> <span class="tlaUNC">           0 :               _buildActionButton(context),</span></span>
+<span id="L177"><span class="lineNum">     177</span> <span class="tlaGNC">           1 :               _buildActionButton(context),</span></span>
 <span id="L178"><span class="lineNum">     178</span>              :             ],</span>
 <span id="L179"><span class="lineNum">     179</span>              :           ],</span>
 <span id="L180"><span class="lineNum">     180</span>              :         ),</span>
@@ -244,45 +244,45 @@
 <span id="L182"><span class="lineNum">     182</span>              :     );</span>
 <span id="L183"><span class="lineNum">     183</span>              :   }</span>
 <span id="L184"><span class="lineNum">     184</span>              : </span>
-<span id="L185"><span class="lineNum">     185</span> <span class="tlaUNC">           0 :   Widget _buildActionButton(BuildContext context) {</span></span>
-<span id="L186"><span class="lineNum">     186</span> <span class="tlaUNC">           0 :     if (isError) {</span></span>
-<span id="L187"><span class="lineNum">     187</span> <span class="tlaUNC">           0 :       return OutlinedButton(</span></span>
-<span id="L188"><span class="lineNum">     188</span> <span class="tlaUNC">           0 :         onPressed: onAction,</span></span>
-<span id="L189"><span class="lineNum">     189</span> <span class="tlaUNC">           0 :         style: OutlinedButton.styleFrom(</span></span>
-<span id="L190"><span class="lineNum">     190</span> <span class="tlaUNC">           0 :           side: BorderSide(color: Theme.of(context).colorScheme.primary),</span></span>
-<span id="L191"><span class="lineNum">     191</span> <span class="tlaUNC">           0 :           shape: RoundedRectangleBorder(</span></span>
-<span id="L192"><span class="lineNum">     192</span> <span class="tlaUNC">           0 :             borderRadius: BorderRadius.circular(AppDimensions.borderRadius),</span></span>
+<span id="L185"><span class="lineNum">     185</span> <span class="tlaGNC">           1 :   Widget _buildActionButton(BuildContext context) {</span></span>
+<span id="L186"><span class="lineNum">     186</span> <span class="tlaGNC">           1 :     if (isError) {</span></span>
+<span id="L187"><span class="lineNum">     187</span> <span class="tlaGNC">           1 :       return OutlinedButton(</span></span>
+<span id="L188"><span class="lineNum">     188</span> <span class="tlaGNC">           1 :         onPressed: onAction,</span></span>
+<span id="L189"><span class="lineNum">     189</span> <span class="tlaGNC">           1 :         style: OutlinedButton.styleFrom(</span></span>
+<span id="L190"><span class="lineNum">     190</span> <span class="tlaGNC">           4 :           side: BorderSide(color: Theme.of(context).colorScheme.primary),</span></span>
+<span id="L191"><span class="lineNum">     191</span> <span class="tlaGNC">           1 :           shape: RoundedRectangleBorder(</span></span>
+<span id="L192"><span class="lineNum">     192</span> <span class="tlaGNC">           1 :             borderRadius: BorderRadius.circular(AppDimensions.borderRadius),</span></span>
 <span id="L193"><span class="lineNum">     193</span>              :           ),</span>
 <span id="L194"><span class="lineNum">     194</span>              :           padding: const EdgeInsets.symmetric(</span>
 <span id="L195"><span class="lineNum">     195</span>              :             horizontal: AppDimensions.largeSpacing,</span>
 <span id="L196"><span class="lineNum">     196</span>              :             vertical: AppDimensions.smallSpacing,</span>
 <span id="L197"><span class="lineNum">     197</span>              :           ),</span>
 <span id="L198"><span class="lineNum">     198</span>              :         ),</span>
-<span id="L199"><span class="lineNum">     199</span> <span class="tlaUNC">           0 :         child: Text(</span></span>
-<span id="L200"><span class="lineNum">     200</span> <span class="tlaUNC">           0 :           actionLabel!,</span></span>
-<span id="L201"><span class="lineNum">     201</span> <span class="tlaUNC">           0 :           style: TextStyle(</span></span>
-<span id="L202"><span class="lineNum">     202</span> <span class="tlaUNC">           0 :             color: Theme.of(context).colorScheme.primary,</span></span>
+<span id="L199"><span class="lineNum">     199</span> <span class="tlaGNC">           1 :         child: Text(</span></span>
+<span id="L200"><span class="lineNum">     200</span> <span class="tlaGNC">           1 :           actionLabel!,</span></span>
+<span id="L201"><span class="lineNum">     201</span> <span class="tlaGNC">           1 :           style: TextStyle(</span></span>
+<span id="L202"><span class="lineNum">     202</span> <span class="tlaGNC">           3 :             color: Theme.of(context).colorScheme.primary,</span></span>
 <span id="L203"><span class="lineNum">     203</span>              :             fontWeight: FontWeight.w600,</span>
 <span id="L204"><span class="lineNum">     204</span>              :           ),</span>
 <span id="L205"><span class="lineNum">     205</span>              :         ),</span>
 <span id="L206"><span class="lineNum">     206</span>              :       );</span>
 <span id="L207"><span class="lineNum">     207</span>              :     }</span>
 <span id="L208"><span class="lineNum">     208</span>              : </span>
-<span id="L209"><span class="lineNum">     209</span> <span class="tlaUNC">           0 :     return ElevatedButton(</span></span>
-<span id="L210"><span class="lineNum">     210</span> <span class="tlaUNC">           0 :       onPressed: onAction,</span></span>
-<span id="L211"><span class="lineNum">     211</span> <span class="tlaUNC">           0 :       style: ElevatedButton.styleFrom(</span></span>
-<span id="L212"><span class="lineNum">     212</span> <span class="tlaUNC">           0 :         backgroundColor: Theme.of(context).colorScheme.primary,</span></span>
-<span id="L213"><span class="lineNum">     213</span> <span class="tlaUNC">           0 :         foregroundColor: Theme.of(context).colorScheme.onPrimary,</span></span>
-<span id="L214"><span class="lineNum">     214</span> <span class="tlaUNC">           0 :         shape: RoundedRectangleBorder(</span></span>
-<span id="L215"><span class="lineNum">     215</span> <span class="tlaUNC">           0 :           borderRadius: BorderRadius.circular(AppDimensions.borderRadius),</span></span>
+<span id="L209"><span class="lineNum">     209</span> <span class="tlaGNC">           1 :     return ElevatedButton(</span></span>
+<span id="L210"><span class="lineNum">     210</span> <span class="tlaGNC">           1 :       onPressed: onAction,</span></span>
+<span id="L211"><span class="lineNum">     211</span> <span class="tlaGNC">           1 :       style: ElevatedButton.styleFrom(</span></span>
+<span id="L212"><span class="lineNum">     212</span> <span class="tlaGNC">           3 :         backgroundColor: Theme.of(context).colorScheme.primary,</span></span>
+<span id="L213"><span class="lineNum">     213</span> <span class="tlaGNC">           3 :         foregroundColor: Theme.of(context).colorScheme.onPrimary,</span></span>
+<span id="L214"><span class="lineNum">     214</span> <span class="tlaGNC">           1 :         shape: RoundedRectangleBorder(</span></span>
+<span id="L215"><span class="lineNum">     215</span> <span class="tlaGNC">           1 :           borderRadius: BorderRadius.circular(AppDimensions.borderRadius),</span></span>
 <span id="L216"><span class="lineNum">     216</span>              :         ),</span>
 <span id="L217"><span class="lineNum">     217</span>              :         padding: const EdgeInsets.symmetric(</span>
 <span id="L218"><span class="lineNum">     218</span>              :           horizontal: AppDimensions.largeSpacing,</span>
 <span id="L219"><span class="lineNum">     219</span>              :           vertical: AppDimensions.smallSpacing,</span>
 <span id="L220"><span class="lineNum">     220</span>              :         ),</span>
 <span id="L221"><span class="lineNum">     221</span>              :       ),</span>
-<span id="L222"><span class="lineNum">     222</span> <span class="tlaUNC">           0 :       child: Text(</span></span>
-<span id="L223"><span class="lineNum">     223</span> <span class="tlaUNC">           0 :         actionLabel!,</span></span>
+<span id="L222"><span class="lineNum">     222</span> <span class="tlaGNC">           1 :       child: Text(</span></span>
+<span id="L223"><span class="lineNum">     223</span> <span class="tlaGNC">           1 :         actionLabel!,</span></span>
 <span id="L224"><span class="lineNum">     224</span>              :         style: const TextStyle(fontWeight: FontWeight.w600),</span>
 <span id="L225"><span class="lineNum">     225</span>              :       ),</span>
 <span id="L226"><span class="lineNum">     226</span>              :     );</span>
