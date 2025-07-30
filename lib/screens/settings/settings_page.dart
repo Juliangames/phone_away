@@ -343,35 +343,6 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
             const SizedBox(height: AppDimensions.sectionSpacing),
-            // Notifications Section
-            Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
-                borderRadius: BorderRadius.circular(AppDimensions.borderRadius),
-              ),
-              padding: const EdgeInsets.symmetric(
-                vertical: AppDimensions.containerPaddingVertical,
-                horizontal: AppDimensions.containerPaddingHorizontal,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    SettingsConstants.notificationsText,
-                    style: TextStyle(fontWeight: AppTypography.boldWeight),
-                  ),
-                  Switch(
-                    value: _notifications,
-                    activeColor: Theme.of(context).colorScheme.primary,
-                    onChanged: (value) {
-                      setState(() => _notifications = value);
-                      _updateNotifications(value);
-                    },
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: AppDimensions.sectionSpacing),
             // Appearance Section
             Container(
               decoration: BoxDecoration(
