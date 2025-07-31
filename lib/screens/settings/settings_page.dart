@@ -13,6 +13,7 @@ import '../../core/services/storage_service.dart';
 import '../../core/helpers/error_handler.dart';
 import 'settings_constants.dart';
 import 'dart:developer' as developer;
+import 'package:restart_app/restart_app.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -50,6 +51,7 @@ class _SettingsPageState extends State<SettingsPage> {
       await _authService.signOut();
       if (!mounted) return;
       GoRouter.of(context).go('/auth');
+      Restart.restartApp();
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

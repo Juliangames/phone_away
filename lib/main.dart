@@ -16,14 +16,12 @@ import 'package:flutter/foundation.dart'
 
 import 'firebase_options.dart';
 
-// 🔔 Create the global instance
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // ✅ Firebase initialization
   if (kIsWeb) {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
@@ -39,7 +37,6 @@ Future<void> main() async {
     );
   }
 
-  // ✅ Notification initialization
   const AndroidInitializationSettings androidSettings =
       AndroidInitializationSettings('@mipmap/ic_launcher');
 
@@ -68,13 +65,12 @@ class MyApp extends StatelessWidget {
           });
 
           return MaterialApp.router(
-            // Hier verwenden wir MaterialApp.router
             debugShowCheckedModeBanner: false,
             title: 'PhoneAway',
             theme: themeManager.lightTheme,
             darkTheme: themeManager.darkTheme,
             themeMode: themeManager.themeMode,
-            routerConfig: appRouter, // Die GoRouter-Instanz übergeben
+            routerConfig: appRouter,
           );
         },
       ),
