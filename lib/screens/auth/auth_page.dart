@@ -97,7 +97,9 @@ class _AuthPageState extends State<AuthPage> {
               AuthConstants.circle1Size,
               Theme.of(
                 context,
-              ).colorScheme.primary.withOpacity(AuthConstants.circle1Opacity),
+              ).colorScheme.primary.withAlpha(
+                    (AuthConstants.circle1Opacity * 255).toInt(),
+                  ),
             ),
           ),
           Positioned(
@@ -106,8 +108,8 @@ class _AuthPageState extends State<AuthPage> {
             child: _buildCircle(
               AuthConstants.circle2Size,
               Theme.of(context).colorScheme.primaryContainer.withAlpha(
-                (AuthConstants.circle2Opacity * 255).toInt(),
-              ),
+                    (AuthConstants.circle2Opacity * 255).toInt(),
+                  ),
             ),
           ),
           Positioned(
@@ -115,9 +117,9 @@ class _AuthPageState extends State<AuthPage> {
             left: AuthConstants.circle3Left,
             child: _buildCircle(
               AuthConstants.circle3Size,
-              Theme.of(
-                context,
-              ).colorScheme.primary.withOpacity(AuthConstants.circle3Opacity),
+              Theme.of(context).colorScheme.primaryContainer.withAlpha(
+                    (AuthConstants.circle3Opacity * 255).toInt(),
+                  ),
             ),
           ),
           Positioned(
@@ -126,8 +128,8 @@ class _AuthPageState extends State<AuthPage> {
             child: _buildCircle(
               AuthConstants.circle4Size,
               Theme.of(context).colorScheme.secondaryContainer.withAlpha(
-                (AuthConstants.circle4Opacity * 255).toInt(),
-              ),
+                    (AuthConstants.circle4Opacity * 255).toInt(),
+                  ),
             ),
           ),
           Positioned(
@@ -135,21 +137,20 @@ class _AuthPageState extends State<AuthPage> {
             right: AuthConstants.circle5Right,
             child: _buildCircle(
               AuthConstants.circle5Size,
-              Theme.of(
-                context,
-              ).colorScheme.primary.withOpacity(AuthConstants.circle5Opacity),
+              Theme.of(context).colorScheme.secondaryContainer.withAlpha(
+                    (AuthConstants.circle5Opacity * 255).toInt(),
+                  ),
             ),
           ),
           Positioned(
             top: AuthConstants.circle6Top,
-            left:
-                MediaQuery.of(context).size.width / 2 -
+            left: MediaQuery.of(context).size.width / 2 -
                 AuthConstants.circle6CenterOffset,
             child: _buildCircle(
               AuthConstants.circle6Size,
-              Theme.of(
-                context,
-              ).colorScheme.primary.withOpacity(AuthConstants.circle6Opacity),
+              Theme.of(context).colorScheme.secondaryContainer.withAlpha(
+                    (AuthConstants.circle6Opacity * 255).toInt(),
+                  ),
             ),
           ),
 
@@ -190,10 +191,9 @@ class _AuthPageState extends State<AuthPage> {
                           decoration: InputDecoration(
                             labelText: AuthConstants.emailLabel,
                             labelStyle: TextStyle(
-                              color:
-                                  Theme.of(
-                                    context,
-                                  ).colorScheme.onSurfaceVariant,
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSurfaceVariant,
                             ),
                             filled: true,
                             fillColor:
@@ -221,10 +221,9 @@ class _AuthPageState extends State<AuthPage> {
                           decoration: InputDecoration(
                             labelText: AuthConstants.passwordLabel,
                             labelStyle: TextStyle(
-                              color:
-                                  Theme.of(
-                                    context,
-                                  ).colorScheme.onSurfaceVariant,
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSurfaceVariant,
                             ),
                             filled: true,
                             fillColor:

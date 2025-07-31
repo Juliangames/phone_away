@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mockito/mockito.dart';
 import 'package:phone_away/screens/auth/auth_page.dart';
 import 'package:phone_away/screens/auth/auth_constants.dart';
 import 'package:phone_away/core/services/auth_service.dart';
 import 'package:phone_away/core/repositories/user_repository.dart';
 import 'package:phone_away/theme/app_constants.dart';
-import '../../mocks/firebase_auth_mock.dart';
 
 // Mock classes
 class MockAuthService extends Mock implements AuthService {}

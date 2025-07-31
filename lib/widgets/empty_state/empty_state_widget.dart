@@ -139,13 +139,17 @@ class EmptyStateWidget extends StatelessWidget {
             Icon(
               icon,
               size: 80,
-              color:
-                  iconColor?.withOpacity(0.7) ??
-                  (isError
-                      ? Theme.of(context).colorScheme.error.withOpacity(0.7)
-                      : Theme.of(
-                        context,
-                      ).colorScheme.onSurfaceVariant.withOpacity(0.5)),
+              color: iconColor != null
+                  ? iconColor?.withAlpha((0.7 * 255).round())
+                  : (isError
+                      ? Theme.of(context)
+                          .colorScheme
+                          .error
+                          .withAlpha((0.7 * 255).round())
+                      : Theme.of(context)
+                          .colorScheme
+                          .onSurfaceVariant
+                          .withAlpha((0.5 * 255).round())),
             ),
             const SizedBox(height: AppDimensions.mediumSpacing),
             Text(
@@ -153,10 +157,9 @@ class EmptyStateWidget extends StatelessWidget {
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
-                color:
-                    isError
-                        ? Theme.of(context).colorScheme.error
-                        : Theme.of(context).colorScheme.onSurface,
+                color: isError
+                    ? Theme.of(context).colorScheme.error
+                    : Theme.of(context).colorScheme.onSurface,
               ),
               textAlign: TextAlign.center,
             ),
@@ -165,9 +168,10 @@ class EmptyStateWidget extends StatelessWidget {
               subtitle,
               style: TextStyle(
                 fontSize: 14,
-                color: Theme.of(
-                  context,
-                ).colorScheme.onSurfaceVariant.withOpacity(0.7),
+                color: Theme.of(context)
+                    .colorScheme
+                    .onSurfaceVariant
+                    .withAlpha((0.7 * 255).round()),
                 height: 1.4,
               ),
               textAlign: TextAlign.center,

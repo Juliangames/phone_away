@@ -104,7 +104,7 @@ final GoRouter appRouter = GoRouter(
 
 // Der Widget-Teil der ShellRoute, der die BottomNavigationBar enthält
 class MainNavigationShell extends StatefulWidget {
-  const MainNavigationShell({Key? key, required this.child}) : super(key: key);
+  const MainNavigationShell({super.key, required this.child});
 
   final Widget child;
 
