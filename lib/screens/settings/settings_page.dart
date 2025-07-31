@@ -48,19 +48,17 @@ class _SettingsPageState extends State<SettingsPage> {
   Future<void> _logout() async {
     try {
       await _authService.signOut();
-      if (context.mounted) {
-        GoRouter.of(context).go('/auth');
-      }
+      if (!mounted) return;
+      GoRouter.of(context).go('/auth');
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              '${SettingsConstants.logoutFailedPrefix}${e.toString()}',
-            ),
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            '${SettingsConstants.logoutFailedPrefix}${e.toString()}',
           ),
-        );
-      }
+        ),
+      );
     }
   }
 
